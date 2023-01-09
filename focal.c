@@ -49,13 +49,22 @@
 
 #define DETECTOR_ANTENNA_1D
 
+// define structures
+typedef struct beamConfiguration {
+    int
+        ant_x, ant_y, ant_z;
+    double
+        antAngle_zy, antAngle_zx,
+        ant_w0x, ant_w0y;
+} beamConfiguration;
+
 // prototyping
-int make_antenna_profile_4( int exc_signal, double antAngle_zy, double antAngle_zx, 
-                            double ant_w0x, double ant_w0y, double z2waist,
-                            int ant_x, int ant_y, int ant_z,
-                            size_t N_x, size_t N_y, 
-                            double period,
-                            double antField_xy[N_x/2][N_y/2], double antPhaseTerms[N_x/2][N_y/2] );
+int make_antenna_profile( beamConfiguration *beamCfg,
+                          int exc_signal, 
+                          double z2waist,
+                          size_t N_x, size_t N_y, 
+                          double period,
+                          double antField_xy[N_x/2][N_y/2], double antPhaseTerms[N_x/2][N_y/2] );
 int make_density_profile( int ne_profile, 
                           double period, int d_absorb, double cntrl_para, 
                           size_t N_x, size_t N_y, size_t N_z,
@@ -160,10 +169,11 @@ int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], do
 int main( int argc, char *argv[] ) {
 //{{{
 
+    struct beamConfiguration beamCfg;
+
     int
         ii,jj,kk,
         t_int, t_end, T_wave, 
-        ant_x, ant_y, ant_z,
 
         scale,
         NX, NY, NZ, 
@@ -196,8 +206,6 @@ int main( int argc, char *argv[] ) {
 #endif
 
         //ant_phase, GouyPhase_beam, 
-        antAngle_zy, antAngle_zx,
-        ant_w0x, ant_w0y,
 
         poynt_x1, poynt_x2,
         poynt_y1, poynt_y2,
@@ -236,11 +244,11 @@ int main( int argc, char *argv[] ) {
 #elif BOUNDARY == 2
     d_absorb    = 8;
 #endif
-    NX          = (1280)*scale;
-    NY          = (400)*scale;
-    NZ          = (480)*scale;
+    NX          = (280)*scale;
+    NY          = (220)*scale;
+    NZ          = (160)*scale;
     NZ_ref      = 2*d_absorb + (int)period;
-    t_end       = (int)((150+0*250)*period);
+    t_end       = (int)((30)*period);
 
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
@@ -289,49 +297,49 @@ int main( int argc, char *argv[] ) {
     angle_zx_set    = false;
     angle_zy_set    = false;
     // default values to be used if input parameter are not set
-    antAngle_zx     = 0;
-    antAngle_zy     = 0;
+    beamCfg.antAngle_zx     = 0;
+    beamCfg.antAngle_zy     = 0;
     // loop through input parameter
     printf( "number of input parameters provided during call: %d\n", argc-1 );
     while ( (opt_ret = getopt(argc, argv, "a:b:")) != -1 ){
         switch (opt_ret) {
             // angle between z=const plane and x=const plane
-            case 'a': antAngle_zx   = atof(optarg);
+            case 'a': beamCfg.antAngle_zx   = atof(optarg);
                       angle_zx_set  = true;
                       break;
-            case 'b': antAngle_zy   = atof(optarg);
+            case 'b': beamCfg.antAngle_zy   = atof(optarg);
                       angle_zy_set  = true;
                       break;
         }
     }
     if ( argc > 1 ) {
         printf( "following parameters were set during call: \n" );
-        if (angle_zx_set)   printf( "    antAngle_zx = %f\n", antAngle_zx );
-        if (angle_zy_set)   printf( "    antAngle_zy = %f\n", antAngle_zy );
+        if (angle_zx_set)   printf( "    antAngle_zx = %f\n", beamCfg.antAngle_zx );
+        if (angle_zy_set)   printf( "    antAngle_zy = %f\n", beamCfg.antAngle_zy );
     }
 
 
-    ant_x       = round(d_absorb + 18.68*period);//NX/2;
-    ant_y       = NY/2;//d_absorb + 6*period;//NY/2;
-    ant_z       = d_absorb + 4;
+    beamCfg.ant_x       = NX/2;
+    beamCfg.ant_y       = NY/2;
+    beamCfg.ant_z       = d_absorb + 4;
     // positions have to be even numbers, to ensure fields are accessed correctly
-    if ((ant_x % 2) != 0)  ++ant_x;
-    if ((ant_y % 2) != 0)  ++ant_y;
-    if ((ant_z % 2) != 0)  ++ant_z;
-    ant_w0x     = 4;
-    ant_w0y     = 4;
+    if ((beamCfg.ant_x % 2) != 0)  ++beamCfg.ant_x;
+    if ((beamCfg.ant_y % 2) != 0)  ++beamCfg.ant_y;
+    if ((beamCfg.ant_z % 2) != 0)  ++beamCfg.ant_z;
+    beamCfg.ant_w0x     = 2;
+    beamCfg.ant_w0y     = 2;
 
     pwr_dect    = d_absorb;
 
 #ifdef DETECTOR_ANTENNA_1D
-    detAnt_01_ypos  = ant_y;
-    detAnt_01_zpos  = ant_z+2;
-    detAnt_02_zpos  = round(ant_z+2 + 1*4.67*period); // steps of 5 cm for 28 GHz
-    detAnt_03_zpos  = round(ant_z+2 + 2*4.67*period);
-    detAnt_04_zpos  = round(ant_z+2 + 3*4.67*period);
-    detAnt_05_zpos  = round(ant_z+2 + 4*4.67*period);
-    detAnt_06_zpos  = round(ant_z+2 + 5*4.67*period);
-    detAnt_07_zpos  = round(ant_z+2 + 6*4.67*period);
+    detAnt_01_ypos  = beamCfg.ant_y;
+    detAnt_01_zpos  = beamCfg.ant_z+2;
+    detAnt_02_zpos  = round(beamCfg.ant_z+2 + 1*4.67*period); // steps of 5 cm for 28 GHz
+    detAnt_03_zpos  = round(beamCfg.ant_z+2 + 2*4.67*period);
+    detAnt_04_zpos  = round(beamCfg.ant_z+2 + 3*4.67*period);
+    detAnt_05_zpos  = round(beamCfg.ant_z+2 + 4*4.67*period);
+    detAnt_06_zpos  = round(beamCfg.ant_z+2 + 5*4.67*period);
+    detAnt_07_zpos  = round(beamCfg.ant_z+2 + 6*4.67*period);
     // positions have to be even numbers, to ensure fields are accessed correctly
     if ((detAnt_01_ypos % 2) != 0)  ++detAnt_01_ypos;
     if ((detAnt_01_zpos % 2) != 0)  ++detAnt_01_zpos;
@@ -392,11 +400,9 @@ int main( int argc, char *argv[] ) {
     printf( "...done setting all variables to 0\n" );
 
     printf( "starting do define antenna field...\n" );
-    make_antenna_profile_4( 1, 
-                          antAngle_zy, antAngle_zx, 
-                          ant_w0x, ant_w0y, 
+    make_antenna_profile( &beamCfg, 
+                            1, 
                           -(298.87)*.0,                // .2/l_0*period = -298.87
-                          ant_x, ant_y, ant_z,
                           NX, NY,
                           period,
                           antField_xy, antPhaseTerms );
@@ -435,9 +441,9 @@ int main( int argc, char *argv[] ) {
     printf( "period = %d\n", (int)(period) );
     printf( "d_absorb = %d\n", d_absorb );
     printf( "t_end = %d\n", (int)(t_end) );
-    printf( "antAngle_zx = %.2f, antAngle_zy = %.2f\n", antAngle_zx, antAngle_zy );
-    printf( "ant_w0x = %.2f, ant_w0y = %.2f\n", ant_w0x, ant_w0y ); 
-    printf( "ant_x = %d, ant_y = %d, ant_z = %d\n", ant_x, ant_y, ant_z );
+    printf( "antAngle_zx = %.2f, antAngle_zy = %.2f\n", beamCfg.antAngle_zx, beamCfg.antAngle_zy );
+    printf( "ant_w0x = %.2f, ant_w0y = %.2f\n", beamCfg.ant_w0x, beamCfg.ant_w0y ); 
+    printf( "ant_x = %d, ant_y = %d, ant_z = %d\n", beamCfg.ant_x, beamCfg.ant_y, beamCfg.ant_z );
     printf( "Boundary condition set to '%d'\n", BOUNDARY );
 #ifdef DETECTOR_ANTENNA_1D
     printf( "detector antenna positions: z1 = %d, y1 = %d\n", detAnt_01_zpos, detAnt_01_ypos );
@@ -472,11 +478,11 @@ int main( int argc, char *argv[] ) {
         // add source
         add_source( 3,
         //add_source( 1,
-                    NX, NY, NZ, period, ant_z, t_int, omega_t, 
+                    NX, NY, NZ, period, beamCfg.ant_z, t_int, omega_t, 
                     antField_xy, antPhaseTerms, EB_WAVE );
         add_source( 3,
         //add_source( 1,
-                    NX, NY, NZ_ref, period, ant_z, t_int, omega_t, 
+                    NX, NY, NZ_ref, period, beamCfg.ant_z, t_int, omega_t, 
                     antField_xy, antPhaseTerms, EB_WAVE_ref );
 
         // apply absorbers
@@ -740,12 +746,12 @@ int main( int argc, char *argv[] ) {
 }//}}}
 
 
-int make_antenna_profile_4( int exc_signal, double antAngle_zy, double antAngle_zx, 
-                            double ant_w0x, double ant_w0y, double z2waist,
-                            int ant_x, int ant_y, int ant_z,
-                            size_t N_x, size_t N_y, 
-                            double period,
-                            double antField_xy[N_x/2][N_y/2], double antPhaseTerms[N_x/2][N_y/2] ) {
+int make_antenna_profile( beamConfiguration *beamCfg, 
+                          int exc_signal, 
+                          double z2waist,
+                          size_t N_x, size_t N_y, 
+                          double period,
+                          double antField_xy[N_x/2][N_y/2], double antPhaseTerms[N_x/2][N_y/2] ) {
 //{{{
 // like make_antenna_profile_3 but with previously missing optional for z2waist
 // i.e. allowing now for converging beams with their waist not in the antenna plane
@@ -764,12 +770,12 @@ int make_antenna_profile_4( int exc_signal, double antAngle_zy, double antAngle_
 
     for (ii=0 ; ii<(N_x/2) ; ++ii) {
         // beam coordinate system
-        antBeam_r_x  = ((double)ii-(double)ant_x/2.) * cos(antAngle_zx/180.*M_PI);
-        antBeam_z_x  = ((double)ii-(double)ant_x/2.) * sin(antAngle_zx/180.*M_PI) * cos(antAngle_zy/180.*M_PI) + z2waist/2;
+        antBeam_r_x  = ((double)ii-(double)beamCfg->ant_x/2.) * cos(beamCfg->antAngle_zx/180.*M_PI);
+        antBeam_z_x  = ((double)ii-(double)beamCfg->ant_x/2.) * sin(beamCfg->antAngle_zx/180.*M_PI) * cos(beamCfg->antAngle_zy/180.*M_PI) + z2waist/2;
 
         // account for tilted Gauss beam
         // w(z)=w0*sqrt(1+(lambda*z/pi*w0^2)^2)
-        antBeam_wx  = ant_w0x*(period/2.) * sqrt( 1. + pow( (period/2)*antBeam_z_x/( M_PI*pow(ant_w0x*(period/2), 2) ) , 2)  );
+        antBeam_wx  = beamCfg->ant_w0x*(period/2.) * sqrt( 1. + pow( (period/2)*antBeam_z_x/( M_PI*pow(beamCfg->ant_w0x*(period/2), 2) ) , 2)  );
 
         // phase variation along beam in atenna plane
         antPhase_x  = antBeam_z_x * 2.*M_PI/(period/2.);
@@ -777,23 +783,23 @@ int make_antenna_profile_4( int exc_signal, double antAngle_zy, double antAngle_
         // phase variation due to curvature of phase fronts
         // radius of curvature of phasefronts: R(z)=z+1/z*(pi*w0^2/lambda)^2
         antPhaseCurve_xR    = antBeam_z_x + 1./(antBeam_z_x + 1e-5) 
-                                           *pow( M_PI * pow(ant_w0x*period/2., 2) / (period/2) , 2 );
+                                           *pow( M_PI * pow(beamCfg->ant_w0x*period/2., 2) / (period/2) , 2 );
         antPhaseCurve_x     = pow(antBeam_r_x,2) / (2.*antPhaseCurve_xR) * 2.*M_PI/(period/2);
 
         for (jj=0 ; jj<(N_y/2) ; ++jj) {
             // beam coordinate system
-            antBeam_r_y  = ((double)jj-(double)ant_y/2.) * cos(antAngle_zy/180.*M_PI);
-            antBeam_z_y  = ((double)jj-(double)ant_y/2.) * sin(antAngle_zy/180.*M_PI) * cos(antAngle_zx/180.*M_PI) + z2waist/2;
+            antBeam_r_y  = ((double)jj-(double)beamCfg->ant_y/2.) * cos(beamCfg->antAngle_zy/180.*M_PI);
+            antBeam_z_y  = ((double)jj-(double)beamCfg->ant_y/2.) * sin(beamCfg->antAngle_zy/180.*M_PI) * cos(beamCfg->antAngle_zx/180.*M_PI) + z2waist/2;
         
             // account for tilted Gauss beam
             // w(z)=w0*sqrt(1+(lambda*z/pi*w0^2)^2)
-            antBeam_wy  = ant_w0y*(period/2.) * sqrt( 1. + pow( (period/2.)*antBeam_z_y/( M_PI*pow(ant_w0y*(period/2.), 2) ) , 2)  );
+            antBeam_wy  = beamCfg->ant_w0y*(period/2.) * sqrt( 1. + pow( (period/2.)*antBeam_z_y/( M_PI*pow(beamCfg->ant_w0y*(period/2.), 2) ) , 2)  );
 
             // envelope of antenna field
             antField_xy[ii][jj] = exp( -1.*pow(antBeam_r_x/antBeam_wx, 2) ) 
                                  *exp( -1.*pow(antBeam_r_y/antBeam_wy, 2) );
             // factor: w0/w(z)
-            antField_xy[ii][jj] *= ant_w0x*(period/2)/antBeam_wx * ant_w0y*(period/2)/antBeam_wy;
+            antField_xy[ii][jj] *= beamCfg->ant_w0x*(period/2)/antBeam_wx * beamCfg->ant_w0y*(period/2)/antBeam_wy;
 
             // phase variation along beam in atenna plane
             antPhase_y          = antBeam_z_y * 2.*M_PI/(period/2.);
@@ -801,15 +807,15 @@ int make_antenna_profile_4( int exc_signal, double antAngle_zy, double antAngle_
             // phase variation due to curvature of phase fronts
             // radius of curvature of phasefronts: R(z)=z+1/z*(pi*w0^2/lambda)^2
             antPhaseCurve_yR    = antBeam_z_y + 1./(antBeam_z_y + 1e-5) 
-                                               *pow( M_PI * pow(ant_w0y*period/2., 2) / (period/2.) , 2 );
+                                               *pow( M_PI * pow(beamCfg->ant_w0y*period/2., 2) / (period/2.) , 2 );
             antPhaseCurve_y     = pow(antBeam_r_y,2) / (2.*antPhaseCurve_yR) * 2.*M_PI/(period/2.);
 
             // account for the Gouy-phase
             // phase_Gouy = arctan(z/z_R) 
             // with z_R = pi*w_0^2/lambda the Rayleigh range
             //GouyPhase_beam  = atan( period * z_beam / (M_PI * pow(ant_w0x*period, 2)) );
-            antPhaseGouy_x  = atan( period/2.*antBeam_z_x / (M_PI * pow(ant_w0x*period/2., 2) ) );
-            antPhaseGouy_y  = atan( period/2.*antBeam_z_y / (M_PI * pow(ant_w0y*period/2., 2) ) );
+            antPhaseGouy_x  = atan( period/2.*antBeam_z_x / (M_PI * pow(beamCfg->ant_w0x*period/2., 2) ) );
+            antPhaseGouy_y  = atan( period/2.*antBeam_z_y / (M_PI * pow(beamCfg->ant_w0y*period/2., 2) ) );
 
                 //ant_phase   = .0; <<--- extra phase-term
 
