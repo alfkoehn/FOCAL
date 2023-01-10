@@ -77,9 +77,10 @@ int make_B0_profile( int B0_profile,
                      double period, int d_absorb, double cntrl_para, 
                      size_t N_x, size_t N_y, size_t N_z,
                      double J_B0[N_x][N_y][N_z] );
-int add_source( int exc_signal,
+int add_source( beamConfiguration *beamCfg, 
+                int exc_signal,
                 size_t N_x, size_t N_y, size_t N_z,  
-                double period, int ant_z, 
+                double period, 
                 int t_int, double omega_t, 
                 double antField_xy[N_x/2][N_y/2], double antPhaseTerms[N_x/2][N_y/2],
                 double EB_WAVE[N_x][N_y][N_z] );
@@ -476,13 +477,15 @@ int main( int argc, char *argv[] ) {
         }
 
         // add source
-        add_source( 3,
+        add_source( &beamCfg,
+                    3,
         //add_source( 1,
-                    NX, NY, NZ, period, beamCfg.ant_z, t_int, omega_t, 
+                    NX, NY, NZ, period, t_int, omega_t, 
                     antField_xy, antPhaseTerms, EB_WAVE );
-        add_source( 3,
+        add_source( &beamCfg,
+                    3,
         //add_source( 1,
-                    NX, NY, NZ_ref, period, beamCfg.ant_z, t_int, omega_t, 
+                    NX, NY, NZ_ref, period, t_int, omega_t, 
                     antField_xy, antPhaseTerms, EB_WAVE_ref );
 
         // apply absorbers
@@ -1075,9 +1078,10 @@ int make_B0_profile( int B0_profile,
 }//}}}
 
 
-int add_source( int exc_signal,
+int add_source( beamConfiguration *beamCfg, 
+                int exc_signal,
                 size_t N_x, size_t N_y, size_t N_z,  
-                double period, int ant_z, 
+                double period, 
                 int t_int, double omega_t, 
                 double antField_xy[N_x/2][N_y/2], double antPhaseTerms[N_x/2][N_y/2],
                 double EB_WAVE[N_x][N_y][N_z] ) {
@@ -1098,7 +1102,7 @@ int add_source( int exc_signal,
                 //source      = sin(omega_t - aux - curve + GouyPhase_beam + ant_phase/180.*M_PI ) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 // Ex
-                EB_WAVE[ii+1][jj  ][ant_z]   += source;
+                EB_WAVE[ii+1][jj  ][beamCfg->ant_z]   += source;
             }
         }
     } else if ( exc_signal == 2) {
@@ -1108,7 +1112,7 @@ int add_source( int exc_signal,
             for ( jj=2 ; jj<N_y ; jj+=2 ) {
                 source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 // Bx
-                EB_WAVE[ii  ][jj+1][ant_z+1]   += source;
+                EB_WAVE[ii  ][jj+1][beamCfg->ant_z+1]   += source;
             }
         }
     } else if ( exc_signal == 3) {
@@ -1119,10 +1123,10 @@ int add_source( int exc_signal,
                 // note: for X-mode injection, switch cos and sin of source_1 and source_2
                 source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 // Ex
-                EB_WAVE[ii+1][jj  ][ant_z]   += source;
+                EB_WAVE[ii+1][jj  ][beamCfg->ant_z]   += source;
                 source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)] + M_PI/2.) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 // Bx
-                EB_WAVE[ii  ][jj+1][ant_z+1] += source*(1.41);
+                EB_WAVE[ii  ][jj+1][beamCfg->ant_z+1] += source*(1.41);
             }
         }
     } 
