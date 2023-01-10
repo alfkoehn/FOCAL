@@ -206,7 +206,7 @@ int main( int argc, char *argv[] ) {
         eco,
 #endif
 
-        //ant_phase, GouyPhase_beam, 
+        //ant_phase, 
 
         poynt_x1, poynt_x2,
         poynt_y1, poynt_y2,
@@ -816,7 +816,6 @@ int make_antenna_profile( beamConfiguration *beamCfg,
             // account for the Gouy-phase
             // phase_Gouy = arctan(z/z_R) 
             // with z_R = pi*w_0^2/lambda the Rayleigh range
-            //GouyPhase_beam  = atan( period * z_beam / (M_PI * pow(ant_w0x*period, 2)) );
             antPhaseGouy_x  = atan( period/2.*antBeam_z_x / (M_PI * pow(beamCfg->ant_w0x*period/2., 2) ) );
             antPhaseGouy_y  = atan( period/2.*antBeam_z_y / (M_PI * pow(beamCfg->ant_w0y*period/2., 2) ) );
 
