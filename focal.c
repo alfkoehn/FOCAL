@@ -66,12 +66,12 @@ typedef struct beamConfiguration {
         ant_x, ant_y, ant_z;
     double
         antAngle_zy, antAngle_zx,
-        ant_w0x, ant_w0y;
+        ant_w0x, ant_w0y,
+        z2waist;
 } beamConfiguration;
 
 // prototyping
 int make_antenna_profile( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
-                          double z2waist,
                           double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2] );
 int make_density_profile( gridConfiguration *gridCfg, 
                           int ne_profile, 
@@ -354,6 +354,7 @@ int main( int argc, char *argv[] ) {
     if ((beamCfg.ant_z % 2) != 0)  ++beamCfg.ant_z;
     beamCfg.ant_w0x     = 2;
     beamCfg.ant_w0y     = 2;
+    beamCfg.z2waist     = -(298.87)*.0;                // .2/l_0*period = -298.87
 
     pwr_dect    = d_absorb;
 
@@ -427,7 +428,6 @@ int main( int argc, char *argv[] ) {
 
     printf( "starting do define antenna field...\n" );
     make_antenna_profile( &gridCfg, &beamCfg, 
-                          -(298.87)*.0,                // .2/l_0*period = -298.87
                           antField_xy, antPhaseTerms );
     printf( "...done defining antenna field\n" );
 
@@ -769,7 +769,6 @@ int main( int argc, char *argv[] ) {
 
 
 int make_antenna_profile( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
-                          double z2waist,
                           double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2] ) {
 //{{{
 // like make_antenna_profile_3 but with previously missing optional for z2waist
@@ -790,7 +789,7 @@ int make_antenna_profile( gridConfiguration *gridCfg, beamConfiguration *beamCfg
     for (ii=0 ; ii<(gridCfg->Nx/2) ; ++ii) {
         // beam coordinate system
         antBeam_r_x  = ((double)ii-(double)beamCfg->ant_x/2.) * cos(beamCfg->antAngle_zx/180.*M_PI);
-        antBeam_z_x  = ((double)ii-(double)beamCfg->ant_x/2.) * sin(beamCfg->antAngle_zx/180.*M_PI) * cos(beamCfg->antAngle_zy/180.*M_PI) + z2waist/2;
+        antBeam_z_x  = ((double)ii-(double)beamCfg->ant_x/2.) * sin(beamCfg->antAngle_zx/180.*M_PI) * cos(beamCfg->antAngle_zy/180.*M_PI) + beamCfg->z2waist/2;
 
         // account for tilted Gauss beam
         // w(z)=w0*sqrt(1+(lambda*z/pi*w0^2)^2)
@@ -808,7 +807,7 @@ int make_antenna_profile( gridConfiguration *gridCfg, beamConfiguration *beamCfg
         for (jj=0 ; jj<(gridCfg->Ny/2) ; ++jj) {
             // beam coordinate system
             antBeam_r_y  = ((double)jj-(double)beamCfg->ant_y/2.) * cos(beamCfg->antAngle_zy/180.*M_PI);
-            antBeam_z_y  = ((double)jj-(double)beamCfg->ant_y/2.) * sin(beamCfg->antAngle_zy/180.*M_PI) * cos(beamCfg->antAngle_zx/180.*M_PI) + z2waist/2;
+            antBeam_z_y  = ((double)jj-(double)beamCfg->ant_y/2.) * sin(beamCfg->antAngle_zy/180.*M_PI) * cos(beamCfg->antAngle_zx/180.*M_PI) + beamCfg->z2waist/2;
         
             // account for tilted Gauss beam
             // w(z)=w0*sqrt(1+(lambda*z/pi*w0^2)^2)
