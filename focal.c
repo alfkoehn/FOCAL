@@ -52,7 +52,7 @@
 // define structures
 typedef struct gridConfiguration {
     int
-        Nx, Ny, Nz, 
+        Nx, Ny, Nz,     // maybe size_t would be better
         Nz_ref,
         d_absorb,
         t_end;
@@ -127,12 +127,11 @@ int advance_B( gridConfiguration *gridCfg,
                double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
 int advance_B_ref( gridConfiguration *gridCfg, 
                    double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz_ref] );
-int advance_E( size_t dim1, size_t dim2, size_t dim3, 
-               double EB_WAVE[dim1][dim2][dim3], double J_B0[dim1][dim2][dim3],
-               double dx, double dt );
-int advance_E_vacuum( size_t dim1, size_t dim2, size_t dim3, 
-                      double EB_WAVE[dim1][dim2][dim3],
-                      double dx, double dt );
+int advance_E( gridConfiguration *gridCfg, 
+               double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
+               double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
+int advance_E_ref( gridConfiguration *gridCfg, 
+                   double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz_ref] ); 
 int calc_poynt_1( size_t N_x, size_t N_y, size_t N_z, 
                   int pwr_dect, char absorber[], double poynt[3],  
                   double EB_WAVE[N_x][N_y][N_z] );
@@ -528,8 +527,8 @@ int main( int argc, char *argv[] ) {
         advance_B_ref( &gridCfg, EB_WAVE_ref );
         
         // advance E
-        advance_E(        NX, NY, NZ,     EB_WAVE,     J_B0, dx, dt );
-        advance_E_vacuum( NX, NY, NZ_ref, EB_WAVE_ref,       dx, dt );
+        advance_E(     &gridCfg, EB_WAVE,     J_B0 );
+        advance_E_ref( &gridCfg, EB_WAVE_ref       );
 
         // apply Mur's boundary conditions
 #if BOUNDARY == 2
@@ -2004,32 +2003,32 @@ int advance_B_ref( gridConfiguration *gridCfg,
 }//}}}
 
 
-int advance_E( size_t dim1, size_t dim2, size_t dim3, 
-               double EB_WAVE[dim1][dim2][dim3], double J_B0[dim1][dim2][dim3],
-               double dx, double dt ) {
+int advance_E( gridConfiguration *gridCfg, 
+               double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
+               double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] ) {
 //{{{
     size_t
         ii, jj, kk;
 
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
-    for (ii=2 ; ii<dim1-2 ; ii+=2) {
-        for (jj=2 ; jj<dim2-2 ; jj+=2) {
-            for (kk=2 ; kk<dim3-2 ; kk+=2) {
+    for (ii=2 ; ii<gridCfg->Nx-2 ; ii+=2) {
+        for (jj=2 ; jj<gridCfg->Ny-2 ; jj+=2) {
+            for (kk=2 ; kk<gridCfg->Nz-2 ; kk+=2) {
                 // dEx/dt = (dBz/dy - dBy/dz)
-                EB_WAVE[ii+1][jj  ][kk  ] += dt/dx*(
+                EB_WAVE[ii+1][jj  ][kk  ] += gridCfg->dt/gridCfg->dx*(
                         +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                         -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
-                        ) - dt*J_B0[ii+1][jj  ][kk  ];
+                        ) - gridCfg->dt*J_B0[ii+1][jj  ][kk  ];
                 // dEy/dt = (dBx/dz - dBz/dx)
-                EB_WAVE[ii  ][jj+1][kk  ] += dt/dx*(
+                EB_WAVE[ii  ][jj+1][kk  ] += gridCfg->dt/gridCfg->dx*(
                         +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                         -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
-                        ) - dt*J_B0[ii  ][jj+1][kk  ];
+                        ) - gridCfg->dt*J_B0[ii  ][jj+1][kk  ];
                 // dEz/dt = (dBy/dx - dBx/dy)
-                EB_WAVE[ii  ][jj  ][kk+1] += dt/dx*(
+                EB_WAVE[ii  ][jj  ][kk+1] += gridCfg->dt/gridCfg->dx*(
                         +EB_WAVE[ii+1][jj  ][kk+1] - EB_WAVE[ii-1][jj  ][kk+1]
                         -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
-                        ) - dt*J_B0[ii  ][jj  ][kk+1];
+                        ) - gridCfg->dt*J_B0[ii  ][jj  ][kk+1];
             }
         }
     }
@@ -2037,29 +2036,29 @@ int advance_E( size_t dim1, size_t dim2, size_t dim3,
 }//}}}
 
 
-int advance_E_vacuum( size_t dim1, size_t dim2, size_t dim3, 
-                      double EB_WAVE[dim1][dim2][dim3],
-                      double dx, double dt ) {
+int advance_E_ref( gridConfiguration *gridCfg, 
+                   double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz_ref] ) { 
 //{{{
+    // same as advance_E but for reference fields (directional coupler)
     size_t
         ii, jj, kk;
 
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
-    for (ii=2 ; ii<dim1-2 ; ii+=2) {
-        for (jj=2 ; jj<dim2-2 ; jj+=2) {
-            for (kk=2 ; kk<dim3-2 ; kk+=2) {
+    for (ii=2 ; ii<gridCfg->Nx-2 ; ii+=2) {
+        for (jj=2 ; jj<gridCfg->Ny-2 ; jj+=2) {
+            for (kk=2 ; kk<gridCfg->Nz_ref-2 ; kk+=2) {
                 // dEx/dt = (dBz/dy - dBy/dz)
-                EB_WAVE[ii+1][jj  ][kk  ] += dt/dx*(
+                EB_WAVE[ii+1][jj  ][kk  ] += gridCfg->dt/gridCfg->dx*(
                         +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                         -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                         );
                 // dEy/dt = (dBx/dz - dBz/dx)
-                EB_WAVE[ii  ][jj+1][kk  ] += dt/dx*(
+                EB_WAVE[ii  ][jj+1][kk  ] += gridCfg->dt/gridCfg->dx*(
                         +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                         -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                         );
                 // dEz/dt = (dBy/dx - dBx/dy)
-                EB_WAVE[ii  ][jj  ][kk+1] += dt/dx*(
+                EB_WAVE[ii  ][jj  ][kk+1] += gridCfg->dt/gridCfg->dx*(
                         +EB_WAVE[ii+1][jj  ][kk+1] - EB_WAVE[ii-1][jj  ][kk+1]
                         -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                         );
