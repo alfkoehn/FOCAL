@@ -119,10 +119,10 @@ int abs_Mur_1st_v2( size_t N_x, size_t N_y, size_t N_z,
                     char absorber[],
                     double EB_WAVE[N_x][N_y][N_z], 
                     double E_old_xdir[8][N_y][N_z], double E_old_ydir[N_x][8][N_z], double E_old_zdir[N_x][N_y][8] );
-int advance_J( size_t dim1, size_t dim2, size_t dim3, 
-               double EB_WAVE[dim1][dim2][dim3], double J_B0[dim1][dim2][dim3],
-               double n_e[dim1/2][dim2/2][dim3/2], 
-               double dt );
+int advance_J( gridConfiguration *gridCfg, 
+               double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
+               double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz],
+               double n_e[gridCfg->Nx/2][gridCfg->Ny/2][gridCfg->Nz/2] ); 
 int advance_B( size_t dim1, size_t dim2, size_t dim3, 
                double EB_WAVE[dim1][dim2][dim3], 
                double dx, double dt );
@@ -384,7 +384,8 @@ int main( int argc, char *argv[] ) {
     // This means that in the physical grid, the wavelength is period/2, thus
     // in the equations we have to use period/2 for the wavelength.
     dx      = 1./(period/2);
-    dt      = 1./(2.*(period/2));
+    dt          = 1./(2.*(period/2));
+    gridCfg.dt  = 1./(2.*(period/2));
         
 #if BOUNDARY == 1
     eco         = 10./(double)(period);
@@ -518,7 +519,7 @@ int main( int argc, char *argv[] ) {
         // B0x: even-odd-odd
         // B0y: odd-even-odd
         // B0z: odd-odd-even
-        advance_J( NX, NY, NZ, EB_WAVE, J_B0, n_e, dt );
+        advance_J( &gridCfg, EB_WAVE, J_B0, n_e );
 
         // advance B
         advance_B( NX, NY, NZ,     EB_WAVE,     dx, dt );
@@ -1890,10 +1891,10 @@ int abs_Mur_1st_v2( size_t N_x, size_t N_y, size_t N_z,
 } //}}}
 
 
-int advance_J( size_t dim1, size_t dim2, size_t dim3, 
-               double EB_WAVE[dim1][dim2][dim3], double J_B0[dim1][dim2][dim3],
-               double n_e[dim1/2][dim2/2][dim3/2], 
-               double dt ) {
+int advance_J( gridConfiguration *gridCfg, 
+               double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
+               double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz],
+               double n_e[gridCfg->Nx/2][gridCfg->Ny/2][gridCfg->Nz/2] ) { 
 //{{{
     size_t
         ii, jj, kk;
@@ -1906,25 +1907,25 @@ int advance_J( size_t dim1, size_t dim2, size_t dim3,
     // B0z: odd-odd-even
 //#pragma omp parallel for collapse(2) default(shared) private(k,j, Jx_tmp1,Jy_tmp1,Jz_tmp1, Jx_tmp2,Jy_tmp2,Jz_tmp2, Jx_tmp3,Jy_tmp3,Jz_tmp3 ) // collapse ???
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk) 
-    for (ii=2 ; ii<dim1-2 ; ii+=2) {
-        for (jj=2 ; jj<dim2-2 ; jj+=2) {
-            for (kk=2 ; kk<dim3-2 ; kk+=2) {
+    for (ii=2 ; ii<gridCfg->Nx-2 ; ii+=2) {
+        for (jj=2 ; jj<gridCfg->Ny-2 ; jj+=2) {
+            for (kk=2 ; kk<gridCfg->Nz-2 ; kk+=2) {
                 // Jx: odd-even-even
-                J_B0[ii+1][jj  ][kk  ]    += + dt*(
+                J_B0[ii+1][jj  ][kk  ]    += + gridCfg->dt*(
                         pow(2*M_PI,2) * n_e[(ii/2)][(jj/2)][(kk/2)] * EB_WAVE[ii+1][jj  ][kk  ]
                         - 2*M_PI * ( J_B0[ii  ][jj+1][kk  ]*J_B0[ii+1][jj+1][kk  ]        // +Jy*B0z
                                     -J_B0[ii  ][jj  ][kk+1]*J_B0[ii+1][jj  ][kk+1]        // -Jz*B0y
                               )
                         );
                 // Jy: even-odd-even
-                J_B0[ii  ][jj+1][kk  ]    += + dt*(
+                J_B0[ii  ][jj+1][kk  ]    += + gridCfg->dt*(
                         pow(2*M_PI,2) * n_e[(ii/2)][(jj/2)][(kk/2)] * EB_WAVE[ii  ][jj+1][kk  ]
                         -2*M_PI * (-J_B0[ii+1][jj  ][kk  ]*J_B0[ii+1][jj+1][kk  ]         // -Jx*B0z
                                    +J_B0[ii  ][jj  ][kk+1]*J_B0[ii  ][jj+1][kk+1]         // +Jz*B0x
                               )
                         );
                 // Jz: even-even-odd
-                J_B0[ii  ][jj  ][kk+1]    += + dt*(
+                J_B0[ii  ][jj  ][kk+1]    += + gridCfg->dt*(
                         pow(2*M_PI,2) * n_e[(ii/2)][(jj/2)][(kk/2)] * EB_WAVE[ii  ][jj  ][kk+1]
                         -2*M_PI * ( J_B0[ii+1][jj  ][kk  ]*J_B0[ii+1][jj  ][kk+1]        // +Jx*B0y
                                    -J_B0[ii  ][jj+1][kk  ]*J_B0[ii  ][jj+1][kk+1]        // -Jy*B0x
