@@ -69,12 +69,10 @@ typedef struct beamConfiguration {
 } beamConfiguration;
 
 // prototyping
-int make_antenna_profile( beamConfiguration *beamCfg,
+int make_antenna_profile( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
                           int exc_signal, 
                           double z2waist,
-                          size_t N_x, size_t N_y, 
-                          double period,
-                          double antField_xy[N_x/2][N_y/2], double antPhaseTerms[N_x/2][N_y/2] );
+                          double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2] );
 int make_density_profile( gridConfiguration *gridCfg, 
                           int ne_profile, 
                           double cntrl_para, 
@@ -249,8 +247,9 @@ int main( int argc, char *argv[] ) {
         angle_zy_set;                       // is antAngle_zy set during call ?
 
     // set-up grid
-    scale       = 1;
-    period      = 16*scale;
+    scale           = 1;
+    period          = 16*scale;
+    gridCfg.period  = 16*scale;
 #if BOUNDARY == 1
     d_absorb    = (int)(3*period);
 #elif BOUNDARY == 2
@@ -259,6 +258,9 @@ int main( int argc, char *argv[] ) {
     NX          = (280)*scale;
     NY          = (220)*scale;
     NZ          = (160)*scale;
+    gridCfg.Nx  = (280)*scale;
+    gridCfg.Ny  = (220)*scale;
+    gridCfg.Nz  = (160)*scale;
     NZ_ref      = 2*d_absorb + (int)period;
     t_end       = (int)((30)*period);
 
@@ -412,11 +414,9 @@ int main( int argc, char *argv[] ) {
     printf( "...done setting all variables to 0\n" );
 
     printf( "starting do define antenna field...\n" );
-    make_antenna_profile( &beamCfg, 
+    make_antenna_profile( &gridCfg, &beamCfg, 
                             1, 
                           -(298.87)*.0,                // .2/l_0*period = -298.87
-                          NX, NY,
-                          period,
                           antField_xy, antPhaseTerms );
     printf( "...done defining antenna field\n" );
 
@@ -759,12 +759,10 @@ int main( int argc, char *argv[] ) {
 }//}}}
 
 
-int make_antenna_profile( beamConfiguration *beamCfg, 
+int make_antenna_profile( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
                           int exc_signal, 
                           double z2waist,
-                          size_t N_x, size_t N_y, 
-                          double period,
-                          double antField_xy[N_x/2][N_y/2], double antPhaseTerms[N_x/2][N_y/2] ) {
+                          double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2] ) {
 //{{{
 // like make_antenna_profile_3 but with previously missing optional for z2waist
 // i.e. allowing now for converging beams with their waist not in the antenna plane
@@ -781,53 +779,53 @@ int make_antenna_profile( beamConfiguration *beamCfg,
         antPhaseCurve_x, antPhaseCurve_y,
         antPhaseGouy_x, antPhaseGouy_y;
 
-    for (ii=0 ; ii<(N_x/2) ; ++ii) {
+    for (ii=0 ; ii<(gridCfg->Nx/2) ; ++ii) {
         // beam coordinate system
         antBeam_r_x  = ((double)ii-(double)beamCfg->ant_x/2.) * cos(beamCfg->antAngle_zx/180.*M_PI);
         antBeam_z_x  = ((double)ii-(double)beamCfg->ant_x/2.) * sin(beamCfg->antAngle_zx/180.*M_PI) * cos(beamCfg->antAngle_zy/180.*M_PI) + z2waist/2;
 
         // account for tilted Gauss beam
         // w(z)=w0*sqrt(1+(lambda*z/pi*w0^2)^2)
-        antBeam_wx  = beamCfg->ant_w0x*(period/2.) * sqrt( 1. + pow( (period/2)*antBeam_z_x/( M_PI*pow(beamCfg->ant_w0x*(period/2), 2) ) , 2)  );
+        antBeam_wx  = beamCfg->ant_w0x*(gridCfg->period/2.) * sqrt( 1. + pow( (gridCfg->period/2)*antBeam_z_x/( M_PI*pow(beamCfg->ant_w0x*(gridCfg->period/2), 2) ) , 2)  );
 
         // phase variation along beam in atenna plane
-        antPhase_x  = antBeam_z_x * 2.*M_PI/(period/2.);
+        antPhase_x  = antBeam_z_x * 2.*M_PI/(gridCfg->period/2.);
 
         // phase variation due to curvature of phase fronts
         // radius of curvature of phasefronts: R(z)=z+1/z*(pi*w0^2/lambda)^2
         antPhaseCurve_xR    = antBeam_z_x + 1./(antBeam_z_x + 1e-5) 
-                                           *pow( M_PI * pow(beamCfg->ant_w0x*period/2., 2) / (period/2) , 2 );
-        antPhaseCurve_x     = pow(antBeam_r_x,2) / (2.*antPhaseCurve_xR) * 2.*M_PI/(period/2);
+                                           *pow( M_PI * pow(beamCfg->ant_w0x*gridCfg->period/2., 2) / (gridCfg->period/2) , 2 );
+        antPhaseCurve_x     = pow(antBeam_r_x,2) / (2.*antPhaseCurve_xR) * 2.*M_PI/(gridCfg->period/2);
 
-        for (jj=0 ; jj<(N_y/2) ; ++jj) {
+        for (jj=0 ; jj<(gridCfg->Ny/2) ; ++jj) {
             // beam coordinate system
             antBeam_r_y  = ((double)jj-(double)beamCfg->ant_y/2.) * cos(beamCfg->antAngle_zy/180.*M_PI);
             antBeam_z_y  = ((double)jj-(double)beamCfg->ant_y/2.) * sin(beamCfg->antAngle_zy/180.*M_PI) * cos(beamCfg->antAngle_zx/180.*M_PI) + z2waist/2;
         
             // account for tilted Gauss beam
             // w(z)=w0*sqrt(1+(lambda*z/pi*w0^2)^2)
-            antBeam_wy  = beamCfg->ant_w0y*(period/2.) * sqrt( 1. + pow( (period/2.)*antBeam_z_y/( M_PI*pow(beamCfg->ant_w0y*(period/2.), 2) ) , 2)  );
+            antBeam_wy  = beamCfg->ant_w0y*(gridCfg->period/2.) * sqrt( 1. + pow( (gridCfg->period/2.)*antBeam_z_y/( M_PI*pow(beamCfg->ant_w0y*(gridCfg->period/2.), 2) ) , 2)  );
 
             // envelope of antenna field
             antField_xy[ii][jj] = exp( -1.*pow(antBeam_r_x/antBeam_wx, 2) ) 
                                  *exp( -1.*pow(antBeam_r_y/antBeam_wy, 2) );
             // factor: w0/w(z)
-            antField_xy[ii][jj] *= beamCfg->ant_w0x*(period/2)/antBeam_wx * beamCfg->ant_w0y*(period/2)/antBeam_wy;
+            antField_xy[ii][jj] *= beamCfg->ant_w0x*(gridCfg->period/2)/antBeam_wx * beamCfg->ant_w0y*(gridCfg->period/2)/antBeam_wy;
 
             // phase variation along beam in atenna plane
-            antPhase_y          = antBeam_z_y * 2.*M_PI/(period/2.);
+            antPhase_y          = antBeam_z_y * 2.*M_PI/(gridCfg->period/2.);
 
             // phase variation due to curvature of phase fronts
             // radius of curvature of phasefronts: R(z)=z+1/z*(pi*w0^2/lambda)^2
             antPhaseCurve_yR    = antBeam_z_y + 1./(antBeam_z_y + 1e-5) 
-                                               *pow( M_PI * pow(beamCfg->ant_w0y*period/2., 2) / (period/2.) , 2 );
-            antPhaseCurve_y     = pow(antBeam_r_y,2) / (2.*antPhaseCurve_yR) * 2.*M_PI/(period/2.);
+                                               *pow( M_PI * pow(beamCfg->ant_w0y*gridCfg->period/2., 2) / (gridCfg->period/2.) , 2 );
+            antPhaseCurve_y     = pow(antBeam_r_y,2) / (2.*antPhaseCurve_yR) * 2.*M_PI/(gridCfg->period/2.);
 
             // account for the Gouy-phase
             // phase_Gouy = arctan(z/z_R) 
             // with z_R = pi*w_0^2/lambda the Rayleigh range
-            antPhaseGouy_x  = atan( period/2.*antBeam_z_x / (M_PI * pow(beamCfg->ant_w0x*period/2., 2) ) );
-            antPhaseGouy_y  = atan( period/2.*antBeam_z_y / (M_PI * pow(beamCfg->ant_w0y*period/2., 2) ) );
+            antPhaseGouy_x  = atan( gridCfg->period/2.*antBeam_z_x / (M_PI * pow(beamCfg->ant_w0x*gridCfg->period/2., 2) ) );
+            antPhaseGouy_y  = atan( gridCfg->period/2.*antBeam_z_y / (M_PI * pow(beamCfg->ant_w0y*gridCfg->period/2., 2) ) );
 
                 //ant_phase   = .0; <<--- extra phase-term
 
