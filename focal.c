@@ -83,10 +83,10 @@ int set_densityInAbsorber_v2( double period, int d_absorb,
                               char absorber[], 
                               size_t N_x, size_t N_y, size_t N_z,
                               double n_e[N_x/2][N_y/2][N_z/2] );
-int make_B0_profile( int B0_profile, 
-                     double period, int d_absorb, double cntrl_para, 
-                     size_t N_x, size_t N_y, size_t N_z,
-                     double J_B0[N_x][N_y][N_z] );
+int make_B0_profile( gridConfiguration *gridCfg,
+                     int B0_profile, 
+                     double cntrl_para, 
+                     double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
 int add_source( beamConfiguration *beamCfg, 
                 int exc_signal,
                 size_t N_x, size_t N_y, size_t N_z,  
@@ -439,12 +439,12 @@ int main( int argc, char *argv[] ) {
     // B0y: odd-even-odd
     // B0z: odd-odd-even
     make_B0_profile(
+            &gridCfg,
             // B0_profile: 1 = constant field
             1, 
-            period, d_absorb, 
             // cntrl_para: B0_profile=1 --> value of Y
             .85, 
-            NX, NY, NZ, J_B0 );
+            J_B0 );
     printf( "...done defining background magnetic field\n" );
 
     // print some info to console
@@ -1058,10 +1058,10 @@ int set_densityInAbsorber_v2( double period, int d_absorb,
 } //}}}
 
 
-int make_B0_profile( int B0_profile, 
-                     double period, int d_absorb, double cntrl_para, 
-                     size_t N_x, size_t N_y, size_t N_z,
-                     double J_B0[N_x][N_y][N_z] ) {
+int make_B0_profile( gridConfiguration *gridCfg, 
+                     int B0_profile, 
+                     double cntrl_para, 
+                     double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] ) {
 //{{{
     size_t
         ii, jj, kk; 
@@ -1073,9 +1073,9 @@ int make_B0_profile( int B0_profile,
     // B0z: odd-odd-even
     if ( B0_profile == 1 ) {
         // constant field
-        for (ii=0 ; ii<N_x ; ii+=2) {
-            for (jj=0 ; jj<N_y ; jj+=2) {
-                for (kk=0 ; kk<N_z ; kk+=2) {
+        for (ii=0 ; ii<gridCfg->Nx ; ii+=2) {
+            for (jj=0 ; jj<gridCfg->Ny ; jj+=2) {
+                for (kk=0 ; kk<gridCfg->Nz ; kk+=2) {
                     J_B0[ii  ][jj+1][kk+1] = cntrl_para;
                     J_B0[ii+1][jj  ][kk+1] = cntrl_para*.0;
                     J_B0[ii+1][jj+1][kk  ] = cntrl_para*.0;
