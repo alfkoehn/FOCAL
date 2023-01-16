@@ -187,7 +187,7 @@ int main( int argc, char *argv[] ) {
 
     int
         ii,jj,kk,
-        t_int, t_end, T_wave, 
+        t_int, T_wave, 
 
         scale,
         NX, NY, NZ, 
@@ -269,7 +269,6 @@ int main( int argc, char *argv[] ) {
     gridCfg.Nz  = (160)*scale;
     NZ_ref          = 2*d_absorb + (int)period;
     gridCfg.Nz_ref  = 2*d_absorb + (int)period;
-    t_end           = (int)((30)*period);
     gridCfg.t_end   = (int)((30)*period);
 
     // arrays realized as variable-length array (VLA)
@@ -287,7 +286,7 @@ int main( int argc, char *argv[] ) {
     // antenna: phase terms 
     double (*antPhaseTerms)[NY/2]       = calloc(NX/2, sizeof *antPhaseTerms);
     // time traces
-    double (*timetraces)[8]             = calloc((t_end/(int)period), sizeof *timetraces);
+    double (*timetraces)[8]             = calloc((gridCfg.t_end/(int)period), sizeof *timetraces);
 
     // old E-fields required for Mur's boundary condition
 #if BOUNDARY == 2
@@ -459,7 +458,7 @@ int main( int argc, char *argv[] ) {
     printf( "Nx = %d, Ny = %d, Nz = %d\n", NX, NY, NZ );
     printf( "period = %d\n", (int)(period) );
     printf( "d_absorb = %d\n", d_absorb );
-    printf( "t_end = %d\n", (int)(t_end) );
+    printf( "t_end = %d\n", (int)(gridCfg.t_end) );
     printf( "antAngle_zx = %.2f, antAngle_zy = %.2f\n", beamCfg.antAngle_zx, beamCfg.antAngle_zy );
     printf( "ant_w0x = %.2f, ant_w0y = %.2f\n", beamCfg.ant_w0x, beamCfg.ant_w0y ); 
     printf( "ant_x = %d, ant_y = %d, ant_z = %d\n", beamCfg.ant_x, beamCfg.ant_y, beamCfg.ant_z );
@@ -483,7 +482,7 @@ int main( int argc, char *argv[] ) {
 #endif
 
 
-    for (t_int=0 ; t_int <=t_end ; ++t_int) {
+    for (t_int=0 ; t_int <=gridCfg.t_end ; ++t_int) {
         
         omega_t += 2.*M_PI/period;
 
@@ -547,7 +546,7 @@ int main( int argc, char *argv[] ) {
         // store wavefields for detector antennas over the final 10 
         // oscillation periods, it was found previously that only one period
         // does not result in a too nice average
-        if ( t_int >= (t_end-10*period) ) {
+        if ( t_int >= (gridCfg.t_end-10*period) ) {
             detAnt1D_storeValues( NX, NY, NZ, detAnt_01_ypos, detAnt_01_zpos,
                                   t_int, period,  
                                   EB_WAVE, detAnt_01_fields );
@@ -656,7 +655,7 @@ int main( int argc, char *argv[] ) {
     printf( "-------------------------------------------------------------------------------------------------------------\n" );
     printf( "  T   |   poynt_z1   |   poynt_z2   |   poynt_x1   |   poynt_x2   |   poynt_y1   |   poynt_y2   |  P_out     \n" );
     printf( "------+--------------+--------------+--------------+--------------+--------------+--------------+------------\n" );
-    for ( ii=0 ; ii<(t_end/(int)period) ; ++ii )
+    for ( ii=0 ; ii<(gridCfg.t_end/(int)period) ; ++ii )
         printf( " %4d |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e\n",
                 (int)timetraces[ii][1], //timetraces[ii][1],
                 timetraces[ii][2], timetraces[ii][3],
@@ -668,7 +667,7 @@ int main( int argc, char *argv[] ) {
 
     // write timetrace data into file
     // open file in w(rite) mode; might consider using a+ instead
-    writeTimetraces2ascii( (t_end/(int)period), 8, t_end, period, 
+    writeTimetraces2ascii( (gridCfg.t_end/(int)period), 8, gridCfg.t_end, period, 
                            "timetraces2.dat", timetraces );
 
     // save into hdf5
