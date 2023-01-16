@@ -50,6 +50,16 @@
 #define DETECTOR_ANTENNA_1D
 
 // define structures
+typedef struct gridConfiguration {
+    int
+        NX, NY, NZ, 
+        NZ_ref,
+        d_absorb,
+        t_end;
+    double
+        period,
+        dx,dt;
+} gridConfiguration;
 typedef struct beamConfiguration {
     int
         ant_x, ant_y, ant_z;
