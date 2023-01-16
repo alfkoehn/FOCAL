@@ -62,6 +62,7 @@ typedef struct gridConfiguration {
 } gridConfiguration;
 typedef struct beamConfiguration {
     int
+        exc_signal,
         ant_x, ant_y, ant_z;
     double
         antAngle_zy, antAngle_zx,
@@ -70,7 +71,6 @@ typedef struct beamConfiguration {
 
 // prototyping
 int make_antenna_profile( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
-                          int exc_signal, 
                           double z2waist,
                           double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2] );
 int make_density_profile( gridConfiguration *gridCfg, 
@@ -86,14 +86,12 @@ int make_B0_profile( gridConfiguration *gridCfg,
                      double cntrl_para, 
                      double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
 int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
-                int exc_signal,
                 double Y, 
                 int t_int, double omega_t, 
                 double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], 
                 double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2],
                 double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
 int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
-                    int exc_signal,
                     double Y, 
                     int t_int, double omega_t, 
                     double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], 
@@ -346,7 +344,7 @@ int main( int argc, char *argv[] ) {
         if (angle_zy_set)   printf( "    antAngle_zy = %f\n", beamCfg.antAngle_zy );
     }
 
-
+    beamCfg.exc_signal  = 4;
     beamCfg.ant_x       = NX/2;
     beamCfg.ant_y       = NY/2;
     beamCfg.ant_z       = d_absorb + 4;
@@ -429,7 +427,6 @@ int main( int argc, char *argv[] ) {
 
     printf( "starting do define antenna field...\n" );
     make_antenna_profile( &gridCfg, &beamCfg, 
-                            1, 
                           -(298.87)*.0,                // .2/l_0*period = -298.87
                           antField_xy, antPhaseTerms );
     printf( "...done defining antenna field\n" );
@@ -502,12 +499,10 @@ int main( int argc, char *argv[] ) {
 
         // add source
         add_source( &gridCfg, &beamCfg,
-                    4,
                     .85,     // .85=Y, this values should be calculated/extracted from ne-profile
                     t_int, omega_t, 
                     antField_xy, antPhaseTerms, EB_WAVE );
         add_source_ref( &gridCfg, &beamCfg,
-                        4,
                         .85,     // .85=Y, this values should be calculated/extracted from ne-profile
                         t_int, omega_t, 
                         antField_xy, antPhaseTerms, EB_WAVE_ref );
@@ -774,7 +769,6 @@ int main( int argc, char *argv[] ) {
 
 
 int make_antenna_profile( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
-                          int exc_signal, 
                           double z2waist,
                           double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2] ) {
 //{{{
@@ -1100,7 +1094,6 @@ int make_B0_profile( gridConfiguration *gridCfg,
 
 
 int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
-                int exc_signal,
                 double Y, 
                 int t_int, double omega_t, 
                 double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], 
@@ -1130,7 +1123,7 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
     }
 
 
-    if ( exc_signal == 1 ) {
+    if ( beamCfg->exc_signal == 1 ) {
         t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
@@ -1142,7 +1135,7 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
                 EB_WAVE[ii+1][jj  ][beamCfg->ant_z]   += source;
             }
         }
-    } else if ( exc_signal == 2) {
+    } else if ( beamCfg->exc_signal == 2) {
         t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
@@ -1152,7 +1145,7 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
                 EB_WAVE[ii  ][jj+1][beamCfg->ant_z+1]   += source;
             }
         }
-    } else if ( exc_signal == 3) {
+    } else if ( beamCfg->exc_signal == 3) {
         t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
@@ -1168,7 +1161,7 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
                 EB_WAVE[ii  ][jj+1][beamCfg->ant_z+1] += source*(1.41);
             }
         }
-    } else if ( exc_signal == 4) {
+    } else if ( beamCfg->exc_signal == 4) {
         t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
@@ -1193,7 +1186,6 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
 
 
 int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
-                    int exc_signal,
                     double Y, 
                     int t_int, double omega_t, 
                     double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], 
@@ -1223,7 +1215,7 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
     }
 
 
-    if ( exc_signal == 1 ) {
+    if ( beamCfg->exc_signal == 1 ) {
         t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
@@ -1235,7 +1227,7 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
                 EB_WAVE[ii+1][jj  ][beamCfg->ant_z]   += source;
             }
         }
-    } else if ( exc_signal == 2) {
+    } else if ( beamCfg->exc_signal == 2) {
         t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
@@ -1245,7 +1237,7 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
                 EB_WAVE[ii  ][jj+1][beamCfg->ant_z+1]   += source;
             }
         }
-    } else if ( exc_signal == 3) {
+    } else if ( beamCfg->exc_signal == 3) {
         t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
@@ -1259,7 +1251,7 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
                 EB_WAVE[ii  ][jj+1][beamCfg->ant_z+1] += source*(1.41);
             }
         }
-    } else if ( exc_signal == 4) {
+    } else if ( beamCfg->exc_signal == 4) {
         t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
