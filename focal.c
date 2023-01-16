@@ -87,12 +87,14 @@ int make_B0_profile( gridConfiguration *gridCfg,
                      double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
 int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
                 int exc_signal,
+                double Y, 
                 int t_int, double omega_t, 
                 double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], 
                 double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2],
                 double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
 int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
                     int exc_signal,
+                    double Y, 
                     int t_int, double omega_t, 
                     double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], 
                     double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2],
@@ -388,8 +390,6 @@ int main( int argc, char *argv[] ) {
     // in the "physical" grid (where one grid cell is equal to one Yee cell).
     // This means that in the physical grid, the wavelength is period/2, thus
     // in the equations we have to use period/2 for the wavelength.
-    dx          = 1./(period/2);
-    dt          = 1./(2.*(period/2));
     gridCfg.dx  = 1./(period/2);
     gridCfg.dt  = 1./(2.*(period/2));
         
@@ -502,11 +502,13 @@ int main( int argc, char *argv[] ) {
 
         // add source
         add_source( &gridCfg, &beamCfg,
-                    3,
+                    4,
+                    .85,     // .85=Y, this values should be calculated/extracted from ne-profile
                     t_int, omega_t, 
                     antField_xy, antPhaseTerms, EB_WAVE );
         add_source_ref( &gridCfg, &beamCfg,
-                        3,
+                        4,
+                        .85,     // .85=Y, this values should be calculated/extracted from ne-profile
                         t_int, omega_t, 
                         antField_xy, antPhaseTerms, EB_WAVE_ref );
 
@@ -535,9 +537,9 @@ int main( int argc, char *argv[] ) {
 
         // apply Mur's boundary conditions
 #if BOUNDARY == 2
-        abs_Mur_1st_v2( NX, NY, NZ, dt, dx, "x1x2y1y2z1z2",  
+        abs_Mur_1st_v2( NX, NY, NZ, gridCfg.dt, gridCfg.dx, "x1x2y1y2z1z2",  
                         EB_WAVE, E_Xdir_OLD, E_Ydir_OLD, E_Zdir_OLD );
-        abs_Mur_1st( NX, NY, NZ_ref, dt, dx, 
+        abs_Mur_1st( NX, NY, NZ_ref, gridCfg.dt, gridCfg.dx, 
                      EB_WAVE_ref, E_Xdir_OLD_ref, E_Ydir_OLD_ref, E_Zdir_OLD_ref );
         abc_Mur_saveOldE_xdir( NX, NY, NZ, EB_WAVE, E_Xdir_OLD );
         abc_Mur_saveOldE_ydir( NX, NY, NZ, EB_WAVE, E_Ydir_OLD );
@@ -1099,6 +1101,7 @@ int make_B0_profile( gridConfiguration *gridCfg,
 
 int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
                 int exc_signal,
+                double Y, 
                 int t_int, double omega_t, 
                 double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], 
                 double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2],
@@ -1108,8 +1111,24 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
     size_t
         ii, jj;
     double
+        fact1_Hansen_corr,
+        fact2_Hansen_corr,
+        theta_rad,
         t_rise, 
         source;
+
+    theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
+    fact1_Hansen_corr   = .5*(Y*pow(sin(theta_rad),2) 
+                              +sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )      // O-mode
+                              //-sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )    // X-mode
+                             );
+    fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad);
+
+    if (t_int < 1) {
+        printf( "|E_x/E_y| = %f\n", fact1_Hansen_corr );
+        printf( " E_x/E_z  = %f\n", fact2_Hansen_corr );
+    }
+
 
     if ( exc_signal == 1 ) {
         t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
@@ -1138,22 +1157,44 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
             for ( jj=2 ; jj<gridCfg->Ny ; jj+=2 ) {
-                // note: for X-mode injection, switch cos and sin of source_1 and source_2
-                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                // note: for X-mode injection, switch cos and sin of source
+                //       or, add/subtract pi/2 in sine for Bx 
                 // Ex
+                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 EB_WAVE[ii+1][jj  ][beamCfg->ant_z]   += source;
-                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)] + M_PI/2.) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 // Bx
+                //source  = cos(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)] + M_PI/2.) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 EB_WAVE[ii  ][jj+1][beamCfg->ant_z+1] += source*(1.41);
             }
         }
+    } else if ( exc_signal == 4) {
+        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
+#pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
+        for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
+            for ( jj=2 ; jj<gridCfg->Ny ; jj+=2 ) {
+                // note: for X-mode injection, switch cos and sin of source_1 and source_2
+                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                // Ex
+                EB_WAVE[ii+1][jj  ][beamCfg->ant_z  ] += source;
+                // Ey
+                //source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)] + M_PI/2.) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                source  = cos(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                EB_WAVE[ii  ][jj+1][beamCfg->ant_z  ] += source/fact1_Hansen_corr;
+                // Ez
+                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                EB_WAVE[ii  ][jj  ][beamCfg->ant_z+1] += source/fact2_Hansen_corr;
+            }
+        }
     } 
+
     return EXIT_SUCCESS;
 }//}}}
 
 
 int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
                     int exc_signal,
+                    double Y, 
                     int t_int, double omega_t, 
                     double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], 
                     double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2],
@@ -1163,8 +1204,24 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
     size_t
         ii, jj;
     double
+        fact1_Hansen_corr,
+        fact2_Hansen_corr,
+        theta_rad,
         t_rise, 
         source;
+
+    theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
+    fact1_Hansen_corr   = .5*(Y*pow(sin(theta_rad),2) 
+                              +sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )      // O-mode
+                              //-sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )    // X-mode
+                             );
+    fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad);
+
+    if (t_int < 1) {
+        printf( "|E_x/E_y| = %f\n", fact1_Hansen_corr );
+        printf( " E_x/E_z  = %f\n", fact2_Hansen_corr );
+    }
+
 
     if ( exc_signal == 1 ) {
         t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
@@ -1202,7 +1259,26 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
                 EB_WAVE[ii  ][jj+1][beamCfg->ant_z+1] += source*(1.41);
             }
         }
+    } else if ( exc_signal == 4) {
+        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
+#pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
+        for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
+            for ( jj=2 ; jj<gridCfg->Ny ; jj+=2 ) {
+                // note: for X-mode injection, switch cos and sin of source_1 and source_2
+                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                // Ex
+                EB_WAVE[ii+1][jj  ][beamCfg->ant_z  ] += source;
+                // Ey
+                //source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)] + M_PI/2.) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                source  = cos(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                EB_WAVE[ii  ][jj+1][beamCfg->ant_z  ] += source/fact1_Hansen_corr;
+                // Ez
+                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                EB_WAVE[ii  ][jj  ][beamCfg->ant_z+1] += source/fact2_Hansen_corr;
+            }
+        }
     } 
+
     return EXIT_SUCCESS;
 }//}}}
 
