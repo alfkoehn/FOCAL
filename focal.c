@@ -216,7 +216,6 @@ int main( int argc, char *argv[] ) {
 
     double
         period,
-        dx,dt,
 #if BOUNDARY == 1
         eco,
 #endif
