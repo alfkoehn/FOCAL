@@ -274,29 +274,29 @@ int main( int argc, char *argv[] ) {
 
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
-    double (*EB_WAVE)[NY][NZ]           = calloc(NX, sizeof *EB_WAVE);
-    double (*EB_WAVE_ref)[NY][NZ_ref]   = calloc(NX, sizeof *EB_WAVE_ref);
+    double (*EB_WAVE)[gridCfg.Ny][gridCfg.Nz]           = calloc(gridCfg.Nx, sizeof *EB_WAVE);
+    double (*EB_WAVE_ref)[gridCfg.Ny][gridCfg.Nz_ref]   = calloc(gridCfg.Nx, sizeof *EB_WAVE_ref);
     // J-wavefield (in plasma) and background magnetic field
-    double (*J_B0)[NY][NZ]              = calloc(NX, sizeof *J_B0);
+    double (*J_B0)[gridCfg.Ny][gridCfg.Nz]              = calloc(gridCfg.Nx, sizeof *J_B0);
     // background electron plasma density
-    double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);
+    double (*n_e)[gridCfg.Ny/2][gridCfg.Nz/2]           = calloc(gridCfg.Nx/2, sizeof *n_e);
     // used when writing data into hdf5-files
-    double (*data2save)[NY/2][NZ/2]     = calloc(NX/2, sizeof *data2save);
+    double (*data2save)[gridCfg.Ny/2][gridCfg.Nz/2]     = calloc(gridCfg.Nx/2, sizeof *data2save);
     // antenna: envelope of injected field
-    double (*antField_xy)[NY/2]         = calloc(NX/2, sizeof *antField_xy);
+    double (*antField_xy)[gridCfg.Ny/2]                 = calloc(gridCfg.Nx/2, sizeof *antField_xy);
     // antenna: phase terms 
-    double (*antPhaseTerms)[NY/2]       = calloc(NX/2, sizeof *antPhaseTerms);
+    double (*antPhaseTerms)[gridCfg.Ny/2]               = calloc(gridCfg.Nx/2, sizeof *antPhaseTerms);
     // time traces
-    double (*timetraces)[8]             = calloc((gridCfg.t_end/(int)period), sizeof *timetraces);
+    double (*timetraces)[8]                             = calloc((gridCfg.t_end/(int)period), sizeof *timetraces);
 
     // old E-fields required for Mur's boundary condition
 #if BOUNDARY == 2
-    double (*E_Xdir_OLD)[NY][NZ]        = calloc(8,  sizeof *E_Xdir_OLD);
-    double (*E_Ydir_OLD)[8][NZ]         = calloc(NX, sizeof *E_Ydir_OLD);
-    double (*E_Zdir_OLD)[NY][8]         = calloc(NX, sizeof *E_Zdir_OLD);
-    double (*E_Xdir_OLD_ref)[NY][NZ_ref]= calloc(8,  sizeof *E_Xdir_OLD_ref);
-    double (*E_Ydir_OLD_ref)[8][NZ_ref] = calloc(NX, sizeof *E_Ydir_OLD_ref);
-    double (*E_Zdir_OLD_ref)[NY][8]     = calloc(NX, sizeof *E_Zdir_OLD_ref);
+    double (*E_Xdir_OLD)[gridCfg.Ny][gridCfg.Nz]        = calloc(8,  sizeof *E_Xdir_OLD);
+    double (*E_Ydir_OLD)[8][gridCfg.Nz]                 = calloc(gridCfg.Nx, sizeof *E_Ydir_OLD);
+    double (*E_Zdir_OLD)[gridCfg.Ny][8]                 = calloc(gridCfg.Nx, sizeof *E_Zdir_OLD);
+    double (*E_Xdir_OLD_ref)[gridCfg.Ny][gridCfg.Nz_ref]= calloc(8,  sizeof *E_Xdir_OLD_ref);
+    double (*E_Ydir_OLD_ref)[8][gridCfg.Nz_ref]         = calloc(gridCfg.Nx, sizeof *E_Ydir_OLD_ref);
+    double (*E_Zdir_OLD_ref)[gridCfg.Ny][8]             = calloc(gridCfg.Nx, sizeof *E_Zdir_OLD_ref);
 #endif
 
     // array for detector antennas
