@@ -163,10 +163,11 @@ int set2zero_3D( size_t N_x, size_t N_y, size_t N_z, double arr_3D[N_x][N_y][N_z
 int writeTimetraces2ascii( int dim0, int dim1, int t_end, double period, 
                            char filename[], double timetraces[dim0][dim1] );
 #ifdef DETECTOR_ANTENNA_1D
-int detAnt1D_storeValues( size_t N_x, size_t N_y, size_t N_z,
+int detAnt1D_storeValues( gridConfiguration *gridCfg,
                           size_t detAnt_ypos, size_t detAnt_zpos,
-                          int tt, double period,  
-                          double EB_WAVE[N_x][N_y][N_z], double detAnt_fields[N_x/2][5] );
+                          int tt, 
+                          double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
+                          double detAnt_fields[gridCfg->Nx/2][5] );
 #endif
 #if defined(HDF5) && defined(DETECTOR_ANTENNA_1D)
 int detAnt1D_write2hdf5( int N_x, 
@@ -545,26 +546,26 @@ int main( int argc, char *argv[] ) {
         // oscillation periods, it was found previously that only one period
         // does not result in a too nice average
         if ( t_int >= (gridCfg.t_end-10*gridCfg.period) ) {
-            detAnt1D_storeValues( NX, NY, NZ, detAnt_01_ypos, detAnt_01_zpos,
-                                  t_int, period,  
+            detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_01_zpos,
+                                  t_int,  
                                   EB_WAVE, detAnt_01_fields );
-            detAnt1D_storeValues( NX, NY, NZ, detAnt_01_ypos, detAnt_02_zpos,
-                                  t_int, period,  
+            detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_02_zpos,
+                                  t_int, 
                                   EB_WAVE, detAnt_02_fields );
-            detAnt1D_storeValues( NX, NY, NZ, detAnt_01_ypos, detAnt_03_zpos,
-                                  t_int, period,  
+            detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_03_zpos,
+                                  t_int,
                                   EB_WAVE, detAnt_03_fields );
-            detAnt1D_storeValues( NX, NY, NZ, detAnt_01_ypos, detAnt_04_zpos,
-                                  t_int, period,  
+            detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_04_zpos,
+                                  t_int,
                                   EB_WAVE, detAnt_04_fields );
-            detAnt1D_storeValues( NX, NY, NZ, detAnt_01_ypos, detAnt_05_zpos,
-                                  t_int, period,  
+            detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_05_zpos,
+                                  t_int,
                                   EB_WAVE, detAnt_05_fields );
-            detAnt1D_storeValues( NX, NY, NZ, detAnt_01_ypos, detAnt_06_zpos,
-                                  t_int, period,  
+            detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_06_zpos,
+                                  t_int,
                                   EB_WAVE, detAnt_06_fields );
-            detAnt1D_storeValues( NX, NY, NZ, detAnt_01_ypos, detAnt_07_zpos,
-                                  t_int, period,  
+            detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_07_zpos,
+                                  t_int, 
                                   EB_WAVE, detAnt_07_fields );
         }
 #endif
@@ -3109,10 +3110,11 @@ double calc_power_EE_1( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
 
 
 #ifdef DETECTOR_ANTENNA_1D
-int detAnt1D_storeValues( size_t N_x, size_t N_y, size_t N_z,
+int detAnt1D_storeValues( gridConfiguration *gridCfg, 
                           size_t detAnt_ypos, size_t detAnt_zpos,
-                          int tt, double period,  
-                          double EB_WAVE[N_x][N_y][N_z], double detAnt_fields[N_x/2][5] ) { 
+                          int tt, 
+                          double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
+                          double detAnt_fields[gridCfg->Nx/2][5] ) { 
     //{{{
     size_t
         ii;
@@ -3126,7 +3128,7 @@ int detAnt1D_storeValues( size_t N_x, size_t N_y, size_t N_z,
 
 #pragma omp parallel default(shared) private(ii,foo)
 #pragma omp for
-    for ( ii=2 ; ii <= N_x-2 ; ii+=2 ) {
+    for ( ii=2 ; ii <= gridCfg->Nx-2 ; ii+=2 ) {
         // calculate abs(E)
         foo = sqrt(  pow(EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos  ],2)
                     +pow(EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos  ],2)
@@ -3143,7 +3145,7 @@ int detAnt1D_storeValues( size_t N_x, size_t N_y, size_t N_z,
         detAnt_fields[ii/2][3]  += foo*foo;
 
         // corresponding to an rms(E)-like quantity
-        detAnt_fields[ii/2][4]  += ( foo * sqrt(1./( (double)(tt)/(double)(period) + 1e-6 )) );
+        detAnt_fields[ii/2][4]  += ( foo * sqrt(1./( (double)(tt)/(double)(gridCfg->period) + 1e-6 )) );
 
         //printf( "tt = %d, ii = %d, sum_t(E*E) = %13.5e\n",
         //        tt, ii, detAnt_fields[ii/2][3] );
