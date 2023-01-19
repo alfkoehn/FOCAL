@@ -673,9 +673,9 @@ int main( int argc, char *argv[] ) {
     // abs(E)
     // prepare array for that
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
-    for (ii=0 ; ii<NX ; ii+=2) {
-        for (jj=0 ; jj<NY ; jj+=2) {
-            for (kk=0 ; kk<NZ ; kk+=2) {
+    for (ii=0 ; ii<gridCfg.Nx ; ii+=2) {
+        for (jj=0 ; jj<gridCfg.Ny ; jj+=2) {
+            for (kk=0 ; kk<gridCfg.Nz ; kk+=2) {
                 data2save[(ii/2)][(jj/2)][(kk/2)] = 
                     sqrt( pow(EB_WAVE[ii+1][jj  ][kk  ],2) 
                          +pow(EB_WAVE[ii  ][jj+1][kk  ],2) 
