@@ -240,8 +240,6 @@ int main( int argc, char *argv[] ) {
         power_EE_ref, 
         */
 
-        aux,
-
         omega_t;
 
     char
@@ -3562,7 +3560,7 @@ int writeConfig2HDF( char filename[], int N_x, int N_y, int N_z, int period, int
     //#{{{
 
     long        data2write_long[1];
-    double      data2write_double[1];
+    //double      data2write_double[1];
 
     // hdf related variables
     hid_t       file_id, dataset_id, dataspace_id;      // object identifiers
