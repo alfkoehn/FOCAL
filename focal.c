@@ -305,13 +305,13 @@ int main( int argc, char *argv[] ) {
     // TODO: change into 3D array, such that each detector antenna corresponds
     //       to one 2D array; that way it can be written much more failsafe...
     //       requires some changes in procedures for storing and saving
-    double (*detAnt_01_fields)[5]       = calloc(NX, sizeof *detAnt_01_fields);
-    double (*detAnt_02_fields)[5]       = calloc(NX, sizeof *detAnt_02_fields);
-    double (*detAnt_03_fields)[5]       = calloc(NX, sizeof *detAnt_03_fields);
-    double (*detAnt_04_fields)[5]       = calloc(NX, sizeof *detAnt_04_fields);
-    double (*detAnt_05_fields)[5]       = calloc(NX, sizeof *detAnt_05_fields);
-    double (*detAnt_06_fields)[5]       = calloc(NX, sizeof *detAnt_06_fields);
-    double (*detAnt_07_fields)[5]       = calloc(NX, sizeof *detAnt_07_fields);
+    double (*detAnt_01_fields)[5]       = calloc(gridCfg.Nx, sizeof *detAnt_01_fields);
+    double (*detAnt_02_fields)[5]       = calloc(gridCfg.Nx, sizeof *detAnt_02_fields);
+    double (*detAnt_03_fields)[5]       = calloc(gridCfg.Nx, sizeof *detAnt_03_fields);
+    double (*detAnt_04_fields)[5]       = calloc(gridCfg.Nx, sizeof *detAnt_04_fields);
+    double (*detAnt_05_fields)[5]       = calloc(gridCfg.Nx, sizeof *detAnt_05_fields);
+    double (*detAnt_06_fields)[5]       = calloc(gridCfg.Nx, sizeof *detAnt_06_fields);
+    double (*detAnt_07_fields)[5]       = calloc(gridCfg.Nx, sizeof *detAnt_07_fields);
 #endif
 
     // reading input parameter
