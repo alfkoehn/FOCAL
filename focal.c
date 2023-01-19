@@ -3704,19 +3704,11 @@ int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], do
     herr_t          status;
     //hsize_t         dims[3] = { dim0, dim1, dim2};
 
-    int             ii, jj;
-
     // open file using default properties
     file_id = H5Fopen( filename, H5F_ACC_RDONLY, H5P_DEFAULT);
 
     // open dataset using default properties
     dset_id = H5Dopen( file_id, dataset, H5P_DEFAULT);
-
-    // set the pointers to rows to the correct addresses
-    // must be here, otherwise, data is not read correctly!
-    // might be unnecessary, if matrix-allocation would be different (?)
-    //for ( ii=1; ii<dims[0]; ii++ )
-    //    array_2D[ii] = array_2D[0] + ii * dims[1];
 
     // Read the data using the default properties.
     status = H5Dread( dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT,
