@@ -341,9 +341,9 @@ int main( int argc, char *argv[] ) {
     }
 
     beamCfg.exc_signal  = 4;
-    beamCfg.ant_x       = NX/2;
-    beamCfg.ant_y       = NY/2;
-    beamCfg.ant_z       = d_absorb + 4;
+    beamCfg.ant_x       = gridCfg.Nx/2;
+    beamCfg.ant_y       = gridCfg.Ny/2;
+    beamCfg.ant_z       = gridCfg.d_absorb + 4;
     // positions have to be even numbers, to ensure fields are accessed correctly
     if ((beamCfg.ant_x % 2) != 0)  ++beamCfg.ant_x;
     if ((beamCfg.ant_y % 2) != 0)  ++beamCfg.ant_y;
@@ -357,12 +357,12 @@ int main( int argc, char *argv[] ) {
 #ifdef DETECTOR_ANTENNA_1D
     detAnt_01_ypos  = beamCfg.ant_y;
     detAnt_01_zpos  = beamCfg.ant_z+2;
-    detAnt_02_zpos  = round(beamCfg.ant_z+2 + 1*4.67*period); // steps of 5 cm for 28 GHz
-    detAnt_03_zpos  = round(beamCfg.ant_z+2 + 2*4.67*period);
-    detAnt_04_zpos  = round(beamCfg.ant_z+2 + 3*4.67*period);
-    detAnt_05_zpos  = round(beamCfg.ant_z+2 + 4*4.67*period);
-    detAnt_06_zpos  = round(beamCfg.ant_z+2 + 5*4.67*period);
-    detAnt_07_zpos  = round(beamCfg.ant_z+2 + 6*4.67*period);
+    detAnt_02_zpos  = round(beamCfg.ant_z+2 + 1*4.67*gridCfg.period); // steps of 5 cm for 28 GHz
+    detAnt_03_zpos  = round(beamCfg.ant_z+2 + 2*4.67*gridCfg.period);
+    detAnt_04_zpos  = round(beamCfg.ant_z+2 + 3*4.67*gridCfg.period);
+    detAnt_05_zpos  = round(beamCfg.ant_z+2 + 4*4.67*gridCfg.period);
+    detAnt_06_zpos  = round(beamCfg.ant_z+2 + 5*4.67*gridCfg.period);
+    detAnt_07_zpos  = round(beamCfg.ant_z+2 + 6*4.67*gridCfg.period);
     // positions have to be even numbers, to ensure fields are accessed correctly
     if ((detAnt_01_ypos % 2) != 0)  ++detAnt_01_ypos;
     if ((detAnt_01_zpos % 2) != 0)  ++detAnt_01_zpos;
@@ -373,10 +373,10 @@ int main( int argc, char *argv[] ) {
     if ((detAnt_06_zpos % 2) != 0)  ++detAnt_06_zpos;
     if ((detAnt_07_zpos % 2) != 0)  ++detAnt_07_zpos;
     // issue a warning when detector antenna position is beyond Nz
-    if (detAnt_07_zpos > (NZ - d_absorb)) {
+    if (detAnt_07_zpos > (gridCfg.Nz - gridCfg.d_absorb)) {
         printf( "ERROR: check the detector antenna positions into z direction\n" );
         printf( "       NZ-d_absorb = %d, detAnt_07_zpos = %d", 
-                NZ-d_absorb, detAnt_07_zpos );
+                gridCfg.Nz-gridCfg.d_absorb, detAnt_07_zpos );
     }
 #endif
 
@@ -385,11 +385,11 @@ int main( int argc, char *argv[] ) {
     // in the "physical" grid (where one grid cell is equal to one Yee cell).
     // This means that in the physical grid, the wavelength is period/2, thus
     // in the equations we have to use period/2 for the wavelength.
-    gridCfg.dx  = 1./(period/2);
-    gridCfg.dt  = 1./(2.*(period/2));
+    gridCfg.dx  = 1./(gridCfg.period/2);
+    gridCfg.dt  = 1./(2.*(gridCfg.period/2));
         
 #if BOUNDARY == 1
-    eco         = 10./(double)(period);
+    eco         = 10./(double)(gridCfg.period);
 #endif
 
     T_wave      = 0;
@@ -455,9 +455,9 @@ int main( int argc, char *argv[] ) {
     printf( "...done defining background magnetic field\n" );
 
     // print some info to console
-    printf( "Nx = %d, Ny = %d, Nz = %d\n", NX, NY, NZ );
-    printf( "period = %d\n", (int)(period) );
-    printf( "d_absorb = %d\n", d_absorb );
+    printf( "Nx = %d, Ny = %d, Nz = %d\n", gridCfg.Nx, gridCfg.Ny, gridCfg.Nz );
+    printf( "period = %d\n", (int)(gridCfg.period) );
+    printf( "d_absorb = %d\n", gridCfg.d_absorb );
     printf( "t_end = %d\n", (int)(gridCfg.t_end) );
     printf( "antAngle_zx = %.2f, antAngle_zy = %.2f\n", beamCfg.antAngle_zx, beamCfg.antAngle_zy );
     printf( "ant_w0x = %.2f, ant_w0y = %.2f\n", beamCfg.ant_w0x, beamCfg.ant_w0y ); 
@@ -528,23 +528,23 @@ int main( int argc, char *argv[] ) {
 
         // apply Mur's boundary conditions
 #if BOUNDARY == 2
-        abs_Mur_1st_v2( NX, NY, NZ, gridCfg.dt, gridCfg.dx, "x1x2y1y2z1z2",  
+        abs_Mur_1st_v2( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.dt, gridCfg.dx, "x1x2y1y2z1z2",  
                         EB_WAVE, E_Xdir_OLD, E_Ydir_OLD, E_Zdir_OLD );
-        abs_Mur_1st( NX, NY, NZ_ref, gridCfg.dt, gridCfg.dx, 
+        abs_Mur_1st( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz_ref, gridCfg.dt, gridCfg.dx, 
                      EB_WAVE_ref, E_Xdir_OLD_ref, E_Ydir_OLD_ref, E_Zdir_OLD_ref );
-        abc_Mur_saveOldE_xdir( NX, NY, NZ, EB_WAVE, E_Xdir_OLD );
-        abc_Mur_saveOldE_ydir( NX, NY, NZ, EB_WAVE, E_Ydir_OLD );
-        abc_Mur_saveOldE_zdir( NX, NY, NZ, EB_WAVE, E_Zdir_OLD );
-        abc_Mur_saveOldE_xdir( NX, NY, NZ_ref, EB_WAVE_ref, E_Xdir_OLD_ref );
-        abc_Mur_saveOldE_ydir( NX, NY, NZ_ref, EB_WAVE_ref, E_Ydir_OLD_ref );
-        abc_Mur_saveOldE_zdir( NX, NY, NZ_ref, EB_WAVE_ref, E_Zdir_OLD_ref );
+        abc_Mur_saveOldE_xdir( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, EB_WAVE, E_Xdir_OLD );
+        abc_Mur_saveOldE_ydir( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, EB_WAVE, E_Ydir_OLD );
+        abc_Mur_saveOldE_zdir( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, EB_WAVE, E_Zdir_OLD );
+        abc_Mur_saveOldE_xdir( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz_ref, EB_WAVE_ref, E_Xdir_OLD_ref );
+        abc_Mur_saveOldE_ydir( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz_ref, EB_WAVE_ref, E_Ydir_OLD_ref );
+        abc_Mur_saveOldE_zdir( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz_ref, EB_WAVE_ref, E_Zdir_OLD_ref );
 #endif
 
 #ifdef DETECTOR_ANTENNA_1D
         // store wavefields for detector antennas over the final 10 
         // oscillation periods, it was found previously that only one period
         // does not result in a too nice average
-        if ( t_int >= (gridCfg.t_end-10*period) ) {
+        if ( t_int >= (gridCfg.t_end-10*gridCfg.period) ) {
             detAnt1D_storeValues( NX, NY, NZ, detAnt_01_ypos, detAnt_01_zpos,
                                   t_int, period,  
                                   EB_WAVE, detAnt_01_fields );
