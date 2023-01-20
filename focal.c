@@ -77,10 +77,9 @@ int make_density_profile( gridConfiguration *gridCfg,
                           int ne_profile, 
                           double cntrl_para, 
                           double n_e[gridCfg->Nx/2][gridCfg->Ny/2][gridCfg->Nz/2] );
-int set_densityInAbsorber_v2( double period, int d_absorb, 
+int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
                               char absorber[], 
-                              size_t N_x, size_t N_y, size_t N_z,
-                              double n_e[N_x/2][N_y/2][N_z/2] );
+                              double n_e[gridCfg->Nx/2][gridCfg->Ny/2][gridCfg->Nz/2] );
 int make_B0_profile( gridConfiguration *gridCfg,
                      int B0_profile, 
                      double cntrl_para, 
@@ -177,7 +176,7 @@ int detAnt1D_write2hdf5( int N_x,
 #endif
 #ifdef HDF5
 int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[], double array_3D[dim0][dim1][dim2] );
-int writeConfig2HDF( char filename[], int N_x, int N_y, int N_z, int period, int d_absorb );
+int writeConfig2HDF( gridConfiguration *gridCfg, char filename[] );
 int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], double array_3D[dim0][dim1][dim2]);
 #endif
 
@@ -436,8 +435,8 @@ int main( int argc, char *argv[] ) {
             25,
             n_e );
     printf( " ...setting density in absorber to 0...\n ");
-    //set_densityInAbsorber_v2( period, d_absorb, "z1", NX, NY, NZ, n_e );
-    //set_densityInAbsorber_v2( period, d_absorb, "x1x2y1y2z1", NX, NY, NZ, n_e );
+    //set_densityInAbsorber_v2( &gridCfg, "z1", n_e );
+    //set_densityInAbsorber_v2( &gridCfg, "x1x2y1y2z1", n_e );
     printf( "...done defining background plasma density\n" );
 
     printf( "starting defining background magnetic field...\n" );
@@ -727,7 +726,7 @@ int main( int argc, char *argv[] ) {
     printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0z", data2save) ) ;
     set2zero_3D( NX/2, NY/2, NZ/2, data2save );
 
-    writeConfig2HDF( filename_hdf5, NX, NY, NZ, period, d_absorb );
+    writeConfig2HDF( &gridCfg, filename_hdf5 );
 
 
 #if defined(HDF5) && defined(DETECTOR_ANTENNA_1D)
@@ -939,10 +938,9 @@ int make_density_profile( gridConfiguration *gridCfg,
 }//}}}
 
 
-int set_densityInAbsorber_v2( double period, int d_absorb, 
+int set_densityInAbsorber_v2( gridConfiguration *gridCfg, 
                               char absorber[], 
-                              size_t N_x, size_t N_y, size_t N_z,
-                              double n_e[N_x/2][N_y/2][N_z/2] ) {
+                              double n_e[gridCfg->Nx/2][gridCfg->Ny/2][gridCfg->Nz/2] ) {
 //{{{
 
     double
@@ -955,14 +953,14 @@ int set_densityInAbsorber_v2( double period, int d_absorb,
 
     ne_absorb   = .0;
     smooth      = .5;//.2;
-    ne_dist     = round( period/1 );
+    ne_dist     = round( gridCfg->period/1 );
 
-    x0          = (double)d_absorb + ne_dist;
-    x1          = (double)N_x - (d_absorb + ne_dist);
-    y0          = (double)d_absorb + ne_dist;
-    y1          = (double)N_y - (d_absorb + ne_dist);
-    z0          = (double)d_absorb + ne_dist;
-    z1          = (double)N_z - (d_absorb + ne_dist);
+    x0          = (double)gridCfg->d_absorb + ne_dist;
+    x1          = (double)gridCfg->Nx - (gridCfg->d_absorb + ne_dist);
+    y0          = (double)gridCfg->d_absorb + ne_dist;
+    y1          = (double)gridCfg->Ny - (gridCfg->d_absorb + ne_dist);
+    z0          = (double)gridCfg->d_absorb + ne_dist;
+    z1          = (double)gridCfg->Nz - (gridCfg->d_absorb + ne_dist);
 
     // scale to density grid which is only half the size of FDTD-wavefields grid
     // since 2 numerical grid points correspond to one "physical" grid point
@@ -981,11 +979,11 @@ int set_densityInAbsorber_v2( double period, int d_absorb,
 
     // set density in x0 absorber
     if ( strstr(absorber,"x1") ) {
-        for ( x=0; x<(N_x/2) ; ++x ) {
+        for ( x=0; x<(gridCfg->Nx/2) ; ++x ) {
             scale_fact  = +.5*(    tanh(smooth*(x-x0)) + 1);        // x0 boundary
             //printf( "x1: x=%.1f, scale_fact=%f\n", x, scale_fact) ;
-            for ( y=0. ; y<(N_y/2) ; ++y )   {
-                for (z=0 ; z<(N_z/2) ; ++z) {
+            for ( y=0. ; y<(gridCfg->Ny/2) ; ++y )   {
+                for (z=0 ; z<(gridCfg->Nz/2) ; ++z) {
                     n_e[(int)x][(int)y][(int)z]  *= scale_fact;
                 }
             }
@@ -993,11 +991,11 @@ int set_densityInAbsorber_v2( double period, int d_absorb,
     }
     // set density in x1 absorber
     if ( strstr(absorber,"x2") ) {
-        for ( x=0; x<(N_x/2) ; ++x ) {
+        for ( x=0; x<(gridCfg->Nx/2) ; ++x ) {
             scale_fact  = +.5*(-1.*tanh(smooth*(x-x1)) + 1);       // x1 boundary
             //printf( "x2: x=%.1f, scale_fact=%f\n", x, scale_fact) ;
-            for ( y=0. ; y<(N_y/2) ; ++y )   {
-                for (z=0 ; z<(N_z/2) ; ++z) {
+            for ( y=0. ; y<(gridCfg->Ny/2) ; ++y )   {
+                for (z=0 ; z<(gridCfg->Nz/2) ; ++z) {
                     n_e[(int)x][(int)y][(int)z]  *= scale_fact;
                 }
             }
@@ -1006,11 +1004,11 @@ int set_densityInAbsorber_v2( double period, int d_absorb,
 
     // set density in y0 absorber
     if ( strstr(absorber,"y1") ) {
-        for ( y=0; y<(N_y/2) ; ++y ) {
+        for ( y=0; y<(gridCfg->Ny/2) ; ++y ) {
             scale_fact  = +.5*(    tanh(smooth*(y-y0)) + 1);        // y0 boundary
             //printf( "y1: y=%.1f, scale_fact=%f\n", y, scale_fact) ;
-            for ( x=0; x<(N_x/2) ; ++x ) {
-                for (z=0 ; z<(N_z/2) ; ++z) {
+            for ( x=0; x<(gridCfg->Nx/2) ; ++x ) {
+                for (z=0 ; z<(gridCfg->Nz/2) ; ++z) {
                     n_e[(int)x][(int)y][(int)z]  *= scale_fact;
                 }
             }
@@ -1018,11 +1016,11 @@ int set_densityInAbsorber_v2( double period, int d_absorb,
     }
     // set density in y1 absorber
     if ( strstr(absorber,"y2") ) {
-        for ( y=0; y<(N_y/2) ; ++y ) {
+        for ( y=0; y<(gridCfg->Ny/2) ; ++y ) {
             scale_fact  = +.5*(-1.*tanh(smooth*(y-y1)) + 1);       // y1 boundary
             //printf( "y2: y=%.1f, scale_fact=%f\n", y, scale_fact) ;
-            for ( x=0; x<(N_x/2) ; ++x ) {
-                for (z=0 ; z<(N_z/2) ; ++z) {
+            for ( x=0; x<(gridCfg->Nx/2) ; ++x ) {
+                for (z=0 ; z<(gridCfg->Nz/2) ; ++z) {
                     n_e[(int)x][(int)y][(int)z]  *= scale_fact;
                 }
             }
@@ -1031,11 +1029,11 @@ int set_densityInAbsorber_v2( double period, int d_absorb,
 
     // set density in z0 absorber
     if ( strstr(absorber,"z1") ) {
-        for ( z=0 ; z<(N_z/2) ; ++z) {
+        for ( z=0 ; z<(gridCfg->Nz/2) ; ++z) {
             scale_fact  = +.5*(    tanh(smooth*(z-z0)) + 1);        // z0 boundary
             //printf( "z1: z=%.1f, scale_fact=%f\n", z, scale_fact) ;
-            for ( x=0; x<(N_x/2) ; ++x ) {
-                for ( y=0; y<(N_y/2) ; ++y ) {
+            for ( x=0; x<(gridCfg->Nx/2) ; ++x ) {
+                for ( y=0; y<(gridCfg->Ny/2) ; ++y ) {
                     n_e[(int)x][(int)y][(int)z]  *= scale_fact;
                 }
             }
@@ -1043,11 +1041,11 @@ int set_densityInAbsorber_v2( double period, int d_absorb,
     }
     // set density in z1 absorber
     if ( strstr(absorber,"z2") ) {
-        for ( z=0 ; z<(N_z/2) ; ++z) {
+        for ( z=0 ; z<(gridCfg->Nz/2) ; ++z) {
             scale_fact  = +.5*(-1.*tanh(smooth*(z-z1)) + 1);       // z1 boundary
             //printf( "z2: z=%.1f, scale_fact=%f\n", z, scale_fact) ;
-            for ( x=0; x<(N_x/2) ; ++x ) {
-                for ( y=0; y<(N_y/2) ; ++y ) {
+            for ( x=0; x<(gridCfg->Nx/2) ; ++x ) {
+                for ( y=0; y<(gridCfg->Ny/2) ; ++y ) {
                     n_e[(int)x][(int)y][(int)z]  *= scale_fact;
                 }
             }
@@ -3556,7 +3554,7 @@ int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[]
 
 
 #ifdef HDF5
-int writeConfig2HDF( char filename[], int N_x, int N_y, int N_z, int period, int d_absorb ) {
+int writeConfig2HDF( gridConfiguration *gridCfg, char filename[] ) {
     //#{{{
 
     long        data2write_long[1];
@@ -3594,6 +3592,7 @@ int writeConfig2HDF( char filename[], int N_x, int N_y, int N_z, int period, int
             printf( "ERROR: dataset named '/config' already exists in file '%s'\n", filename );
             printf( "       dataset will NOT be saved (no overwrite by default)\n" );
             status = H5Fclose(file_id);
+            if (status < 0) printf("ERROR: could not close file '%s'\n", filename);
             return EXIT_FAILURE;
         }
 #endif
@@ -3631,62 +3630,74 @@ int writeConfig2HDF( char filename[], int N_x, int N_y, int N_z, int period, int
                             H5P_DEFAULT);   // dataset access property list (added in HDF5v1.8)
 
     // write the dataset
-    data2write_long[0]  = (long)period;
+    data2write_long[0]  = (long)gridCfg->period;
     status = H5Dwrite( dataset_id,          // dataset identifier
                        H5T_NATIVE_LONG,   // informs hdf about format of data in memory of computer
                        H5S_ALL,             // identifier of memory dataspace
                        H5S_ALL,             // file space identifier
                        H5P_DEFAULT,         // data transfer property list
                        data2write_long);     // pointer to data array
+    if (status < 0) printf( "ERROR: could not write dataset '/config/period' into file '%s'\n", filename);
     // terminate access and free ressources/identifiers for dataset
     status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '/config/period'\n");
 
     // d_absorb
     dataset_id = H5Dcreate( file_id, "/config/d_absorb", H5T_NATIVE_LONG,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_long[0]  = (long)d_absorb;
+    data2write_long[0]  = (long)gridCfg->d_absorb;
     status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_long); 
+    if (status < 0) printf( "ERROR: could not write dataset '/config/d_absorb' into file '%s'\n", filename);
     status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '/config/d_absorb'\n");
 
     // N_x
     dataset_id = H5Dcreate( file_id, "/config/N_x", H5T_NATIVE_LONG,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_long[0]  = (long)N_x;
+    data2write_long[0]  = (long)gridCfg->Nx;
     status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_long); 
+    if (status < 0) printf( "ERROR: could not write dataset '/config/N_x' into file '%s'\n", filename);
     status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '/config/N_x'\n");
 
     // N_y
     dataset_id = H5Dcreate( file_id, "/config/N_y", H5T_NATIVE_LONG,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_long[0]  = (long)N_y;
+    data2write_long[0]  = (long)gridCfg->Ny;
     status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_long); 
+    if (status < 0) printf( "ERROR: could not write dataset '/config/N_y' into file '%s'\n", filename);
     status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '/config/N_y'\n");
 
     // N_z
     dataset_id = H5Dcreate( file_id, "/config/N_z", H5T_NATIVE_LONG,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_long[0]  = (long)N_z;
+    data2write_long[0]  = (long)gridCfg->Nz;
     status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_long); 
+    if (status < 0) printf( "ERROR: could not write dataset '/config/N_z' into file '%s'\n", filename);
     status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '/config/N_z'\n");
 
 
     // terminate access and free ressources/identifiers
     // data space
     status = H5Sclose(dataspace_id);
+    if (status < 0) printf("ERROR: could not close dataspace'\n");
     // file 
     status = H5Fclose(file_id);
+    if (status < 0) printf( "ERROR: could not close file '%s'\n", filename);
     
     return EXIT_SUCCESS;
 }//#}}}
