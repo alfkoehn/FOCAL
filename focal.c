@@ -3462,6 +3462,7 @@ int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[]
             printf( "ERROR: dataset named '%s' already exists in file '%s'\n", dataset, filename );
             printf( "       dataset will NOT be saved (no overwrite by default)\n" );
             status = H5Fclose(file_id);
+            if (status < 0) printf( "ERROR: could not close file '%s'\n", filename );
             return EXIT_FAILURE;
         }
 #endif
@@ -3491,6 +3492,7 @@ int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[]
         filter_avail = 0;
     } else {
         status = H5Zget_filter_info( H5Z_FILTER_DEFLATE, &filter_info );
+        if (status < 0) printf( "ERROR: could not get hdf5 filter info\n" );
         if ( !(filter_info & H5Z_FILTER_CONFIG_ENCODE_ENABLED) ||
              !(filter_info & H5Z_FILTER_CONFIG_DECODE_ENABLED) ) {
             printf( "WARNING: gzip filter not available for encoding and decoding (for hdf5)\n" );
@@ -3503,6 +3505,7 @@ int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[]
         filter_avail = 0;
     } else {
         status = H5Zget_filter_info( H5Z_FILTER_SHUFFLE, &filter_info );
+        if (status < 0) printf( "ERROR: could not get hdf5 filter info\n" );
         if ( !(filter_info & H5Z_FILTER_CONFIG_ENCODE_ENABLED) ||
              !(filter_info & H5Z_FILTER_CONFIG_DECODE_ENABLED) ) {
             printf( "WARNING: shuffle filter not available for encoding and decoding (for hdf5)\n" );
@@ -3522,10 +3525,13 @@ int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[]
         // note that the order of filter is significant: first shuffle!
         // order of filters applied correspond to order in which they are invoked when writin gdata
         status = H5Pset_shuffle( dcpl );
+        if (status < 0) printf( "ERROR: could not add shuffle filter\n" );
         status = H5Pset_deflate( dcpl, 9 );
+        if (status < 0) printf( "ERROR: could not add gzip filter\n" );
         status = H5Pset_chunk(dcpl,             // dataset creation property list identifier
                               3,                // number of dimensions of each chunk
                               chunk );          // array defining size, in dataset elements, of each chunk
+        if (status < 0) printf( "ERROR: could not set chunk size\n" );
         // create the dataset
         dataset_id = H5Dcreate( file_id,        // file identifier (or group identifier)
                                 dataset,        // name of dataset (relative to group specified, if speficied)
@@ -3553,17 +3559,25 @@ int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[]
                        H5P_DEFAULT,         // data transfer property list
 //                       array_2D[0]);        // pointer to data array
                        array_3D);        // pointer to data array
+    if (status < 0) 
+        printf( "ERROR: could not write dataset '%s' to file '%s'\n", dataset, filename );
 
     // terminate access and free ressources/identifiers
     // dataset creation property list
-    if (filter_avail)
+    if (filter_avail) {
         status = H5Pclose(dcpl);
+        if (status < 0)
+            printf( "ERROR: could not close filter\n" );
+    }
     // dataset
     status = H5Dclose(dataset_id);
+    if (status < 0) printf( "ERROR: could not close dataset '%s'\n", dataset );
     // data space
     status = H5Sclose(dataspace_id);
+    if (status < 0) printf( "ERROR: could not close dataspace for dataset '%s'\n", dataset );
     // file 
     status = H5Fclose(file_id);
+    if (status < 0) printf( "ERROR: could not close file '%s'\n", filename );
     
     return EXIT_SUCCESS;
 }//#}}}
