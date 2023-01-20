@@ -3228,6 +3228,7 @@ int detAnt1D_write2hdf5( int N_x,
             printf( "WARNING: gzip filter not available for encoding and decoding (for hdf5)\n" );
             filter_avail = 0;
         }
+        if (status < 0) printf( "ERROR: could not get hdf5 filter info\n" );
     }
     // check if shuffle-filter is available
     if ( !(H5Zfilter_avail( H5Z_FILTER_SHUFFLE )) ) {
@@ -3240,6 +3241,7 @@ int detAnt1D_write2hdf5( int N_x,
             printf( "WARNING: shuffle filter not available for encoding and decoding (for hdf5)\n" );
             filter_avail = 0;
         }
+        if (status < 0) printf( "ERROR: could not get hdf5 filter info\n" );
     }
 
     // apply shuffle and gzip filters, if available
@@ -3250,8 +3252,11 @@ int detAnt1D_write2hdf5( int N_x,
         // note that the order of filter is significant: first shuffle!
         // order of filters applied correspond to order in which they are invoked when writin gdata
         status = H5Pset_shuffle( dcpl );
+        if (status < 0) printf( "ERROR: could not apply shuffle filter\n" );
         status = H5Pset_deflate( dcpl, 9 );
+        if (status < 0) printf( "ERROR: could not apply gzip filter\n" );
         status = H5Pset_chunk(dcpl, 1, chunk );
+        if (status < 0) printf( "ERROR: could not set size of chunk\n" );
     } 
 
     // store spatial coordinate
@@ -3290,9 +3295,12 @@ int detAnt1D_write2hdf5( int N_x,
                        H5S_ALL,             // file space identifier
                        H5P_DEFAULT,         // data transfer property list
                        data2save);          // pointer to data array
+    if (status < 0) printf( "ERROR: could not write dataset 'i'\n" );
 
     status       = H5Dclose(dataset_id_i);
+    if (status < 0) printf( "ERROR: could not close dataset 'i'\n" );
     status       = H5Sclose(dataspace_id_i);
+    if (status < 0) printf( "ERROR: could not close dataspace for 'i' dataset\n" );
 
 
     // store position
@@ -3304,15 +3312,18 @@ int detAnt1D_write2hdf5( int N_x,
     printf( "start to create dataset 'detAnt_ypos'\n" );
     dataset_id   = H5Dcreate( group_id__detAnt, "detAnt_ypos", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
     status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &data2save[0]);
+    if (status < 0) printf( "ERROR: could not write dataset 'detAnt_ypos'\n" );
     status       = H5Dclose(dataset_id);
-//    status       = H5Sclose(dataspace_id);
+    if (status < 0) printf( "ERROR: could not close dataset 'detAnt_ypos'\n" );
     // detAnt_zpos
-//    dataspace_id = H5Screate_simple( 1, dims, NULL); 
     printf( "start to create dataset 'detAnt_zpos'\n" );
     dataset_id   = H5Dcreate( group_id__detAnt, "detAnt_zpos", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
     status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &data2save[1]);
+    if (status < 0) printf( "ERROR: could not write dataset 'detAnt_zpos'\n" );
     status       = H5Dclose(dataset_id);
+    if (status < 0) printf( "ERROR: could not close dataset 'detAnt_zpos'\n" );
     status       = H5Sclose(dataspace_id);
+    if (status < 0) printf( "ERROR: could not close dataspace for detAnt-position datasets\n" );
 
     // store sum_ExEx
     dims[0] = N_x/2;
@@ -3329,73 +3340,79 @@ int detAnt1D_write2hdf5( int N_x,
     else
         dataset_id   = H5Dcreate( group_id__detAnt, "sum_ExEx", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
     status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
+    if (status < 0) printf( "ERROR: could not write dataset 'sum_ExEx'\n" );
     status       = H5Dclose(dataset_id);
-//    status       = H5Sclose(dataspace_id);
-    // store sum_ExEx
+    if (status < 0) printf( "ERROR: could not close dataset 'sum_ExEx'\n" );
 
-    // store sum_EyEy
+    // store sum_EyEy 
     set2zero_1D( N_x/2, data2save );
     for ( ii=2 ; ii<=N_x-2 ; ii+=2 )
         data2save[ii/2] = detAnt_fields[ii/2][1];
-//    dataspace_id = H5Screate_simple( 1, dims, NULL);   
     printf( "start to create dataset 'sum_EyEy'\n" );
     if (filter_avail)
         dataset_id   = H5Dcreate( group_id__detAnt, "sum_EyEy", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
     else
         dataset_id   = H5Dcreate( group_id__detAnt, "sum_EyEy", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
     status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
+    if (status < 0) printf( "ERROR: could not write dataset 'sum_EyEy'\n" );
     status       = H5Dclose(dataset_id);
-//    status       = H5Sclose(dataspace_id);
+    if (status < 0) printf( "ERROR: could not close dataset 'sum_EyEy'\n" );
 
     // store sum_EzEz
     set2zero_1D( N_x/2, data2save );
     for ( ii=2 ; ii<=N_x-2 ; ii+=2 )
         data2save[ii/2] = detAnt_fields[ii/2][2];
-//    dataspace_id = H5Screate_simple( 1, dims, NULL);   
     printf( "start to create dataset 'sum_EzEz'\n" );
     if (filter_avail)
         dataset_id   = H5Dcreate( group_id__detAnt, "sum_EzEz", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
     else
         dataset_id   = H5Dcreate( group_id__detAnt, "sum_EzEz", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
     status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
+    if (status < 0) printf( "ERROR: could not write dataset 'sum_EzEz'\n" );
     status       = H5Dclose(dataset_id);
-//    status       = H5Sclose(dataspace_id);
+    if (status < 0) printf( "ERROR: could not close dataset 'sum_EzEz'\n" );
     
     // store sum_EE
     set2zero_1D( N_x/2, data2save );
     for ( ii=2 ; ii<=N_x-2 ; ii+=2 )
         data2save[ii/2] = detAnt_fields[ii/2][3];
-//    dataspace_id = H5Screate_simple( 1, dims, NULL);   
     printf( "start to create dataset 'sum_EE'\n" );
     if (filter_avail)
         dataset_id   = H5Dcreate( group_id__detAnt, "sum_EE", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
     else
         dataset_id   = H5Dcreate( group_id__detAnt, "sum_EE", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
     status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
+    if (status < 0) printf( "ERROR: could not write dataset 'sum_EE'\n" );
     status       = H5Dclose(dataset_id);
-//    status       = H5Sclose(dataspace_id);
+    if (status < 0) printf( "ERROR: could not close dataset 'sum_EE'\n" );
 
     // store rmsE
     set2zero_1D( N_x/2, data2save );
     for ( ii=2 ; ii<=N_x-2 ; ii+=2 )
         data2save[ii/2] = detAnt_fields[ii/2][4];
-//    dataspace_id = H5Screate_simple( 1, dims, NULL);   
     printf( "start to create dataset 'rms_E'\n" );
     if (filter_avail)
         dataset_id   = H5Dcreate( group_id__detAnt, "rms_E", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
     else
         dataset_id   = H5Dcreate( group_id__detAnt, "rms_E", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
     status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
+    if (status < 0) printf( "ERROR: could not write dataset 'rmsE'\n" );
     status       = H5Dclose(dataset_id);
+    if (status < 0) printf( "ERROR: could not close dataset 'rmsE'\n" );
 
     status       = H5Sclose(dataspace_id);
+    if (status < 0) printf( "ERROR: could not close dataspace for datasets of E-fields\n" );
     
     // terminate access and free ressources/identifiers
-    if (filter_avail)
+    if (filter_avail) {
         status = H5Pclose( dcpl );
+        if (status < 0) printf( "ERROR: could not close filter\n" );
+    }
     status = H5Gclose( group_id__detAnt );
+    if (status < 0) printf( "ERROR: could not close group detAnt\n" );
     // file 
     status = H5Fclose(file_id);
+    if (status < 0) printf( "ERROR: could not close group file '%s'\n", filename );
 
     return EXIT_SUCCESS;
 }//#}}}
