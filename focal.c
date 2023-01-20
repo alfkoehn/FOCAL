@@ -3753,12 +3753,18 @@ int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], do
     // Read the data using the default properties.
     status = H5Dread( dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT,
                       array_3D );
+    if (status < 0)
+        printf( "ERROR: could not read dataset '%s' from file '%s'\n", dataset, filename );
 
     // close the dataset
     status = H5Dclose( dset_id);
+    if (status < 0)
+        printf( "ERROR: could not close dataset '%s' from file '%s'\n", dataset, filename );
 
     // close the file
     status = H5Fclose( file_id);
+    if (status < 0)
+        printf( "ERROR: could not close file '%s'\n", filename );
 
     return EXIT_SUCCESS;
 }//#}}}
