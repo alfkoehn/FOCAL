@@ -123,15 +123,17 @@ int abc_Mur_saveOldEref_ydir( gridConfiguration *gridCfg,
 int abc_Mur_saveOldEref_zdir( gridConfiguration *gridCfg, 
                               double EB_WAVE_ref[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz_ref], 
                               double E_old[gridCfg->Nx][gridCfg->Ny][8] );
-int abs_Mur_1st( size_t N_x, size_t N_y, size_t N_z,
-                 double dt, double dx, 
-                 double EB_WAVE[N_x][N_y][N_z], 
-                 double E_old_xdir[8][N_y][N_z], double E_old_ydir[N_x][8][N_z], double E_old_zdir[N_x][N_y][8] );
-int abs_Mur_1st_v2( size_t N_x, size_t N_y, size_t N_z,
-                    double dt, double dx, 
-                    char absorber[],
-                    double EB_WAVE[N_x][N_y][N_z], 
-                    double E_old_xdir[8][N_y][N_z], double E_old_ydir[N_x][8][N_z], double E_old_zdir[N_x][N_y][8] );
+int abc_Mur_1st( gridConfiguration *gridCfg, 
+                 char absorber[],
+                 double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
+                 double E_old_xdir[8][gridCfg->Ny][gridCfg->Nz], 
+                 double E_old_ydir[gridCfg->Nx][8][gridCfg->Nz], 
+                 double E_old_zdir[gridCfg->Nx][gridCfg->Ny][8] );
+int abc_Mur_1st_ref( gridConfiguration *gridCfg, 
+                     double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz_ref], 
+                     double E_old_xdir[8][gridCfg->Ny][gridCfg->Nz_ref], 
+                     double E_old_ydir[gridCfg->Nx][8][gridCfg->Nz_ref], 
+                     double E_old_zdir[gridCfg->Nx][gridCfg->Ny][8] );
 int advance_J( gridConfiguration *gridCfg, 
                double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
                double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz],
@@ -277,7 +279,7 @@ int main( int argc, char *argv[] ) {
     gridCfg.Nz  = (160)*scale;
     NZ_ref          = 2*d_absorb + (int)period;
     gridCfg.Nz_ref  = 2*d_absorb + (int)period;
-    gridCfg.t_end   = (int)((30)*period);
+    gridCfg.t_end   = (int)((30+30)*period);
 
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
@@ -535,10 +537,10 @@ int main( int argc, char *argv[] ) {
 
         // apply Mur's boundary conditions
 #if BOUNDARY == 2
-        abs_Mur_1st_v2( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.dt, gridCfg.dx, "x1x2y1y2z1z2",  
-                        EB_WAVE, E_Xdir_OLD, E_Ydir_OLD, E_Zdir_OLD );
-        abs_Mur_1st( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz_ref, gridCfg.dt, gridCfg.dx, 
-                     EB_WAVE_ref, E_Xdir_OLD_ref, E_Ydir_OLD_ref, E_Zdir_OLD_ref );
+        abc_Mur_1st( &gridCfg, "x1x2y1y2z1z2",  
+                     EB_WAVE, E_Xdir_OLD, E_Ydir_OLD, E_Zdir_OLD );
+        abc_Mur_1st_ref( &gridCfg, 
+                         EB_WAVE_ref, E_Xdir_OLD_ref, E_Ydir_OLD_ref, E_Zdir_OLD_ref );
         abc_Mur_saveOldE_xdir(    &gridCfg, EB_WAVE, E_Xdir_OLD );
         abc_Mur_saveOldE_ydir(    &gridCfg, EB_WAVE, E_Ydir_OLD );
         abc_Mur_saveOldE_zdir(    &gridCfg, EB_WAVE, E_Zdir_OLD );
@@ -1873,10 +1875,12 @@ int abc_Mur_saveOldEref_zdir( gridConfiguration *gridCfg,
 }//}}}
 
 
-int abs_Mur_1st( size_t N_x, size_t N_y, size_t N_z,
-                 double dt, double dx, 
-                 double EB_WAVE[N_x][N_y][N_z], 
-                 double E_old_xdir[8][N_y][N_z], double E_old_ydir[N_x][8][N_z], double E_old_zdir[N_x][N_y][8] ) {
+int abc_Mur_1st( gridConfiguration *gridCfg, 
+                 char absorber[],
+                 double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
+                 double E_old_xdir[8][gridCfg->Ny][gridCfg->Nz], 
+                 double E_old_ydir[gridCfg->Nx][8][gridCfg->Nz], 
+                 double E_old_zdir[gridCfg->Nx][gridCfg->Ny][8] ) {
 //{{{
     // Ex: odd-even-even
     // Ey: even-odd-even
@@ -1889,131 +1893,7 @@ int abs_Mur_1st( size_t N_x, size_t N_y, size_t N_z,
     double
         cnst;
 
-    cnst    = (dt-dx)/(dt+dx);
-    offset  = 2;
-
-    // absorber into x-direction
-#pragma omp parallel for collapse(2) default(shared) private(jj,kk)
-    for (jj=2 ; jj<N_y-2 ; jj+=2) {
-        for (kk=2 ; kk<N_z-2 ; kk+=2) {
-            // absorber at x=0 grid boundary
-            // Ex: odd-even-even
-            EB_WAVE[offset+0+1][jj  ][kk  ] = E_old_xdir[2+1][jj  ][kk  ]
-                + cnst * (    EB_WAVE[offset+2+1][jj  ][kk  ] 
-                          -E_old_xdir[0+1       ][jj  ][kk  ] );
-            // Ey: even-odd-even
-            EB_WAVE[offset+0  ][jj+1][kk  ] = E_old_xdir[2  ][jj+1][kk  ]
-                + cnst * (    EB_WAVE[offset+2  ][jj+1][kk  ] 
-                          -E_old_xdir[0         ][jj+1][kk  ] );
-            // Ez: even-even-odd
-            EB_WAVE[offset+0  ][jj  ][kk+1] = E_old_xdir[2  ][jj  ][kk+1]
-                + cnst * (    EB_WAVE[offset+2  ][jj  ][kk+1] 
-                          -E_old_xdir[0         ][jj  ][kk+1] );
-            // absorber at x=Nx grid boundary
-            // Ex: odd-even-even
-            EB_WAVE[N_x-2-offset+1][jj  ][kk  ]    = E_old_xdir[4+1][jj  ][kk  ]
-                + cnst * (    EB_WAVE[N_x-4-offset+1][jj  ][kk  ] 
-                          -E_old_xdir[6+1           ][jj  ][kk  ] );
-            // Ey: even-odd-even
-            EB_WAVE[N_x-2-offset  ][jj+1][kk  ]    = E_old_xdir[4  ][jj+1][kk  ]
-                + cnst * (    EB_WAVE[N_x-4-offset  ][jj+1][kk  ] 
-                          -E_old_xdir[6             ][jj+1][kk  ] );
-            // Ez: even-even-odd
-            EB_WAVE[N_x-2-offset  ][jj  ][kk+1]    = E_old_xdir[4  ][jj  ][kk+1]
-                + cnst * (    EB_WAVE[N_x-4-offset  ][jj  ][kk+1] 
-                          -E_old_xdir[6             ][jj  ][kk+1] );
-        }
-    }
-
-    // absorber into y-direction
-#pragma omp parallel for collapse(2) default(shared) private(ii,kk)
-    for (ii=2 ; ii<N_x-2 ; ii+=2) {
-        for (kk=2 ; kk<N_z-2 ; kk+=2) {
-            // absorber at y=0 grid boundary
-            // Ex: odd-even-even
-            EB_WAVE[ii+1][offset+0  ][kk  ] = E_old_ydir[ii+1][2  ][kk  ]
-                + cnst * (    EB_WAVE[ii+1][offset+2  ][kk  ]
-                          -E_old_ydir[ii+1][0         ][kk  ] );
-            // Ey: even-odd-even
-            EB_WAVE[ii  ][offset+0+1][kk  ] = E_old_ydir[ii  ][2+1][kk  ]
-                + cnst * (    EB_WAVE[ii  ][offset+2+1][kk  ]
-                          -E_old_ydir[ii  ][0+1       ][kk  ] );
-            // Ez: even-even-odd
-            EB_WAVE[ii  ][offset+0  ][kk+1] = E_old_ydir[ii  ][2  ][kk+1]
-                + cnst * (    EB_WAVE[ii  ][offset+2  ][kk+1]
-                          -E_old_ydir[ii  ][0         ][kk+1] );
-            // absorber at y=Ny grid boundary
-            // Ex: odd-even-even
-            EB_WAVE[ii+1][N_y-2-offset  ][kk  ] = E_old_ydir[ii+1][4  ][kk  ]
-                + cnst * (    EB_WAVE[ii+1][N_y-4-offset  ][kk  ]
-                          -E_old_ydir[ii+1][6      ][kk  ] );
-            // Ey: even-odd-even
-            EB_WAVE[ii  ][N_y-2-offset+1][kk  ] = E_old_ydir[ii  ][4+1][kk  ]
-                + cnst * (    EB_WAVE[ii  ][N_y-4-offset+1][kk  ]
-                          -E_old_ydir[ii  ][6+1           ][kk  ] );
-            // Ez: even-even-odd
-            EB_WAVE[ii  ][N_y-2-offset  ][kk+1] = E_old_ydir[ii  ][4  ][kk+1]
-                + cnst * (    EB_WAVE[ii  ][N_y-4-offset  ][kk+1]
-                          -E_old_ydir[ii  ][6             ][kk+1] );
-        }
-    }
-
-    // absorber into z-direction
-#pragma omp parallel for collapse(2) default(shared) private(ii,jj)
-    for (ii=2 ; ii<N_x-2 ; ii+=2) {
-        for (jj=2 ; jj<N_y-2 ; jj+=2) {
-            // absorber at z=0 grid boundary
-            // Ex: odd-even-even
-            EB_WAVE[ii+1][jj  ][offset+0]   = E_old_zdir[ii+1][jj  ][2  ]
-                + cnst * (    EB_WAVE[ii+1][jj  ][offset+2  ]
-                          -E_old_zdir[ii+1][jj  ][0  ]        );
-            // Ey: even-odd-even
-            EB_WAVE[ii  ][jj+1][offset+0]   = E_old_zdir[ii  ][jj+1][2  ]
-                + cnst * (    EB_WAVE[ii  ][jj+1][offset+2  ]
-                          -E_old_zdir[ii  ][jj+1][0  ]        );
-            // Ez: even-even-odd
-            EB_WAVE[ii  ][jj  ][offset+0+1] = E_old_zdir[ii  ][jj  ][2+1]
-                + cnst * (    EB_WAVE[ii  ][jj  ][offset+2+1]
-                          -E_old_zdir[ii  ][jj  ][0+1]        );
-            // absorber at z=Nz grid boundary
-            // Ex: odd-even-even
-            EB_WAVE[ii+1][jj  ][N_z-2-offset  ]    = E_old_zdir[ii+1][jj  ][4  ]
-                + cnst * (    EB_WAVE[ii+1][jj  ][N_z-4-offset  ]
-                          -E_old_zdir[ii+1][jj  ][6  ]     );
-            // Ey: even-odd-even
-            EB_WAVE[ii  ][jj+1][N_z-2-offset  ]    = E_old_zdir[ii  ][jj+1][4  ]
-                + cnst * (    EB_WAVE[ii  ][jj+1][N_z-4-offset  ]
-                          -E_old_zdir[ii  ][jj+1][6  ]     );
-            // Ez: even-even-odd
-            EB_WAVE[ii  ][jj  ][N_z-2-offset+1]    = E_old_zdir[ii  ][jj  ][4+1]
-                + cnst * (    EB_WAVE[ii  ][jj  ][N_z-4-offset+1]
-                          -E_old_zdir[ii  ][jj  ][6+1]     );
-        }
-    }
-
-    return EXIT_SUCCESS;
-
-} //}}}
-
-
-int abs_Mur_1st_v2( size_t N_x, size_t N_y, size_t N_z,
-                    double dt, double dx, 
-                    char absorber[],
-                    double EB_WAVE[N_x][N_y][N_z], 
-                    double E_old_xdir[8][N_y][N_z], double E_old_ydir[N_x][8][N_z], double E_old_zdir[N_x][N_y][8] ) {
-//{{{
-    // Ex: odd-even-even
-    // Ey: even-odd-even
-    // Ez: even-even-odd
-
-    size_t
-        ii, jj, kk,
-        offset;             // refers to EB_WAVE only
-
-    double
-        cnst;
-
-    cnst    = (dt-dx)/(dt+dx);
+    cnst    = (gridCfg->dt-gridCfg->dx)/(gridCfg->dt+gridCfg->dx);
     offset  = 2;
 
     // the string "absorber" is used to set which absorber is treated
@@ -2026,8 +1906,8 @@ int abs_Mur_1st_v2( size_t N_x, size_t N_y, size_t N_z,
     if ( strstr(absorber,"x1") ) {      
         //printf("abs_Mur_1st_v2: x1\n");
 #pragma omp parallel for collapse(2) default(shared) private(jj,kk)
-        for (jj=2 ; jj<N_y-2 ; jj+=2) {
-            for (kk=2 ; kk<N_z-2 ; kk+=2) {
+        for (jj=2 ; jj<gridCfg->Ny-2 ; jj+=2) {
+            for (kk=2 ; kk<gridCfg->Nz-2 ; kk+=2) {
                 // absorber at x=0 grid boundary
                 // Ex: odd-even-even
                 EB_WAVE[offset+0+1][jj  ][kk  ] = E_old_xdir[2+1][jj  ][kk  ]
@@ -2047,21 +1927,21 @@ int abs_Mur_1st_v2( size_t N_x, size_t N_y, size_t N_z,
     if ( strstr(absorber,"x2") ) {
         //printf("abs_Mur_1st_v2: x2\n");
 #pragma omp parallel for collapse(2) default(shared) private(jj,kk)
-        for (jj=2 ; jj<N_y-2 ; jj+=2) {
-            for (kk=2 ; kk<N_z-2 ; kk+=2) {
+        for (jj=2 ; jj<gridCfg->Ny-2 ; jj+=2) {
+            for (kk=2 ; kk<gridCfg->Nz-2 ; kk+=2) {
                 // absorber at x=Nx grid boundary
                 // Ex: odd-even-even
-                EB_WAVE[N_x-2-offset+1][jj  ][kk  ]    = E_old_xdir[4+1][jj  ][kk  ]
-                    + cnst * (    EB_WAVE[N_x-4-offset+1][jj  ][kk  ] 
-                              -E_old_xdir[6+1           ][jj  ][kk  ] );
+                EB_WAVE[gridCfg->Nx-2-offset+1][jj  ][kk  ]    = E_old_xdir[4+1][jj  ][kk  ]
+                    + cnst * (    EB_WAVE[gridCfg->Nx-4-offset+1][jj  ][kk  ] 
+                              -E_old_xdir[6+1                   ][jj  ][kk  ] );
                 // Ey: even-odd-even
-                EB_WAVE[N_x-2-offset  ][jj+1][kk  ]    = E_old_xdir[4  ][jj+1][kk  ]
-                    + cnst * (    EB_WAVE[N_x-4-offset  ][jj+1][kk  ] 
-                              -E_old_xdir[6             ][jj+1][kk  ] );
+                EB_WAVE[gridCfg->Nx-2-offset  ][jj+1][kk  ]    = E_old_xdir[4  ][jj+1][kk  ]
+                    + cnst * (    EB_WAVE[gridCfg->Nx-4-offset  ][jj+1][kk  ] 
+                              -E_old_xdir[6                     ][jj+1][kk  ] );
                 // Ez: even-even-odd
-                EB_WAVE[N_x-2-offset  ][jj  ][kk+1]    = E_old_xdir[4  ][jj  ][kk+1]
-                    + cnst * (    EB_WAVE[N_x-4-offset  ][jj  ][kk+1] 
-                              -E_old_xdir[6             ][jj  ][kk+1] );
+                EB_WAVE[gridCfg->Nx-2-offset  ][jj  ][kk+1]    = E_old_xdir[4  ][jj  ][kk+1]
+                    + cnst * (    EB_WAVE[gridCfg->Nx-4-offset  ][jj  ][kk+1] 
+                              -E_old_xdir[6                     ][jj  ][kk+1] );
             }
         }
     }
@@ -2070,8 +1950,8 @@ int abs_Mur_1st_v2( size_t N_x, size_t N_y, size_t N_z,
     if ( strstr(absorber,"y1") ) {
         //printf("abs_Mur_1st_v2: y1\n");
 #pragma omp parallel for collapse(2) default(shared) private(ii,kk)
-        for (ii=2 ; ii<N_x-2 ; ii+=2) {
-            for (kk=2 ; kk<N_z-2 ; kk+=2) {
+        for (ii=2 ; ii<gridCfg->Nx-2 ; ii+=2) {
+            for (kk=2 ; kk<gridCfg->Nz-2 ; kk+=2) {
                 // absorber at y=0 grid boundary
                 // Ex: odd-even-even
                 EB_WAVE[ii+1][offset+0  ][kk  ] = E_old_ydir[ii+1][2  ][kk  ]
@@ -2091,21 +1971,21 @@ int abs_Mur_1st_v2( size_t N_x, size_t N_y, size_t N_z,
     if ( strstr(absorber,"y2") ) {
         //printf("abs_Mur_1st_v2: y2\n");
 #pragma omp parallel for collapse(2) default(shared) private(ii,kk)
-        for (ii=2 ; ii<N_x-2 ; ii+=2) {
-            for (kk=2 ; kk<N_z-2 ; kk+=2) {
+        for (ii=2 ; ii<gridCfg->Nx-2 ; ii+=2) {
+            for (kk=2 ; kk<gridCfg->Nz-2 ; kk+=2) {
                 // absorber at y=Ny grid boundary
                 // Ex: odd-even-even
-                EB_WAVE[ii+1][N_y-2-offset  ][kk  ] = E_old_ydir[ii+1][4  ][kk  ]
-                    + cnst * (    EB_WAVE[ii+1][N_y-4-offset  ][kk  ]
-                              -E_old_ydir[ii+1][6      ][kk  ] );
+                EB_WAVE[ii+1][gridCfg->Ny-2-offset  ][kk  ] = E_old_ydir[ii+1][4  ][kk  ]
+                    + cnst * (    EB_WAVE[ii+1][gridCfg->Ny-4-offset  ][kk  ]
+                              -E_old_ydir[ii+1][6                     ][kk  ] );
                 // Ey: even-odd-even
-                EB_WAVE[ii  ][N_y-2-offset+1][kk  ] = E_old_ydir[ii  ][4+1][kk  ]
-                    + cnst * (    EB_WAVE[ii  ][N_y-4-offset+1][kk  ]
-                              -E_old_ydir[ii  ][6+1           ][kk  ] );
+                EB_WAVE[ii  ][gridCfg->Ny-2-offset+1][kk  ] = E_old_ydir[ii  ][4+1][kk  ]
+                    + cnst * (    EB_WAVE[ii  ][gridCfg->Ny-4-offset+1][kk  ]
+                              -E_old_ydir[ii  ][6+1                   ][kk  ] );
                 // Ez: even-even-odd
-                EB_WAVE[ii  ][N_y-2-offset  ][kk+1] = E_old_ydir[ii  ][4  ][kk+1]
-                    + cnst * (    EB_WAVE[ii  ][N_y-4-offset  ][kk+1]
-                              -E_old_ydir[ii  ][6             ][kk+1] );
+                EB_WAVE[ii  ][gridCfg->Ny-2-offset  ][kk+1] = E_old_ydir[ii  ][4  ][kk+1]
+                    + cnst * (    EB_WAVE[ii  ][gridCfg->Ny-4-offset  ][kk+1]
+                              -E_old_ydir[ii  ][6                     ][kk+1] );
             }
         }
     }
@@ -2114,8 +1994,8 @@ int abs_Mur_1st_v2( size_t N_x, size_t N_y, size_t N_z,
     if ( strstr(absorber,"z1") ) {
         //printf("abs_Mur_1st_v2: z1\n");
 #pragma omp parallel for collapse(2) default(shared) private(ii,jj)
-        for (ii=2 ; ii<N_x-2 ; ii+=2) {
-            for (jj=2 ; jj<N_y-2 ; jj+=2) {
+        for (ii=2 ; ii<gridCfg->Nx-2 ; ii+=2) {
+            for (jj=2 ; jj<gridCfg->Ny-2 ; jj+=2) {
                 // absorber at z=0 grid boundary
                 // Ex: odd-even-even
                 EB_WAVE[ii+1][jj  ][offset+0]   = E_old_zdir[ii+1][jj  ][2  ]
@@ -2135,22 +2015,146 @@ int abs_Mur_1st_v2( size_t N_x, size_t N_y, size_t N_z,
     if ( strstr(absorber,"z2") ) {
         //printf("abs_Mur_1st_v2: z2\n");
 #pragma omp parallel for collapse(2) default(shared) private(ii,jj)
-        for (ii=2 ; ii<N_x-2 ; ii+=2) {
-            for (jj=2 ; jj<N_y-2 ; jj+=2) {
+        for (ii=2 ; ii<gridCfg->Nx-2 ; ii+=2) {
+            for (jj=2 ; jj<gridCfg->Ny-2 ; jj+=2) {
                 // absorber at z=Nz grid boundary
                 // Ex: odd-even-even
-                EB_WAVE[ii+1][jj  ][N_z-2-offset  ]    = E_old_zdir[ii+1][jj  ][4  ]
-                    + cnst * (    EB_WAVE[ii+1][jj  ][N_z-4-offset  ]
+                EB_WAVE[ii+1][jj  ][gridCfg->Nz-2-offset  ]    = E_old_zdir[ii+1][jj  ][4  ]
+                    + cnst * (    EB_WAVE[ii+1][jj  ][gridCfg->Nz-4-offset  ]
                               -E_old_zdir[ii+1][jj  ][6  ]     );
                 // Ey: even-odd-even
-                EB_WAVE[ii  ][jj+1][N_z-2-offset  ]    = E_old_zdir[ii  ][jj+1][4  ]
-                    + cnst * (    EB_WAVE[ii  ][jj+1][N_z-4-offset  ]
+                EB_WAVE[ii  ][jj+1][gridCfg->Nz-2-offset  ]    = E_old_zdir[ii  ][jj+1][4  ]
+                    + cnst * (    EB_WAVE[ii  ][jj+1][gridCfg->Nz-4-offset  ]
                               -E_old_zdir[ii  ][jj+1][6  ]     );
                 // Ez: even-even-odd
-                EB_WAVE[ii  ][jj  ][N_z-2-offset+1]    = E_old_zdir[ii  ][jj  ][4+1]
-                    + cnst * (    EB_WAVE[ii  ][jj  ][N_z-4-offset+1]
+                EB_WAVE[ii  ][jj  ][gridCfg->Nz-2-offset+1]    = E_old_zdir[ii  ][jj  ][4+1]
+                    + cnst * (    EB_WAVE[ii  ][jj  ][gridCfg->Nz-4-offset+1]
                               -E_old_zdir[ii  ][jj  ][6+1]     );
             }
+        }
+    }
+
+    return EXIT_SUCCESS;
+
+} //}}}
+
+
+int abc_Mur_1st_ref( gridConfiguration *gridCfg,
+                     double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz_ref], 
+                     double E_old_xdir[8][gridCfg->Ny][gridCfg->Nz_ref], 
+                     double E_old_ydir[gridCfg->Nx][8][gridCfg->Nz_ref], 
+                     double E_old_zdir[gridCfg->Nx][gridCfg->Ny][8] ) {
+//{{{
+    // Ex: odd-even-even
+    // Ey: even-odd-even
+    // Ez: even-even-odd
+
+    size_t
+        ii, jj, kk,
+        offset;             // refers to EB_WAVE only
+
+    double
+        cnst;
+
+    cnst    = (gridCfg->dt-gridCfg->dx)/(gridCfg->dt+gridCfg->dx);
+    offset  = 2;
+
+    // absorber into x-direction
+#pragma omp parallel for collapse(2) default(shared) private(jj,kk)
+    for (jj=2 ; jj<gridCfg->Ny-2 ; jj+=2) {
+        for (kk=2 ; kk<gridCfg->Nz_ref-2 ; kk+=2) {
+            // absorber at x=0 grid boundary
+            // Ex: odd-even-even
+            EB_WAVE[offset+0+1][jj  ][kk  ] = E_old_xdir[2+1][jj  ][kk  ]
+                + cnst * (    EB_WAVE[offset+2+1][jj  ][kk  ] 
+                          -E_old_xdir[0+1       ][jj  ][kk  ] );
+            // Ey: even-odd-even
+            EB_WAVE[offset+0  ][jj+1][kk  ] = E_old_xdir[2  ][jj+1][kk  ]
+                + cnst * (    EB_WAVE[offset+2  ][jj+1][kk  ] 
+                          -E_old_xdir[0         ][jj+1][kk  ] );
+            // Ez: even-even-odd
+            EB_WAVE[offset+0  ][jj  ][kk+1] = E_old_xdir[2  ][jj  ][kk+1]
+                + cnst * (    EB_WAVE[offset+2  ][jj  ][kk+1] 
+                          -E_old_xdir[0         ][jj  ][kk+1] );
+            // absorber at x=Nx grid boundary
+            // Ex: odd-even-even
+            EB_WAVE[gridCfg->Nx-2-offset+1][jj  ][kk  ]    = E_old_xdir[4+1][jj  ][kk  ]
+                + cnst * (    EB_WAVE[gridCfg->Nx-4-offset+1][jj  ][kk  ] 
+                          -E_old_xdir[6+1                   ][jj  ][kk  ] );
+            // Ey: even-odd-even
+            EB_WAVE[gridCfg->Nx-2-offset  ][jj+1][kk  ]    = E_old_xdir[4  ][jj+1][kk  ]
+                + cnst * (    EB_WAVE[gridCfg->Nx-4-offset  ][jj+1][kk  ] 
+                          -E_old_xdir[6                     ][jj+1][kk  ] );
+            // Ez: even-even-odd
+            EB_WAVE[gridCfg->Nx-2-offset  ][jj  ][kk+1]    = E_old_xdir[4  ][jj  ][kk+1]
+                + cnst * (    EB_WAVE[gridCfg->Nx-4-offset  ][jj  ][kk+1] 
+                          -E_old_xdir[6                     ][jj  ][kk+1] );
+        }
+    }
+
+    // absorber into y-direction
+#pragma omp parallel for collapse(2) default(shared) private(ii,kk)
+    for (ii=2 ; ii<gridCfg->Nx-2 ; ii+=2) {
+        for (kk=2 ; kk<gridCfg->Nz_ref-2 ; kk+=2) {
+            // absorber at y=0 grid boundary
+            // Ex: odd-even-even
+            EB_WAVE[ii+1][offset+0  ][kk  ] = E_old_ydir[ii+1][2  ][kk  ]
+                + cnst * (    EB_WAVE[ii+1][offset+2  ][kk  ]
+                          -E_old_ydir[ii+1][0         ][kk  ] );
+            // Ey: even-odd-even
+            EB_WAVE[ii  ][offset+0+1][kk  ] = E_old_ydir[ii  ][2+1][kk  ]
+                + cnst * (    EB_WAVE[ii  ][offset+2+1][kk  ]
+                          -E_old_ydir[ii  ][0+1       ][kk  ] );
+            // Ez: even-even-odd
+            EB_WAVE[ii  ][offset+0  ][kk+1] = E_old_ydir[ii  ][2  ][kk+1]
+                + cnst * (    EB_WAVE[ii  ][offset+2  ][kk+1]
+                          -E_old_ydir[ii  ][0         ][kk+1] );
+            // absorber at y=Ny grid boundary
+            // Ex: odd-even-even
+            EB_WAVE[ii+1][gridCfg->Ny-2-offset  ][kk  ] = E_old_ydir[ii+1][4  ][kk  ]
+                + cnst * (    EB_WAVE[ii+1][gridCfg->Ny-4-offset  ][kk  ]
+                          -E_old_ydir[ii+1][6                     ][kk  ] );
+            // Ey: even-odd-even
+            EB_WAVE[ii  ][gridCfg->Ny-2-offset+1][kk  ] = E_old_ydir[ii  ][4+1][kk  ]
+                + cnst * (    EB_WAVE[ii  ][gridCfg->Ny-4-offset+1][kk  ]
+                          -E_old_ydir[ii  ][6+1                   ][kk  ] );
+            // Ez: even-even-odd
+            EB_WAVE[ii  ][gridCfg->Ny-2-offset  ][kk+1] = E_old_ydir[ii  ][4  ][kk+1]
+                + cnst * (    EB_WAVE[ii  ][gridCfg->Ny-4-offset  ][kk+1]
+                          -E_old_ydir[ii  ][6                     ][kk+1] );
+        }
+    }
+
+    // absorber into z-direction
+#pragma omp parallel for collapse(2) default(shared) private(ii,jj)
+    for (ii=2 ; ii<gridCfg->Nx-2 ; ii+=2) {
+        for (jj=2 ; jj<gridCfg->Ny-2 ; jj+=2) {
+            // absorber at z=0 grid boundary
+            // Ex: odd-even-even
+            EB_WAVE[ii+1][jj  ][offset+0]   = E_old_zdir[ii+1][jj  ][2  ]
+                + cnst * (    EB_WAVE[ii+1][jj  ][offset+2  ]
+                          -E_old_zdir[ii+1][jj  ][0  ]        );
+            // Ey: even-odd-even
+            EB_WAVE[ii  ][jj+1][offset+0]   = E_old_zdir[ii  ][jj+1][2  ]
+                + cnst * (    EB_WAVE[ii  ][jj+1][offset+2  ]
+                          -E_old_zdir[ii  ][jj+1][0  ]        );
+            // Ez: even-even-odd
+            EB_WAVE[ii  ][jj  ][offset+0+1] = E_old_zdir[ii  ][jj  ][2+1]
+                + cnst * (    EB_WAVE[ii  ][jj  ][offset+2+1]
+                          -E_old_zdir[ii  ][jj  ][0+1]        );
+            // absorber at z=Nz grid boundary
+            // Ex: odd-even-even
+            EB_WAVE[ii+1][jj  ][gridCfg->Nz_ref-2-offset  ]    = E_old_zdir[ii+1][jj  ][4  ]
+                + cnst * (    EB_WAVE[ii+1][jj  ][gridCfg->Nz_ref-4-offset  ]
+                          -E_old_zdir[ii+1][jj  ][6  ]     );
+            // Ey: even-odd-even
+            EB_WAVE[ii  ][jj+1][gridCfg->Nz_ref-2-offset  ]    = E_old_zdir[ii  ][jj+1][4  ]
+                + cnst * (    EB_WAVE[ii  ][jj+1][gridCfg->Nz_ref-4-offset  ]
+                          -E_old_zdir[ii  ][jj+1][6  ]     );
+            // Ez: even-even-odd
+            EB_WAVE[ii  ][jj  ][gridCfg->Nz_ref-2-offset+1]    = E_old_zdir[ii  ][jj  ][4+1]
+                + cnst * (    EB_WAVE[ii  ][jj  ][gridCfg->Nz_ref-4-offset+1]
+                          -E_old_zdir[ii  ][jj  ][6+1]     );
         }
     }
 
