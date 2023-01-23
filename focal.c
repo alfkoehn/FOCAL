@@ -45,7 +45,7 @@
 // setting boundary conditions, possible choices are
 // 1: simple_abc
 // 2: Mur
-#define BOUNDARY 2
+#define BOUNDARY 1
 
 #define DETECTOR_ANTENNA_1D
 
@@ -199,7 +199,6 @@ int main( int argc, char *argv[] ) {
 
         scale,
         NX, NY, NZ, 
-        NZ_ref,
 
 #ifdef _OPENMP
         n_threads,                          // number of threads that will be used (OpenMP)
@@ -272,7 +271,6 @@ int main( int argc, char *argv[] ) {
     gridCfg.Nx  = (280)*scale;
     gridCfg.Ny  = (220)*scale;
     gridCfg.Nz  = (160)*scale;
-    NZ_ref          = 2*d_absorb + (int)period;
     gridCfg.Nz_ref  = 2*d_absorb + (int)period;
     gridCfg.t_end   = (int)((30+30)*period);
 
