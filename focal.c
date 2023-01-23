@@ -147,9 +147,10 @@ int advance_E( gridConfiguration *gridCfg,
                double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
 int advance_E_ref( gridConfiguration *gridCfg, 
                    double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz_ref] ); 
-double calc_poynt_4( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
+double calc_poynt_4( gridConfiguration *gridCfg, 
                      int pwr_dect, char absorber[],
-                     double EB_WAVE[N_x][N_y][N_z], double EB_WAVE_ref[N_x][N_y][N_z_ref] );
+                     double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
+                     double EB_WAVE_ref[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz_ref] );
 double calc_poynt_5( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
                      int pwr_dect, char absorber[],
                      double EB_WAVE[N_x][N_y][N_z], double EB_WAVE_ref[N_x][N_y][N_z_ref] );
@@ -575,13 +576,13 @@ int main( int argc, char *argv[] ) {
         // IQ detector for power detection
         if ( t_int >= 20*period ) {
             // z1-plane and z2-plane
-            poynt_z1_ref    = calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect, "ref_z1", EB_WAVE, EB_WAVE_ref );
-            poynt_z1        = calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect, "z1",     EB_WAVE, EB_WAVE_ref );
+            poynt_z1_ref    = calc_poynt_4( &gridCfg, pwr_dect, "ref_z1", EB_WAVE, EB_WAVE_ref );
+            poynt_z1        = calc_poynt_4( &gridCfg, pwr_dect, "z1",     EB_WAVE, EB_WAVE_ref );
             //poynt_z1_ref    = ( calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect  , "ref_z1", EB_WAVE, EB_WAVE_ref )
             //                   +calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect+2, "ref_z1", EB_WAVE, EB_WAVE_ref ) )*.5;
             //poynt_z1        = ( calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect,   "z1",     EB_WAVE, EB_WAVE_ref )
             //                   +calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect+2, "z1",     EB_WAVE, EB_WAVE_ref ) )*.5;
-            poynt_z2        = calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect, "z2",     EB_WAVE, EB_WAVE_ref );
+            poynt_z2        = calc_poynt_4( &gridCfg, pwr_dect, "z2",     EB_WAVE, EB_WAVE_ref );
             // x1-plane and x2-plane
             //poynt_x1        = calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect, "x1", EB_WAVE, EB_WAVE_ref );
             //poynt_x2        = calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect, "x2", EB_WAVE, EB_WAVE_ref );
@@ -2334,9 +2335,10 @@ int advance_E_ref( gridConfiguration *gridCfg,
 }//}}}
 
 
-double calc_poynt_4( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
+double calc_poynt_4( gridConfiguration *gridCfg, 
                      int pwr_dect, char absorber[],
-                     double EB_WAVE[N_x][N_y][N_z], double EB_WAVE_ref[N_x][N_y][N_z_ref] ) {
+                     double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
+                     double EB_WAVE_ref[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz_ref] ) {
 //{{{
 
     size_t
@@ -2359,8 +2361,8 @@ double calc_poynt_4( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
     
     if ( strcmp(absorber,"ref_z1") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii,jj) reduction(+:poynt)
-        for (ii=pwr_dect ; ii<(N_x-pwr_dect-2) ; ii+=2) {
-            for (jj=pwr_dect ; jj<(N_y-pwr_dect-2) ; jj+=2) {
+        for (ii=pwr_dect ; ii<(gridCfg->Nx-pwr_dect-2) ; ii+=2) {
+            for (jj=pwr_dect ; jj<(gridCfg->Ny-pwr_dect-2) ; jj+=2) {
                 // z1-plane
                 // Pz = Ex*Hy - Ey*Hx
                 poynt += ( EB_WAVE_ref[ii+1][jj  ][pwr_dect  ]
@@ -2371,8 +2373,8 @@ double calc_poynt_4( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
         }
     } else if ( strcmp(absorber,"z1") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii,jj) reduction(+:poynt)
-        for (ii=pwr_dect ; ii<(N_x-pwr_dect-2) ; ii+=2) {
-            for (jj=pwr_dect ; jj<(N_y-pwr_dect-2) ; jj+=2) {
+        for (ii=pwr_dect ; ii<(gridCfg->Nx-pwr_dect-2) ; ii+=2) {
+            for (jj=pwr_dect ; jj<(gridCfg->Ny-pwr_dect-2) ; jj+=2) {
                 // z1-plane
                 // Pz = Ex*Hy - Ey*Hx
                 poynt += ( ( EB_WAVE[ii+1][jj  ][pwr_dect  ] - EB_WAVE_ref[ii+1][jj  ][pwr_dect  ] )
@@ -2383,20 +2385,20 @@ double calc_poynt_4( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
         }
     } else if ( strcmp(absorber,"z2") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii,jj) reduction(+:poynt)
-        for (ii=pwr_dect ; ii<(N_x-pwr_dect-2) ; ii+=2) {
-            for (jj=pwr_dect ; jj<(N_y-pwr_dect-2) ; jj+=2) {
+        for (ii=pwr_dect ; ii<(gridCfg->Nx-pwr_dect-2) ; ii+=2) {
+            for (jj=pwr_dect ; jj<(gridCfg->Ny-pwr_dect-2) ; jj+=2) {
                 // z2-plane
                 // Pz = Ex*Hy - Ey*Hx
-                poynt += ( EB_WAVE[ii+1][jj  ][N_z-pwr_dect  ]
-                          *EB_WAVE[ii+1][jj  ][N_z-pwr_dect-1]
-                          -EB_WAVE[ii  ][jj+1][N_z-pwr_dect  ]
-                          *EB_WAVE[ii  ][jj+1][N_z-pwr_dect-1] );
+                poynt += ( EB_WAVE[ii+1][jj  ][gridCfg->Nz-pwr_dect  ]
+                          *EB_WAVE[ii+1][jj  ][gridCfg->Nz-pwr_dect-1]
+                          -EB_WAVE[ii  ][jj+1][gridCfg->Nz-pwr_dect  ]
+                          *EB_WAVE[ii  ][jj+1][gridCfg->Nz-pwr_dect-1] );
                 }
             }
     } else if ( strcmp(absorber,"x1") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(jj,kk) reduction(+:poynt)
-        for (jj=pwr_dect ; jj<=(N_y-pwr_dect-2) ; jj+=2) {
-            for (kk=pwr_dect ; kk<=(N_z-pwr_dect-2) ; kk+=2) {
+        for (jj=pwr_dect ; jj<=(gridCfg->Ny-pwr_dect-2) ; jj+=2) {
+            for (kk=pwr_dect ; kk<=(gridCfg->Nz-pwr_dect-2) ; kk+=2) {
                 // x1-plane
                 // Px = Ey*Hz - Ez*Hy
                 poynt += ( EB_WAVE[pwr_dect  ][jj+1][kk  ]
@@ -2407,20 +2409,20 @@ double calc_poynt_4( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
         }
     } else if ( strcmp(absorber,"x2") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(jj,kk) reduction(+:poynt)
-        for (jj=pwr_dect ; jj<=(N_y-pwr_dect-2) ; jj+=2) {
-            for (kk=pwr_dect ; kk<=(N_z-pwr_dect-2) ; kk+=2) {
+        for (jj=pwr_dect ; jj<=(gridCfg->Ny-pwr_dect-2) ; jj+=2) {
+            for (kk=pwr_dect ; kk<=(gridCfg->Nz-pwr_dect-2) ; kk+=2) {
                 // x2-plane
                 // Px = Ey*Hz - Ez*Hy
-                poynt += ( EB_WAVE[N_x-pwr_dect  ][jj+1][kk  ]
-                          *EB_WAVE[N_x-pwr_dect-1][jj+1][kk  ]
-                          -EB_WAVE[N_x-pwr_dect  ][jj  ][kk+1]
-                          *EB_WAVE[N_x-pwr_dect-1][jj  ][kk+1] );
+                poynt += ( EB_WAVE[gridCfg->Nx-pwr_dect  ][jj+1][kk  ]
+                          *EB_WAVE[gridCfg->Nx-pwr_dect-1][jj+1][kk  ]
+                          -EB_WAVE[gridCfg->Nx-pwr_dect  ][jj  ][kk+1]
+                          *EB_WAVE[gridCfg->Nx-pwr_dect-1][jj  ][kk+1] );
                 }
             }
     } else if ( strcmp(absorber,"y1") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii,kk) reduction(+:poynt)
-        for (ii=pwr_dect ; ii<=(N_x-pwr_dect-2) ; ii+=2) {
-            for (kk=pwr_dect ; kk<=(N_z-pwr_dect-2) ; kk+=2) {
+        for (ii=pwr_dect ; ii<=(gridCfg->Nx-pwr_dect-2) ; ii+=2) {
+            for (kk=pwr_dect ; kk<=(gridCfg->Nz-pwr_dect-2) ; kk+=2) {
                 // y1-plane
                 // Py = Ez*Hx - Ex*Hz
                 poynt += ( EB_WAVE[ii  ][pwr_dect  ][kk+1]
@@ -2431,14 +2433,14 @@ double calc_poynt_4( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
         }
     } else if ( strcmp(absorber,"y2") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii,kk) reduction(+:poynt)
-        for (ii=pwr_dect ; ii<=(N_x-pwr_dect-2) ; ii+=2) {
-            for (kk=pwr_dect ; kk<=(N_z-pwr_dect-2) ; kk+=2) {
+        for (ii=pwr_dect ; ii<=(gridCfg->Nx-pwr_dect-2) ; ii+=2) {
+            for (kk=pwr_dect ; kk<=(gridCfg->Nz-pwr_dect-2) ; kk+=2) {
                 // y2-plane
                 // Py = Ez*Hx - Ex*Hz
-                poynt += ( EB_WAVE[ii  ][N_y-pwr_dect  ][kk+1]
-                          *EB_WAVE[ii  ][N_y-pwr_dect-1][kk+1]
-                          -EB_WAVE[ii+1][N_y-pwr_dect  ][kk  ]
-                          *EB_WAVE[ii+1][N_y-pwr_dect-1][kk  ] );
+                poynt += ( EB_WAVE[ii  ][gridCfg->Ny-pwr_dect  ][kk+1]
+                          *EB_WAVE[ii  ][gridCfg->Ny-pwr_dect-1][kk+1]
+                          -EB_WAVE[ii+1][gridCfg->Ny-pwr_dect  ][kk  ]
+                          *EB_WAVE[ii+1][gridCfg->Ny-pwr_dect-1][kk  ] );
             }
         }
     }
