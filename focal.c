@@ -576,17 +576,13 @@ int main( int argc, char *argv[] ) {
             // z1-plane and z2-plane
             poynt_z1_ref    = calc_poynt_4( &gridCfg, pwr_dect, "ref_z1", EB_WAVE, EB_WAVE_ref );
             poynt_z1        = calc_poynt_4( &gridCfg, pwr_dect, "z1",     EB_WAVE, EB_WAVE_ref );
-            //poynt_z1_ref    = ( calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect  , "ref_z1", EB_WAVE, EB_WAVE_ref )
-            //                   +calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect+2, "ref_z1", EB_WAVE, EB_WAVE_ref ) )*.5;
-            //poynt_z1        = ( calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect,   "z1",     EB_WAVE, EB_WAVE_ref )
-            //                   +calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect+2, "z1",     EB_WAVE, EB_WAVE_ref ) )*.5;
             poynt_z2        = calc_poynt_4( &gridCfg, pwr_dect, "z2",     EB_WAVE, EB_WAVE_ref );
             // x1-plane and x2-plane
-            //poynt_x1        = calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect, "x1", EB_WAVE, EB_WAVE_ref );
-            //poynt_x2        = calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect, "x2", EB_WAVE, EB_WAVE_ref );
+            //poynt_x1        = calc_poynt_4( &gridCfg, pwr_dect, "x1", EB_WAVE, EB_WAVE_ref );
+            //poynt_x2        = calc_poynt_4( &gridCfg, pwr_dect, "x2", EB_WAVE, EB_WAVE_ref );
             // y1-plane and y2-plane
-            //poynt_y1        = calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect, "y1", EB_WAVE, EB_WAVE_ref );
-            //poynt_y2        = calc_poynt_4( NX, NY, NZ, NZ_ref, pwr_dect, "y2", EB_WAVE, EB_WAVE_ref );
+            //poynt_y1        = calc_poynt_4( &gridCfg, pwr_dect, "y1", EB_WAVE, EB_WAVE_ref );
+            //poynt_y2        = calc_poynt_4( &gridCfg, pwr_dect, "y2", EB_WAVE, EB_WAVE_ref );
 
             
 //            printf( "t = %d, power_abs_ref = %13.5e, power_abs_z1 = %13.5e, power_abs_z2 = %13.5e, poynt_z1 = %13.5e, poynt_z2 = %13.5e\n",
