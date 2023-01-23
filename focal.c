@@ -2379,10 +2379,6 @@ double calc_poynt_4( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
                           *( EB_WAVE[ii+1][jj  ][pwr_dect+1] - EB_WAVE_ref[ii+1][jj  ][pwr_dect+1] )
                           -( EB_WAVE[ii  ][jj+1][pwr_dect  ] - EB_WAVE_ref[ii  ][jj+1][pwr_dect  ] ) 
                           *( EB_WAVE[ii  ][jj+1][pwr_dect+1] - EB_WAVE_ref[ii  ][jj+1][pwr_dect+1] ) );
-                //poynt += ( ( -EB_WAVE[ii+1][jj  ][pwr_dect  ] + EB_WAVE_ref[ii+1][jj  ][pwr_dect  ] )
-                //          *( -EB_WAVE[ii+1][jj  ][pwr_dect+1] + EB_WAVE_ref[ii+1][jj  ][pwr_dect+1] )
-                //          -( -EB_WAVE[ii  ][jj+1][pwr_dect  ] + EB_WAVE_ref[ii  ][jj+1][pwr_dect  ] ) 
-                //          *( -EB_WAVE[ii  ][jj+1][pwr_dect+1] + EB_WAVE_ref[ii  ][jj+1][pwr_dect+1] ) );
             }
         }
     } else if ( strcmp(absorber,"z2") == 0 ) {
