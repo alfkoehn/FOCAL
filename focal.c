@@ -198,7 +198,6 @@ int main( int argc, char *argv[] ) {
         t_int, T_wave, 
 
         scale,
-        NX, NY, NZ, 
 
 #ifdef _OPENMP
         n_threads,                          // number of threads that will be used (OpenMP)
@@ -262,9 +261,6 @@ int main( int argc, char *argv[] ) {
     d_absorb        = 8;
     gridCfg.d_absorb= 8;
 #endif
-    NX          = (280)*scale;
-    NY          = (220)*scale;
-    NZ          = (160)*scale;
     gridCfg.Nx  = (280)*scale;
     gridCfg.Ny  = (220)*scale;
     gridCfg.Nz  = (160)*scale;
@@ -365,7 +361,7 @@ int main( int argc, char *argv[] ) {
     // issue a warning when detector antenna position is beyond Nz
     if (detAnt_04_zpos > (gridCfg.Nz - gridCfg.d_absorb)) {
         printf( "ERROR: check the detector antenna positions into z direction\n" );
-        printf( "       NZ-d_absorb = %d, detAnt_04_zpos = %d\n", 
+        printf( "       Nz-d_absorb = %d, detAnt_04_zpos = %d\n", 
                 gridCfg.Nz-gridCfg.d_absorb, detAnt_04_zpos );
     }
 #endif
@@ -583,15 +579,15 @@ int main( int argc, char *argv[] ) {
             /*
             // EE
             // z1-plane and z2-plane
-            power_EE_ref    += calc_power_EE_1( NX, NY, NZ, NZ_ref, d_absorb, "ref_z1", EB_WAVE, EB_WAVE_ref );
-            power_EE_z1     += calc_power_EE_1( NX, NY, NZ, NZ_ref, d_absorb, "z1",     EB_WAVE, EB_WAVE_ref );
-            power_EE_z2     += calc_power_EE_1( NX, NY, NZ, NZ_ref, d_absorb, "z2",     EB_WAVE, EB_WAVE_ref );
+            power_EE_ref    += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, d_absorb, "ref_z1", EB_WAVE, EB_WAVE_ref );
+            power_EE_z1     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, d_absorb, "z1",     EB_WAVE, EB_WAVE_ref );
+            power_EE_z2     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, d_absorb, "z2",     EB_WAVE, EB_WAVE_ref );
             // x1-plane and x2-plane
-            power_EE_x1     += calc_power_EE_1( NX, NY, NZ, NZ_ref, d_absorb, "x1",     EB_WAVE, EB_WAVE_ref );
-            power_EE_x2     += calc_power_EE_1( NX, NY, NZ, NZ_ref, d_absorb, "x2",     EB_WAVE, EB_WAVE_ref );
+            power_EE_x1     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, d_absorb, "x1",     EB_WAVE, EB_WAVE_ref );
+            power_EE_x2     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, d_absorb, "x2",     EB_WAVE, EB_WAVE_ref );
             // y1-plane and y2-plane
-            power_EE_y1     += calc_power_EE_1( NX, NY, NZ, NZ_ref, d_absorb, "y1",     EB_WAVE, EB_WAVE_ref );
-            power_EE_y2     += calc_power_EE_1( NX, NY, NZ, NZ_ref, d_absorb, "y2",     EB_WAVE, EB_WAVE_ref );
+            power_EE_y1     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, d_absorb, "y1",     EB_WAVE, EB_WAVE_ref );
+            power_EE_y2     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, d_absorb, "y2",     EB_WAVE, EB_WAVE_ref );
             */
 
         }
@@ -669,68 +665,68 @@ int main( int argc, char *argv[] ) {
         printf( "ERROR: could not write filename_hdf5 string\n" );  // use a proper error handler here
     } else {
         sprintf( dSet_name, "E_abs__tint%05d", t_int );
-        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save) ) ;
+        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( gridCfg.Nx/2, gridCfg.Ny/2, gridCfg.Nz/2, filename_hdf5, dSet_name, data2save) ) ;
     }
-    set2zero_3D( NX/2, NY/2, NZ/2, data2save );
+    set2zero_3D( gridCfg.Nx/2, gridCfg.Ny/2, gridCfg.Nz/2, data2save );
     // density
     sprintf( dSet_name, "n_e" );
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, n_e) ) ;
+    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( gridCfg.Nx/2, gridCfg.Ny/2, gridCfg.Nz/2, filename_hdf5, dSet_name, n_e) ) ;
     // background magnetic field
     // B0x: even-odd-odd
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
-    for (ii=0 ; ii<NX ; ii+=2) {
-        for (jj=0 ; jj<NY ; jj+=2) {
-            for (kk=0 ; kk<NZ ; kk+=2) {
+    for (ii=0 ; ii<gridCfg.Nx ; ii+=2) {
+        for (jj=0 ; jj<gridCfg.Ny ; jj+=2) {
+            for (kk=0 ; kk<gridCfg.Nz ; kk+=2) {
                 data2save[(ii/2)][(jj/2)][(kk/2)] = J_B0[ii  ][jj+1][kk+1];
             }
         }
     }
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0x", data2save) ) ;
-    set2zero_3D( NX/2, NY/2, NZ/2, data2save );
+    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( gridCfg.Nx/2, gridCfg.Ny/2, gridCfg.Nz/2, filename_hdf5, "B0x", data2save) ) ;
+    set2zero_3D( gridCfg.Nx/2, gridCfg.Ny/2, gridCfg.Nz/2, data2save );
     // B0y: odd-even-odd
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
-    for (ii=0 ; ii<NX ; ii+=2) {
-        for (jj=0 ; jj<NY ; jj+=2) {
-            for (kk=0 ; kk<NZ ; kk+=2) {
+    for (ii=0 ; ii<gridCfg.Nx ; ii+=2) {
+        for (jj=0 ; jj<gridCfg.Ny ; jj+=2) {
+            for (kk=0 ; kk<gridCfg.Nz ; kk+=2) {
                 data2save[(ii/2)][(jj/2)][(kk/2)] = J_B0[ii+1][jj  ][kk+1];
             }
         }
     }
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0y", data2save) ) ;
-    set2zero_3D( NX/2, NY/2, NZ/2, data2save );
+    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( gridCfg.Nx/2, gridCfg.Ny/2, gridCfg.Nz/2, filename_hdf5, "B0y", data2save) ) ;
+    set2zero_3D( gridCfg.Nx/2, gridCfg.Ny/2, gridCfg.Nz/2, data2save );
     // B0z: odd-odd-even
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
-    for (ii=0 ; ii<NX ; ii+=2) {
-        for (jj=0 ; jj<NY ; jj+=2) {
-            for (kk=0 ; kk<NZ ; kk+=2) {
+    for (ii=0 ; ii<gridCfg.Nx ; ii+=2) {
+        for (jj=0 ; jj<gridCfg.Ny ; jj+=2) {
+            for (kk=0 ; kk<gridCfg.Nz ; kk+=2) {
                 data2save[(ii/2)][(jj/2)][(kk/2)] = J_B0[ii+1][jj+1][kk  ];
             }
         }
     }
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0z", data2save) ) ;
-    set2zero_3D( NX/2, NY/2, NZ/2, data2save );
+    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( gridCfg.Nx/2, gridCfg.Ny/2, gridCfg.Nz/2, filename_hdf5, "B0z", data2save) ) ;
+    set2zero_3D( gridCfg.Nx/2, gridCfg.Ny/2, gridCfg.Nz/2, data2save );
 
     writeConfig2HDF( &gridCfg, &beamCfg, filename_hdf5 );
 
 
 #if defined(HDF5) && defined(DETECTOR_ANTENNA_1D)
     if (detAnt_01_zpos < (gridCfg.Nz - gridCfg.d_absorb)) {
-        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_01" , 
+        detAnt1D_write2hdf5( gridCfg.Nx, filename_hdf5, "/detAnt_01" , 
                              detAnt_01_ypos, detAnt_01_zpos,
                              detAnt_01_fields );
     }
     if (detAnt_02_zpos < (gridCfg.Nz - gridCfg.d_absorb)) {
-        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_02" , 
+        detAnt1D_write2hdf5( gridCfg.Nx, filename_hdf5, "/detAnt_02" , 
                              detAnt_01_ypos, detAnt_02_zpos,
                              detAnt_02_fields );
     }
     if (detAnt_03_zpos < (gridCfg.Nz - gridCfg.d_absorb)) {
-        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_03" , 
+        detAnt1D_write2hdf5( gridCfg.Nx, filename_hdf5, "/detAnt_03" , 
                              detAnt_01_ypos, detAnt_03_zpos,
                              detAnt_03_fields );
     }
     if (detAnt_04_zpos < (gridCfg.Nz - gridCfg.d_absorb)) {
-        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_04" , 
+        detAnt1D_write2hdf5( gridCfg.Nx, filename_hdf5, "/detAnt_04" , 
                              detAnt_01_ypos, detAnt_04_zpos,
                              detAnt_04_fields );
     }
@@ -1280,11 +1276,11 @@ int apply_absorber( gridConfiguration *gridCfg,
             }
         }
     }
-    // z2 absorber: z=d_absorb...NZ
+    // z2 absorber: z=d_absorb...Nz
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<gridCfg->Nx-2 ; ii+=2) {
         for (jj=2 ; jj<gridCfg->Ny-2 ; jj+=2) {
-            for (kk=(gridCfg->Nz-gridCfg->d_absorb) ; kk<gridCfg->Nz-2 ; kk+=2) {      //NZ-d_absorb-2 ???
+            for (kk=(gridCfg->Nz-gridCfg->d_absorb) ; kk<gridCfg->Nz-2 ; kk+=2) {      //Nz-d_absorb-2 ???
                 damp = ((double)kk-((double)gridCfg->Nz-(double)gridCfg->d_absorb))/(double)gridCfg->d_absorb;
                 damp = ABSORBER_DAMPING(eco,damp);
 
@@ -1308,11 +1304,11 @@ int apply_absorber( gridConfiguration *gridCfg,
             }
         }
     }
-    // x2 absorber: x=d_absorb...NX
+    // x2 absorber: x=d_absorb...Nx
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (jj=2 ; jj<gridCfg->Ny-2 ; jj+=2) {
         for (kk=2 ; kk<gridCfg->Nz-2 ; kk+=2) {  
-            for (ii=(gridCfg->Nx-gridCfg->d_absorb) ; ii<gridCfg->Nx-2 ; ii+=2) {    //NX-d_absorb-2 ???
+            for (ii=(gridCfg->Nx-gridCfg->d_absorb) ; ii<gridCfg->Nx-2 ; ii+=2) {    //Nx-d_absorb-2 ???
                 damp = ((double)ii-((double)gridCfg->Nx-(double)gridCfg->d_absorb))/(double)gridCfg->d_absorb;
                 damp = ABSORBER_DAMPING(eco,damp);
 
@@ -1336,11 +1332,11 @@ int apply_absorber( gridConfiguration *gridCfg,
             }
         }
     }
-    // y2 absorber: y=d_absorb...NY
+    // y2 absorber: y=d_absorb...Ny
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<gridCfg->Nx-2 ; ii+=2) {
         for (kk=2 ; kk<gridCfg->Nz-2 ; kk+=2) {
-            for (jj=(gridCfg->Ny-gridCfg->d_absorb) ; jj<gridCfg->Ny-2 ; jj+=2) {  //NY-d_absorb-2 ???
+            for (jj=(gridCfg->Ny-gridCfg->d_absorb) ; jj<gridCfg->Ny-2 ; jj+=2) {  //Ny-d_absorb-2 ???
                 damp = ((double)jj-((double)gridCfg->Ny-(double)gridCfg->d_absorb))/(double)gridCfg->d_absorb;
                 damp = ABSORBER_DAMPING(eco,damp);
 
@@ -1381,11 +1377,11 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
             }
         }
     }
-    // z2 absorber: z=d_absorb...NZ
+    // z2 absorber: z=d_absorb...Nz
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<gridCfg->Nx-2 ; ii+=2) {
         for (jj=2 ; jj<gridCfg->Ny-2 ; jj+=2) {
-            for (kk=(gridCfg->Nz_ref-gridCfg->d_absorb) ; kk<gridCfg->Nz_ref-2 ; kk+=2) {      //NZ-d_absorb-2 ???
+            for (kk=(gridCfg->Nz_ref-gridCfg->d_absorb) ; kk<gridCfg->Nz_ref-2 ; kk+=2) {      //Nz-d_absorb-2 ???
                 damp = ((double)kk-((double)gridCfg->Nz_ref-(double)gridCfg->d_absorb))/(double)gridCfg->d_absorb;
                 damp = ABSORBER_DAMPING(eco,damp);
 
@@ -1409,11 +1405,11 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
             }
         }
     }
-    // x2 absorber: x=d_absorb...NX
+    // x2 absorber: x=d_absorb...Nx
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (jj=2 ; jj<gridCfg->Ny-2 ; jj+=2) {
         for (kk=2 ; kk<gridCfg->Nz_ref-2 ; kk+=2) {  
-            for (ii=(gridCfg->Nx-gridCfg->d_absorb) ; ii<gridCfg->Nx-2 ; ii+=2) {    //NX-d_absorb-2 ???
+            for (ii=(gridCfg->Nx-gridCfg->d_absorb) ; ii<gridCfg->Nx-2 ; ii+=2) {    //Nx-d_absorb-2 ???
                 damp = ((double)ii-((double)gridCfg->Nx-(double)gridCfg->d_absorb))/(double)gridCfg->d_absorb;
                 damp = ABSORBER_DAMPING(eco,damp);
 
@@ -1437,11 +1433,11 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
             }
         }
     }
-    // y2 absorber: y=d_absorb...NY
+    // y2 absorber: y=d_absorb...Ny
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<gridCfg->Nx-2 ; ii+=2) {
         for (kk=2 ; kk<gridCfg->Nz_ref-2 ; kk+=2) {
-            for (jj=(gridCfg->Ny-gridCfg->d_absorb) ; jj<gridCfg->Ny-2 ; jj+=2) {  //NY-d_absorb-2 ???
+            for (jj=(gridCfg->Ny-gridCfg->d_absorb) ; jj<gridCfg->Ny-2 ; jj+=2) {  //Ny-d_absorb-2 ???
                 damp = ((double)jj-((double)gridCfg->Ny-(double)gridCfg->d_absorb))/(double)gridCfg->d_absorb;
                 damp = ABSORBER_DAMPING(eco,damp);
 
@@ -1484,12 +1480,12 @@ int apply_absorber_v2( size_t N_x, size_t N_y, size_t N_z, int d_absorb, double 
             }
         }
     }
-    // z2 absorber: z=d_absorb...NZ
+    // z2 absorber: z=d_absorb...Nz
     if ( strstr(absorber,"z2") ) {      
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
         for (ii=2 ; ii<N_x-2 ; ii+=2) {
             for (jj=2 ; jj<N_y-2 ; jj+=2) {
-                for (kk=(N_z-d_absorb) ; kk<N_z-2 ; kk+=2) {      //NZ-d_absorb-2 ???
+                for (kk=(N_z-d_absorb) ; kk<N_z-2 ; kk+=2) {      //Nz-d_absorb-2 ???
                     damp = ((double)kk-((double)N_z-(double)d_absorb))/(double)d_absorb;
                     damp = ABSORBER_DAMPING(eco,damp);
 
@@ -1517,11 +1513,11 @@ int apply_absorber_v2( size_t N_x, size_t N_y, size_t N_z, int d_absorb, double 
         }
     }
     if ( strstr(absorber,"x2") ) {
-    // x2 absorber: x=d_absorb...NX
+    // x2 absorber: x=d_absorb...Nx
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
         for (jj=2 ; jj<N_y-2 ; jj+=2) {
             for (kk=2 ; kk<N_z-2 ; kk+=2) {  
-                for (ii=(N_x-d_absorb) ; ii<N_x-2 ; ii+=2) {    //NX-d_absorb-2 ???
+                for (ii=(N_x-d_absorb) ; ii<N_x-2 ; ii+=2) {    //Nx-d_absorb-2 ???
                     damp = ((double)ii-((double)N_x-(double)d_absorb))/(double)d_absorb;
                     damp = ABSORBER_DAMPING(eco,damp);
 
@@ -1548,12 +1544,12 @@ int apply_absorber_v2( size_t N_x, size_t N_y, size_t N_z, int d_absorb, double 
             }
         }
     }
-    // y2 absorber: y=d_absorb...NY
+    // y2 absorber: y=d_absorb...Ny
     if ( strstr(absorber,"y2") ) {
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
         for (ii=2 ; ii<N_x-2 ; ii+=2) {
             for (kk=2 ; kk<N_z-2 ; kk+=2) {
-                for (jj=(N_y-d_absorb) ; jj<N_y-2 ; jj+=2) {  //NY-d_absorb-2 ???
+                for (jj=(N_y-d_absorb) ; jj<N_y-2 ; jj+=2) {  //Ny-d_absorb-2 ???
                     damp = ((double)jj-((double)N_y-(double)d_absorb))/(double)d_absorb;
                     damp = ABSORBER_DAMPING(eco,damp);
 
