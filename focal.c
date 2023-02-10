@@ -359,12 +359,12 @@ int main( int argc, char *argv[] ) {
 #ifdef DETECTOR_ANTENNA_1D
     detAnt_01_ypos  = beamCfg.ant_y;
     detAnt_01_zpos  = beamCfg.ant_z+2;
-    detAnt_02_zpos  = round(beamCfg.ant_z+2 + 1*4.67*gridCfg.period); // steps of 5 cm for 28 GHz
-    detAnt_03_zpos  = round(beamCfg.ant_z+2 + 2*4.67*gridCfg.period);
-    detAnt_04_zpos  = round(beamCfg.ant_z+2 + 3*4.67*gridCfg.period);
-    detAnt_05_zpos  = round(beamCfg.ant_z+2 + 4*4.67*gridCfg.period);
-    detAnt_06_zpos  = round(beamCfg.ant_z+2 + 5*4.67*gridCfg.period);
-    detAnt_07_zpos  = round(beamCfg.ant_z+2 + 6*4.67*gridCfg.period);
+    detAnt_02_zpos  = round(beamCfg.ant_z+2 + 1*5*gridCfg.period); // steps of 5 cm for 28 GHz = 4.67*period
+    detAnt_03_zpos  = round(beamCfg.ant_z+2 + 2*5*gridCfg.period);
+    detAnt_04_zpos  = round(beamCfg.ant_z+2 + 3*5*gridCfg.period);
+    detAnt_05_zpos  = round(beamCfg.ant_z+2 + 4*5*gridCfg.period);
+    detAnt_06_zpos  = round(beamCfg.ant_z+2 + 5*5*gridCfg.period);
+    detAnt_07_zpos  = round(beamCfg.ant_z+2 + 6*5*gridCfg.period);
     // positions have to be even numbers, to ensure fields are accessed correctly
     if ((detAnt_01_ypos % 2) != 0)  ++detAnt_01_ypos;
     if ((detAnt_01_zpos % 2) != 0)  ++detAnt_01_zpos;
