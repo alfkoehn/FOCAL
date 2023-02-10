@@ -182,7 +182,7 @@ int detAnt1D_write2hdf5( int N_x,
 #endif
 #ifdef HDF5
 int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[], double array_3D[dim0][dim1][dim2] );
-int writeConfig2HDF( gridConfiguration *gridCfg, char filename[] );
+int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, char filename[] );
 int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], double array_3D[dim0][dim1][dim2]);
 #endif
 
@@ -726,7 +726,7 @@ int main( int argc, char *argv[] ) {
     printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0z", data2save) ) ;
     set2zero_3D( NX/2, NY/2, NZ/2, data2save );
 
-    writeConfig2HDF( &gridCfg, filename_hdf5 );
+    writeConfig2HDF( &gridCfg, &beamCfg, filename_hdf5 );
 
 
 #if defined(HDF5) && defined(DETECTOR_ANTENNA_1D)
@@ -3511,11 +3511,11 @@ int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[]
 
 
 #ifdef HDF5
-int writeConfig2HDF( gridConfiguration *gridCfg, char filename[] ) {
+int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, char filename[] ) {
     //#{{{
 
     long        data2write_long[1];
-    //double      data2write_double[1];
+    double      data2write_double[1];
 
     // hdf related variables
     hid_t       file_id, dataset_id, dataspace_id;      // object identifiers
@@ -3647,6 +3647,77 @@ int writeConfig2HDF( gridConfiguration *gridCfg, char filename[] ) {
     status = H5Dclose(dataset_id);
     if (status < 0) printf("ERROR: could not close dataset '/config/N_z'\n");
 
+    // ant_x
+    dataset_id = H5Dcreate( file_id, "/config/ant_x", H5T_NATIVE_LONG,
+                            dataspace_id, 
+                            H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    data2write_long[0]  = (long)beamCfg->ant_x;
+    status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT,
+                       data2write_long); 
+    if (status < 0) printf( "ERROR: could not write dataset '/config/ant_x' into file '%s'\n", filename);
+    status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '/config/ant_x'\n");
+
+    // ant_y
+    dataset_id = H5Dcreate( file_id, "/config/ant_y", H5T_NATIVE_LONG,
+                            dataspace_id, 
+                            H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    data2write_long[0]  = (long)beamCfg->ant_y;
+    status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT,
+                       data2write_long); 
+    if (status < 0) printf( "ERROR: could not write dataset '/config/ant_y' into file '%s'\n", filename);
+    status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '/config/ant_y'\n");
+
+    // ant_z
+    dataset_id = H5Dcreate( file_id, "/config/ant_z", H5T_NATIVE_LONG,
+                            dataspace_id, 
+                            H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    data2write_long[0]  = (long)beamCfg->ant_z;
+    status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT,
+                       data2write_long); 
+    if (status < 0) printf( "ERROR: could not write dataset '/config/ant_z' into file '%s'\n", filename);
+    status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '/config/ant_z'\n");
+
+    // ant_w0x
+    dataset_id = H5Dcreate( file_id, "/config/ant_w0x", H5T_NATIVE_DOUBLE,
+                            dataspace_id, 
+                            H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    data2write_double[0]  = beamCfg->ant_w0x;
+    status = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT,
+                       data2write_double); 
+    if (status < 0) printf( "ERROR: could not write dataset '/config/ant_w0x' into file '%s'\n", filename);
+    status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '/config/ant_w0x'\n");
+
+    // ant_w0y
+    dataset_id = H5Dcreate( file_id, "/config/ant_w0y", H5T_NATIVE_DOUBLE,
+                            dataspace_id, 
+                            H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    data2write_double[0]  = beamCfg->ant_w0y;
+    status = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT,
+                       data2write_double); 
+    if (status < 0) printf( "ERROR: could not write dataset '/config/ant_w0y' into file '%s'\n", filename);
+    status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '/config/ant_w0y'\n");
+
+    // z2waist
+    dataset_id = H5Dcreate( file_id, "/config/z2waist", H5T_NATIVE_DOUBLE,
+                            dataspace_id, 
+                            H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    data2write_double[0]  = beamCfg->z2waist;
+    status = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT,
+                       data2write_double); 
+    if (status < 0) printf( "ERROR: could not write dataset '/config/z2waist' into file '%s'\n", filename);
+    status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '/config/z2waist'\n");
 
     // terminate access and free ressources/identifiers
     // data space
