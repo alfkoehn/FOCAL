@@ -210,9 +210,6 @@ int main( int argc, char *argv[] ) {
         detAnt_02_zpos,
         detAnt_03_zpos,
         detAnt_04_zpos,
-        detAnt_05_zpos,
-        detAnt_06_zpos,
-        detAnt_07_zpos,
         detAnt_01_ypos,
 #endif
 
@@ -311,9 +308,6 @@ int main( int argc, char *argv[] ) {
     double (*detAnt_02_fields)[5]       = calloc(gridCfg.Nx, sizeof *detAnt_02_fields);
     double (*detAnt_03_fields)[5]       = calloc(gridCfg.Nx, sizeof *detAnt_03_fields);
     double (*detAnt_04_fields)[5]       = calloc(gridCfg.Nx, sizeof *detAnt_04_fields);
-    double (*detAnt_05_fields)[5]       = calloc(gridCfg.Nx, sizeof *detAnt_05_fields);
-    double (*detAnt_06_fields)[5]       = calloc(gridCfg.Nx, sizeof *detAnt_06_fields);
-    double (*detAnt_07_fields)[5]       = calloc(gridCfg.Nx, sizeof *detAnt_07_fields);
 #endif
 
     // reading input parameter
@@ -362,23 +356,17 @@ int main( int argc, char *argv[] ) {
     detAnt_02_zpos  = round(beamCfg.ant_z+2 + 1*5*gridCfg.period); // steps of 5 cm for 28 GHz = 4.67*period
     detAnt_03_zpos  = round(beamCfg.ant_z+2 + 2*5*gridCfg.period);
     detAnt_04_zpos  = round(beamCfg.ant_z+2 + 3*5*gridCfg.period);
-    detAnt_05_zpos  = round(beamCfg.ant_z+2 + 4*5*gridCfg.period);
-    detAnt_06_zpos  = round(beamCfg.ant_z+2 + 5*5*gridCfg.period);
-    detAnt_07_zpos  = round(beamCfg.ant_z+2 + 6*5*gridCfg.period);
     // positions have to be even numbers, to ensure fields are accessed correctly
     if ((detAnt_01_ypos % 2) != 0)  ++detAnt_01_ypos;
     if ((detAnt_01_zpos % 2) != 0)  ++detAnt_01_zpos;
     if ((detAnt_02_zpos % 2) != 0)  ++detAnt_02_zpos;
     if ((detAnt_03_zpos % 2) != 0)  ++detAnt_03_zpos;
     if ((detAnt_04_zpos % 2) != 0)  ++detAnt_04_zpos;
-    if ((detAnt_05_zpos % 2) != 0)  ++detAnt_05_zpos;
-    if ((detAnt_06_zpos % 2) != 0)  ++detAnt_06_zpos;
-    if ((detAnt_07_zpos % 2) != 0)  ++detAnt_07_zpos;
     // issue a warning when detector antenna position is beyond Nz
-    if (detAnt_07_zpos > (gridCfg.Nz - gridCfg.d_absorb)) {
+    if (detAnt_04_zpos > (gridCfg.Nz - gridCfg.d_absorb)) {
         printf( "ERROR: check the detector antenna positions into z direction\n" );
-        printf( "       NZ-d_absorb = %d, detAnt_07_zpos = %d", 
-                gridCfg.Nz-gridCfg.d_absorb, detAnt_07_zpos );
+        printf( "       NZ-d_absorb = %d, detAnt_04_zpos = %d\n", 
+                gridCfg.Nz-gridCfg.d_absorb, detAnt_04_zpos );
     }
 #endif
 
@@ -433,7 +421,7 @@ int main( int argc, char *argv[] ) {
     make_density_profile( &gridCfg,  
             // ne_profile: 1 = plasma mirror
             //             2 = linearly increasing profile
-            2,
+            0,
             // cntrl_para: ne_profile=1 --> 0: plane mirror; oblique mirror: -.36397; 20 degrees: -.17633
             //             ne_profile=2 --> k0*Ln: 25
             25,
@@ -470,9 +458,6 @@ int main( int argc, char *argv[] ) {
     printf( "detector antenna positions: z2 = %d, y1 = %d\n", detAnt_02_zpos, detAnt_01_ypos );
     printf( "detector antenna positions: z3 = %d, y1 = %d\n", detAnt_03_zpos, detAnt_01_ypos );
     printf( "detector antenna positions: z4 = %d, y1 = %d\n", detAnt_04_zpos, detAnt_01_ypos );
-    printf( "detector antenna positions: z5 = %d, y1 = %d\n", detAnt_05_zpos, detAnt_01_ypos );
-    printf( "detector antenna positions: z6 = %d, y1 = %d\n", detAnt_06_zpos, detAnt_01_ypos );
-    printf( "detector antenna positions: z7 = %d, y1 = %d\n", detAnt_07_zpos, detAnt_01_ypos );
 #endif
 
 #ifdef _OPENMP
@@ -547,27 +532,26 @@ int main( int argc, char *argv[] ) {
         // oscillation periods, it was found previously that only one period
         // does not result in a too nice average
         if ( t_int >= (gridCfg.t_end-10*gridCfg.period) ) {
-            detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_01_zpos,
-                                  t_int,  
-                                  EB_WAVE, detAnt_01_fields );
-            detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_02_zpos,
-                                  t_int, 
-                                  EB_WAVE, detAnt_02_fields );
-            detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_03_zpos,
-                                  t_int,
-                                  EB_WAVE, detAnt_03_fields );
-            detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_04_zpos,
-                                  t_int,
-                                  EB_WAVE, detAnt_04_fields );
-            detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_05_zpos,
-                                  t_int,
-                                  EB_WAVE, detAnt_05_fields );
-            detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_06_zpos,
-                                  t_int,
-                                  EB_WAVE, detAnt_06_fields );
-            detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_07_zpos,
-                                  t_int, 
-                                  EB_WAVE, detAnt_07_fields );
+            if (detAnt_01_zpos < (gridCfg.Nz - gridCfg.d_absorb)) {
+                detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_01_zpos,
+                                      t_int,  
+                                      EB_WAVE, detAnt_01_fields );
+            }
+            if (detAnt_02_zpos < (gridCfg.Nz - gridCfg.d_absorb)) {
+                detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_02_zpos,
+                                      t_int, 
+                                      EB_WAVE, detAnt_02_fields );
+            }
+            if (detAnt_03_zpos < (gridCfg.Nz - gridCfg.d_absorb)) {
+                detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_03_zpos,
+                                      t_int,
+                                      EB_WAVE, detAnt_03_fields );
+            }
+            if (detAnt_04_zpos < (gridCfg.Nz - gridCfg.d_absorb)) {
+                detAnt1D_storeValues( &gridCfg, detAnt_01_ypos, detAnt_04_zpos,
+                                      t_int,
+                                      EB_WAVE, detAnt_04_fields );
+            }
         }
 #endif
 
@@ -687,10 +671,10 @@ int main( int argc, char *argv[] ) {
         sprintf( dSet_name, "E_abs__tint%05d", t_int );
         printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save) ) ;
     }
+    set2zero_3D( NX/2, NY/2, NZ/2, data2save );
     // density
     sprintf( dSet_name, "n_e" );
     printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, n_e) ) ;
-    set2zero_3D( NX/2, NY/2, NZ/2, data2save );
     // background magnetic field
     // B0x: even-odd-odd
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
@@ -730,34 +714,36 @@ int main( int argc, char *argv[] ) {
 
 
 #if defined(HDF5) && defined(DETECTOR_ANTENNA_1D)
-    detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_01" , 
-                         detAnt_01_ypos, detAnt_01_zpos,
-                         detAnt_01_fields );
-    detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_02" , 
-                         detAnt_01_ypos, detAnt_02_zpos,
-                         detAnt_02_fields );
-    detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_03" , 
-                         detAnt_01_ypos, detAnt_03_zpos,
-                         detAnt_03_fields );
-    detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_04" , 
-                         detAnt_01_ypos, detAnt_04_zpos,
-                         detAnt_04_fields );
-    detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_05" , 
-                         detAnt_01_ypos, detAnt_05_zpos,
-                         detAnt_05_fields );
-    detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_06" , 
-                         detAnt_01_ypos, detAnt_06_zpos,
-                         detAnt_06_fields );
-    detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_07" , 
-                         detAnt_01_ypos, detAnt_07_zpos,
-                         detAnt_07_fields );
+    if (detAnt_01_zpos < (gridCfg.Nz - gridCfg.d_absorb)) {
+        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_01" , 
+                             detAnt_01_ypos, detAnt_01_zpos,
+                             detAnt_01_fields );
+    }
+    if (detAnt_02_zpos < (gridCfg.Nz - gridCfg.d_absorb)) {
+        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_02" , 
+                             detAnt_01_ypos, detAnt_02_zpos,
+                             detAnt_02_fields );
+    }
+    if (detAnt_03_zpos < (gridCfg.Nz - gridCfg.d_absorb)) {
+        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_03" , 
+                             detAnt_01_ypos, detAnt_03_zpos,
+                             detAnt_03_fields );
+    }
+    if (detAnt_04_zpos < (gridCfg.Nz - gridCfg.d_absorb)) {
+        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_04" , 
+                             detAnt_01_ypos, detAnt_04_zpos,
+                             detAnt_04_fields );
+    }
 #endif
 
-
     free( EB_WAVE );
+    printf( "freed EB_WAVE\n" );
     free( J_B0 );
+    printf( "freed J_B0\n" );
     free( n_e );
+    printf( "freed n_e\n" );
     free( data2save );
+    printf( "freed data2save\n" );
     return EXIT_SUCCESS;
 }//}}}
 
