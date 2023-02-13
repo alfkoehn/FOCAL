@@ -81,7 +81,6 @@ int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
                               char absorber[], 
                               double n_e[gridCfg->Nx/2][gridCfg->Ny/2][gridCfg->Nz/2] );
 int make_B0_profile( gridConfiguration *gridCfg,
-                     int B0_profile, 
                      double cntrl_para, 
                      double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
 int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
@@ -433,10 +432,9 @@ int main( int argc, char *argv[] ) {
     // B0x: even-odd-odd
     // B0y: odd-even-odd
     // B0z: odd-odd-even
+            // B0_profile: 1 = constant field
     make_B0_profile(
             &gridCfg,
-            // B0_profile: 1 = constant field
-            0, 
             // cntrl_para: B0_profile=1 --> value of Y
             .85, 
             J_B0 );
@@ -1040,7 +1038,6 @@ int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
 
 
 int make_B0_profile( gridConfiguration *gridCfg, 
-                     int B0_profile, 
                      double cntrl_para, 
                      double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] ) {
 //{{{
@@ -1052,7 +1049,7 @@ int make_B0_profile( gridConfiguration *gridCfg,
     // B0x: even-odd-odd
     // B0y: odd-even-odd
     // B0z: odd-odd-even
-    if ( B0_profile == 1 ) {
+    if ( gridCfg->B0_profile == 1 ) {
         // constant field
         for (ii=0 ; ii<gridCfg->Nx ; ii+=2) {
             for (jj=0 ; jj<gridCfg->Ny ; jj+=2) {
