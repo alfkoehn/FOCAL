@@ -261,11 +261,11 @@ int main( int argc, char *argv[] ) {
     d_absorb        = 8;
     gridCfg.d_absorb= 8;
 #endif
-    gridCfg.Nx  = (280)*scale;
-    gridCfg.Ny  = (220)*scale;
-    gridCfg.Nz  = (160)*scale;
+    gridCfg.Nx  = (400)*scale;
+    gridCfg.Ny  = (300)*scale;
+    gridCfg.Nz  = (200)*scale;
     gridCfg.Nz_ref  = 2*d_absorb + (int)period;
-    gridCfg.t_end   = (int)((30+30)*period);
+    gridCfg.t_end   = (int)((100)*period);
 
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
@@ -332,7 +332,7 @@ int main( int argc, char *argv[] ) {
         if (angle_zy_set)   printf( "    antAngle_zy = %f\n", beamCfg.antAngle_zy );
     }
 
-    beamCfg.exc_signal  = 4;
+    beamCfg.exc_signal  = 3;//4;
     beamCfg.ant_x       = gridCfg.Nx/2;
     beamCfg.ant_y       = gridCfg.Ny/2;
     beamCfg.ant_z       = gridCfg.d_absorb + 4;
@@ -434,7 +434,7 @@ int main( int argc, char *argv[] ) {
     make_B0_profile(
             &gridCfg,
             // B0_profile: 1 = constant field
-            1, 
+            0, 
             // cntrl_para: B0_profile=1 --> value of Y
             .85, 
             J_B0 );
@@ -478,11 +478,11 @@ int main( int argc, char *argv[] ) {
 
         // add source
         add_source( &gridCfg, &beamCfg,
-                    .85,     // .85=Y, this values should be calculated/extracted from ne-profile
+                    .85*0.,     // .85=Y, this values should be calculated/extracted from ne-profile
                     t_int, omega_t, 
                     antField_xy, antPhaseTerms, EB_WAVE );
         add_source_ref( &gridCfg, &beamCfg,
-                        .85,     // .85=Y, this values should be calculated/extracted from ne-profile
+                        .85*0.,     // .85=Y, this values should be calculated/extracted from ne-profile
                         t_int, omega_t, 
                         antField_xy, antPhaseTerms, EB_WAVE_ref );
 
@@ -558,11 +558,11 @@ int main( int argc, char *argv[] ) {
             poynt_z1        = calc_poynt_4( &gridCfg, pwr_dect, "z1",     EB_WAVE, EB_WAVE_ref );
             poynt_z2        = calc_poynt_4( &gridCfg, pwr_dect, "z2",     EB_WAVE, EB_WAVE_ref );
             // x1-plane and x2-plane
-            //poynt_x1        = calc_poynt_4( &gridCfg, pwr_dect, "x1", EB_WAVE, EB_WAVE_ref );
-            //poynt_x2        = calc_poynt_4( &gridCfg, pwr_dect, "x2", EB_WAVE, EB_WAVE_ref );
+            poynt_x1        = calc_poynt_4( &gridCfg, pwr_dect, "x1", EB_WAVE, EB_WAVE_ref );
+            poynt_x2        = calc_poynt_4( &gridCfg, pwr_dect, "x2", EB_WAVE, EB_WAVE_ref );
             // y1-plane and y2-plane
-            //poynt_y1        = calc_poynt_4( &gridCfg, pwr_dect, "y1", EB_WAVE, EB_WAVE_ref );
-            //poynt_y2        = calc_poynt_4( &gridCfg, pwr_dect, "y2", EB_WAVE, EB_WAVE_ref );
+            poynt_y1        = calc_poynt_4( &gridCfg, pwr_dect, "y1", EB_WAVE, EB_WAVE_ref );
+            poynt_y2        = calc_poynt_4( &gridCfg, pwr_dect, "y2", EB_WAVE, EB_WAVE_ref );
 
             
 //            printf( "t = %d, power_abs_ref = %13.5e, power_abs_z1 = %13.5e, power_abs_z2 = %13.5e, poynt_z1 = %13.5e, poynt_z2 = %13.5e\n",
@@ -1132,7 +1132,7 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
                 // Bx
                 //source  = cos(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)] + M_PI/2.) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
-                EB_WAVE[ii  ][jj+1][beamCfg->ant_z+1] += source*(1.41);
+                EB_WAVE[ii  ][jj+1][beamCfg->ant_z+1] += source*(1.41)*0.;
             }
         }
     } else if ( beamCfg->exc_signal == 4) {
@@ -2337,8 +2337,8 @@ double calc_poynt_4( gridConfiguration *gridCfg,
     
     if ( strcmp(absorber,"ref_z1") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii,jj) reduction(+:poynt)
-        for (ii=pwr_dect ; ii<(gridCfg->Nx-pwr_dect-2) ; ii+=2) {
-            for (jj=pwr_dect ; jj<(gridCfg->Ny-pwr_dect-2) ; jj+=2) {
+        for (ii=pwr_dect ; ii<=(gridCfg->Nx-pwr_dect-2) ; ii+=2) {
+            for (jj=pwr_dect ; jj<=(gridCfg->Ny-pwr_dect-2) ; jj+=2) {
                 // z1-plane
                 // Pz = Ex*Hy - Ey*Hx
                 poynt += ( EB_WAVE_ref[ii+1][jj  ][pwr_dect  ]
@@ -2349,8 +2349,8 @@ double calc_poynt_4( gridConfiguration *gridCfg,
         }
     } else if ( strcmp(absorber,"z1") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii,jj) reduction(+:poynt)
-        for (ii=pwr_dect ; ii<(gridCfg->Nx-pwr_dect-2) ; ii+=2) {
-            for (jj=pwr_dect ; jj<(gridCfg->Ny-pwr_dect-2) ; jj+=2) {
+        for (ii=pwr_dect ; ii<=(gridCfg->Nx-pwr_dect-2) ; ii+=2) {
+            for (jj=pwr_dect ; jj<=(gridCfg->Ny-pwr_dect-2) ; jj+=2) {
                 // z1-plane
                 // Pz = Ex*Hy - Ey*Hx
                 poynt += ( ( EB_WAVE[ii+1][jj  ][pwr_dect  ] - EB_WAVE_ref[ii+1][jj  ][pwr_dect  ] )
@@ -2361,8 +2361,8 @@ double calc_poynt_4( gridConfiguration *gridCfg,
         }
     } else if ( strcmp(absorber,"z2") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii,jj) reduction(+:poynt)
-        for (ii=pwr_dect ; ii<(gridCfg->Nx-pwr_dect-2) ; ii+=2) {
-            for (jj=pwr_dect ; jj<(gridCfg->Ny-pwr_dect-2) ; jj+=2) {
+        for (ii=pwr_dect ; ii<=(gridCfg->Nx-pwr_dect-2) ; ii+=2) {
+            for (jj=pwr_dect ; jj<=(gridCfg->Ny-pwr_dect-2) ; jj+=2) {
                 // z2-plane
                 // Pz = Ex*Hy - Ey*Hx
                 poynt += ( EB_WAVE[ii+1][jj  ][gridCfg->Nz-pwr_dect  ]
