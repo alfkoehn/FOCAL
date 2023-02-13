@@ -334,7 +334,7 @@ int main( int argc, char *argv[] ) {
         if (angle_zy_set)   printf( "    antAngle_zy = %f\n", beamCfg.antAngle_zy );
     }
 
-    beamCfg.exc_signal  = 3;//4;
+    beamCfg.exc_signal  = 5;//3;//4;
     beamCfg.ant_x       = gridCfg.Nx/2;
     beamCfg.ant_y       = gridCfg.Ny/2;
     beamCfg.ant_z       = gridCfg.d_absorb + 4;
@@ -1151,7 +1151,18 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
                 EB_WAVE[ii  ][jj  ][beamCfg->ant_z+1] += source/fact2_Hansen_corr;
             }
         }
-    } 
+    } else if ( beamCfg->exc_signal == 5) {
+        // linearly polarized beam for oblique injection (added: 2023-02-13)
+        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
+#pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
+        for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
+            for ( jj=2 ; jj<gridCfg->Ny ; jj+=2 ) {
+                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                // Ex
+                EB_WAVE[ii+1][jj  ][beamCfg->ant_z  ] += source * (1.*cos(beamCfg->antAngle_zx/180.*M_PI));
+            }
+        }
+    }
 
     return EXIT_SUCCESS;
 }//}}}
@@ -1241,7 +1252,19 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
                 EB_WAVE[ii  ][jj  ][beamCfg->ant_z+1] += source/fact2_Hansen_corr;
             }
         }
-    } 
+    } else if ( beamCfg->exc_signal == 5) {
+        // linearly polarized beam for oblique injection (added: 2023-02-13)
+        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
+#pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
+        for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
+            for ( jj=2 ; jj<gridCfg->Ny ; jj+=2 ) {
+                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                // Ex
+                EB_WAVE[ii+1][jj  ][beamCfg->ant_z  ] += source * (1.*cos(beamCfg->antAngle_zx/180.*M_PI));
+            }
+        }
+    }
+
 
     return EXIT_SUCCESS;
 }//}}}
