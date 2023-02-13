@@ -55,7 +55,8 @@ typedef struct gridConfiguration {
         Nx, Ny, Nz,     // maybe size_t would be better
         Nz_ref,
         d_absorb,
-        t_end;
+        t_end,
+        ne_profile, B0_profile;
     double
         period,
         dx,dt;
@@ -74,7 +75,6 @@ typedef struct beamConfiguration {
 int make_antenna_profile( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
                           double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2] );
 int make_density_profile( gridConfiguration *gridCfg, 
-                          int ne_profile, 
                           double cntrl_para, 
                           double n_e[gridCfg->Nx/2][gridCfg->Ny/2][gridCfg->Nz/2] );
 int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
@@ -267,6 +267,9 @@ int main( int argc, char *argv[] ) {
     gridCfg.Nz_ref  = 2*d_absorb + (int)period;
     gridCfg.t_end   = (int)((100)*period);
 
+    gridCfg.B0_profile  = 0;
+    gridCfg.ne_profile  = 0;
+
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
     double (*EB_WAVE)[gridCfg.Ny][gridCfg.Nz]           = calloc(gridCfg.Nx, sizeof *EB_WAVE);
@@ -414,10 +417,9 @@ int main( int argc, char *argv[] ) {
     printf( "...done defining antenna field\n" );
 
     printf( "starting defining background plasma density\n" );
-    make_density_profile( &gridCfg,  
             // ne_profile: 1 = plasma mirror
             //             2 = linearly increasing profile
-            0,
+    make_density_profile( &gridCfg,  
             // cntrl_para: ne_profile=1 --> 0: plane mirror; oblique mirror: -.36397; 20 degrees: -.17633
             //             ne_profile=2 --> k0*Ln: 25
             25,
@@ -826,7 +828,6 @@ int make_antenna_profile( gridConfiguration *gridCfg, beamConfiguration *beamCfg
 
 
 int make_density_profile( gridConfiguration *gridCfg, 
-                          int ne_profile, 
                           double cntrl_para, 
                           double n_e[gridCfg->Nx/2][gridCfg->Ny/2][gridCfg->Nz/2] ) {
 //{{{
@@ -841,7 +842,7 @@ int make_density_profile( gridConfiguration *gridCfg,
     // if density is larger than this value, FDTD code becomes instable
     ne_max  = gridCfg->period * 2./5.;
 
-    if ( ne_profile == 1 ) {
+    if ( gridCfg->ne_profile == 1 ) {
         // plasma mirror
         for (ii=0 ; ii<(gridCfg->Nx/2) ; ++ii) {
             for (jj=0 ; jj<(gridCfg->Ny/2) ; ++jj) {
@@ -855,7 +856,7 @@ int make_density_profile( gridConfiguration *gridCfg,
                 }
             }
         }
-    } else if ( ne_profile == 2 ) {
+    } else if ( gridCfg->ne_profile == 2 ) {
         // linearly increasing profile with k0Ln as slope
         // n_e(z) = m*z 
         // with m = 2*pi/(k0Ln*lambda) 
@@ -866,7 +867,7 @@ int make_density_profile( gridConfiguration *gridCfg,
             ne_start_z  += 1;
         ne_k0Ln     = cntrl_para;
         printf( "make_density_profile: ne_profile = %d, ne_start_z = %ld, k0Ln = %f\n", 
-                ne_profile, ne_start_z, ne_k0Ln );
+                gridCfg->ne_profile, ne_start_z, ne_k0Ln );
         for (ii=0 ; ii<(gridCfg->Nx/2) ; ++ii) {
             for (jj=0 ; jj<(gridCfg->Ny/2) ; ++jj) {
                 for (kk=0 ; kk<(gridCfg->Nz/2) ; ++kk) {
@@ -886,7 +887,7 @@ int make_density_profile( gridConfiguration *gridCfg,
                 }
             }
         }
-    } else if ( ne_profile == 3 ) {
+    } else if ( gridCfg->ne_profile == 3 ) {
         // plasma cylinder (2D gauss) in center of grid
         //
         //                               (y-y0)^2        (z-z0)^2
@@ -903,7 +904,7 @@ int make_density_profile( gridConfiguration *gridCfg,
                 }
             }
         }
-    } else if ( ne_profile == 4 ) {
+    } else if ( gridCfg->ne_profile == 4 ) {
         // same as ne_profile = 3, but plasma cylinder is now along y
         for (ii=0 ; ii<(gridCfg->Nx/2) ; ++ii) {
             for (jj=0 ; jj<(gridCfg->Ny/2) ; ++jj) {
