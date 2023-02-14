@@ -260,14 +260,14 @@ int main( int argc, char *argv[] ) {
     d_absorb        = 8;
     gridCfg.d_absorb= 8;
 #endif
-    gridCfg.Nx  = (400)*scale;
-    gridCfg.Ny  = (300)*scale;
-    gridCfg.Nz  = (200)*scale;
+    gridCfg.Nx  = (400+200)*scale;
+    gridCfg.Ny  = (300+100)*scale;
+    gridCfg.Nz  = (200+150)*scale;
     gridCfg.Nz_ref  = 2*d_absorb + (int)period;
     gridCfg.t_end   = (int)((100)*period);
 
     gridCfg.B0_profile  = 0;
-    gridCfg.ne_profile  = 0;
+    gridCfg.ne_profile  = 2;
 
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
@@ -335,7 +335,7 @@ int main( int argc, char *argv[] ) {
     }
 
     beamCfg.exc_signal  = 5;//3;//4;
-    beamCfg.ant_x       = gridCfg.Nx/2;
+    beamCfg.ant_x       = gridCfg.d_absorb + 8*gridCfg.period;//gridCfg.Nx/2;
     beamCfg.ant_y       = gridCfg.Ny/2;
     beamCfg.ant_z       = gridCfg.d_absorb + 4;
     // positions have to be even numbers, to ensure fields are accessed correctly
@@ -859,8 +859,8 @@ int make_density_profile( gridConfiguration *gridCfg,
         // n_e(z) = m*z 
         // with m = 2*pi/(k0Ln*lambda) 
         //      z = z-starting_position
-        //ne_start_z  = (gridCfg->d_absorb + gridCfg->period)/2;
-        ne_start_z  = (gridCfg->d_absorb + 224.155)/2;    // benchmark scenario from STEP project: .15m/l_0*period
+        ne_start_z  = (gridCfg->d_absorb + gridCfg->period)/2;
+        //ne_start_z  = (gridCfg->d_absorb + 224.155)/2;    // benchmark scenario from STEP project: .15m/l_0*period
         if (ne_start_z%2 != 0)
             ne_start_z  += 1;
         ne_k0Ln     = cntrl_para;
