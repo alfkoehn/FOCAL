@@ -215,7 +215,6 @@ int main( int argc, char *argv[] ) {
         opt_ret;                            // return value of getopt (reading input parameter)
 
     double
-        period,
 #if BOUNDARY == 1
         eco,
 #endif
@@ -251,11 +250,10 @@ int main( int argc, char *argv[] ) {
 
     // set-up grid
     scale           = 1;
-    period          = 16*scale;
     gridCfg.period  = 16*scale;
 #if BOUNDARY == 1
     d_absorb        = (int)(3*period);
-    gridCfg.d_absorb= (int)(3*period);
+    gridCfg.d_absorb= (int)(3*gridCfg.period);
 #elif BOUNDARY == 2
     d_absorb        = 8;
     gridCfg.d_absorb= 8;
@@ -263,8 +261,8 @@ int main( int argc, char *argv[] ) {
     gridCfg.Nx  = (400+200)*scale;
     gridCfg.Ny  = (300+100)*scale;
     gridCfg.Nz  = (200+150)*scale;
-    gridCfg.Nz_ref  = 2*d_absorb + (int)period;
-    gridCfg.t_end   = (int)((100)*period);
+    gridCfg.Nz_ref  = 2*d_absorb + (int)gridCfg.period;
+    gridCfg.t_end   = (int)((100)*gridCfg.period);
 
     gridCfg.B0_profile  = 0;
     gridCfg.ne_profile  = 2;
@@ -284,7 +282,7 @@ int main( int argc, char *argv[] ) {
     // antenna: phase terms 
     double (*antPhaseTerms)[gridCfg.Ny/2]               = calloc(gridCfg.Nx/2, sizeof *antPhaseTerms);
     // time traces
-    double (*timetraces)[8]                             = calloc((gridCfg.t_end/(int)period), sizeof *timetraces);
+    double (*timetraces)[8]                             = calloc((gridCfg.t_end/(int)gridCfg.period), sizeof *timetraces);
 
     // old E-fields required for Mur's boundary condition
 #if BOUNDARY == 2
@@ -467,7 +465,7 @@ int main( int argc, char *argv[] ) {
 
     for (t_int=0 ; t_int <=gridCfg.t_end ; ++t_int) {
         
-        omega_t += 2.*M_PI/period;
+        omega_t += 2.*M_PI/gridCfg.period;
 
         // to avoid precision problems when a lot of pi's are summed up        
         if (omega_t >= 2.*M_PI) {
@@ -552,7 +550,7 @@ int main( int argc, char *argv[] ) {
 #endif
 
         // IQ detector for power detection
-        if ( t_int >= 20*period ) {
+        if ( t_int >= 20*gridCfg.period ) {
             // z1-plane and z2-plane
             poynt_z1_ref    = calc_poynt_4( &gridCfg, pwr_dect, "ref_z1", EB_WAVE, EB_WAVE_ref );
             poynt_z1        = calc_poynt_4( &gridCfg, pwr_dect, "z1",     EB_WAVE, EB_WAVE_ref );
@@ -593,7 +591,7 @@ int main( int argc, char *argv[] ) {
         }
 
 
-        if ( (t_int % (int)(period)) == 4 )  {
+        if ( (t_int % (int)(gridCfg.period)) == 4 )  {
             printf( "status: number of oscillation periods: %d (t_int= %d) \n",T_wave,t_int);
             printf( "        Poynting-power: z1 = %13.6e, z2 = %13.6e, x1 = %13.6e, x2 = %13.6e, y1 = %13.6e, y2 = %13.6e, (z1+z2+x1+x2+y1+y2)/z1_ref = %13.6e %%\n",
                     power_abs_z1/power_abs_ref, 
@@ -631,7 +629,7 @@ int main( int argc, char *argv[] ) {
     printf( "-------------------------------------------------------------------------------------------------------------\n" );
     printf( "  T   |   poynt_z1   |   poynt_z2   |   poynt_x1   |   poynt_x2   |   poynt_y1   |   poynt_y2   |  P_out     \n" );
     printf( "------+--------------+--------------+--------------+--------------+--------------+--------------+------------\n" );
-    for ( ii=0 ; ii<(gridCfg.t_end/(int)period) ; ++ii )
+    for ( ii=0 ; ii<(gridCfg.t_end/(int)gridCfg.period) ; ++ii )
         printf( " %4d |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e\n",
                 (int)timetraces[ii][1], //timetraces[ii][1],
                 timetraces[ii][2], timetraces[ii][3],
@@ -643,7 +641,7 @@ int main( int argc, char *argv[] ) {
 
     // write timetrace data into file
     // open file in w(rite) mode; might consider using a+ instead
-    writeTimetraces2ascii( (gridCfg.t_end/(int)period), 8, gridCfg.t_end, period, 
+    writeTimetraces2ascii( (gridCfg.t_end/(int)gridCfg.period), 8, gridCfg.t_end, gridCfg.period, 
                            "timetraces2.dat", timetraces );
 
     // save into hdf5
