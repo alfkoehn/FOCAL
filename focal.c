@@ -1078,18 +1078,6 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
         t_rise, 
         source;
 
-    theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
-    fact1_Hansen_corr   = .5*(Y*pow(sin(theta_rad),2) 
-                              +sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )      // O-mode
-                              //-sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )    // X-mode
-                             );
-    fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad);
-
-    if (t_int < 1) {
-        printf( "|E_x/E_y| = %f\n", fact1_Hansen_corr );
-        printf( " E_x/E_z  = %f\n", fact2_Hansen_corr );
-    }
-
 
     if ( beamCfg->exc_signal == 1 ) {
         t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
@@ -1130,6 +1118,20 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
             }
         }
     } else if ( beamCfg->exc_signal == 4) {
+
+        // calculate factor defining ratio of perpendicular E-fields according to Hansen
+        theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
+        fact1_Hansen_corr   = .5*(Y*pow(sin(theta_rad),2) 
+                                  +sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )      // O-mode
+                                  //-sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )    // X-mode
+                                 );
+        fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad);
+
+        if (t_int < 1) {
+            printf( "|E_x/E_y| = %f\n", fact1_Hansen_corr );
+            printf( " E_x/E_z  = %f\n", fact2_Hansen_corr );
+        }
+
         t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
