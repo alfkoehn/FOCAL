@@ -201,7 +201,7 @@ int main( int argc, char *argv[] ) {
 #ifdef _OPENMP
         n_threads,                          // number of threads that will be used (OpenMP)
 #endif
-        d_absorb, pwr_dect,
+        pwr_dect,
 
 #ifdef DETECTOR_ANTENNA_1D
         detAnt_01_zpos,
@@ -252,16 +252,14 @@ int main( int argc, char *argv[] ) {
     scale           = 1;
     gridCfg.period  = 16*scale;
 #if BOUNDARY == 1
-    d_absorb        = (int)(3*period);
     gridCfg.d_absorb= (int)(3*gridCfg.period);
 #elif BOUNDARY == 2
-    d_absorb        = 8;
     gridCfg.d_absorb= 8;
 #endif
     gridCfg.Nx  = (400+200)*scale;
     gridCfg.Ny  = (300+100)*scale;
     gridCfg.Nz  = (200+150)*scale;
-    gridCfg.Nz_ref  = 2*d_absorb + (int)gridCfg.period;
+    gridCfg.Nz_ref  = 2*gridCfg.d_absorb + (int)gridCfg.period;
     gridCfg.t_end   = (int)((100)*gridCfg.period);
 
     gridCfg.B0_profile  = 0;
@@ -344,7 +342,7 @@ int main( int argc, char *argv[] ) {
     beamCfg.ant_w0y     = 2;
     beamCfg.z2waist     = -(298.87)*.0;                // .2/l_0*period = -298.87
 
-    pwr_dect    = d_absorb;
+    pwr_dect    = gridCfg.d_absorb;
 
 #ifdef DETECTOR_ANTENNA_1D
     detAnt_01_ypos  = beamCfg.ant_y;
@@ -577,15 +575,15 @@ int main( int argc, char *argv[] ) {
             /*
             // EE
             // z1-plane and z2-plane
-            power_EE_ref    += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, d_absorb, "ref_z1", EB_WAVE, EB_WAVE_ref );
-            power_EE_z1     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, d_absorb, "z1",     EB_WAVE, EB_WAVE_ref );
-            power_EE_z2     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, d_absorb, "z2",     EB_WAVE, EB_WAVE_ref );
+            power_EE_ref    += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, gridCfg.d_absorb, "ref_z1", EB_WAVE, EB_WAVE_ref );
+            power_EE_z1     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, gridCfg.d_absorb, "z1",     EB_WAVE, EB_WAVE_ref );
+            power_EE_z2     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, gridCfg.d_absorb, "z2",     EB_WAVE, EB_WAVE_ref );
             // x1-plane and x2-plane
-            power_EE_x1     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, d_absorb, "x1",     EB_WAVE, EB_WAVE_ref );
-            power_EE_x2     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, d_absorb, "x2",     EB_WAVE, EB_WAVE_ref );
+            power_EE_x1     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, gridCfg.d_absorb, "x1",     EB_WAVE, EB_WAVE_ref );
+            power_EE_x2     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, gridCfg.d_absorb, "x2",     EB_WAVE, EB_WAVE_ref );
             // y1-plane and y2-plane
-            power_EE_y1     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, d_absorb, "y1",     EB_WAVE, EB_WAVE_ref );
-            power_EE_y2     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, d_absorb, "y2",     EB_WAVE, EB_WAVE_ref );
+            power_EE_y1     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, gridCfg.d_absorb, "y1",     EB_WAVE, EB_WAVE_ref );
+            power_EE_y2     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, gridCfg.d_absorb, "y2",     EB_WAVE, EB_WAVE_ref );
             */
 
         }
