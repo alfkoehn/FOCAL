@@ -1078,9 +1078,14 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
         t_rise, 
         source;
 
+    // If the amplitude of the wave electric field is increasing too fast,
+    // higher harmonics can in principle be excited which can result in an 
+    // oscillating behaviour in the detected power when analyzing mode
+    // conversion scenarios. To avoid this, the field is increased slowly
+    // in time. 
+    t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 
     if ( beamCfg->exc_signal == 1 ) {
-        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
             for ( jj=2 ; jj<gridCfg->Ny ; jj+=2 ) {
@@ -1092,7 +1097,6 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
             }
         }
     } else if ( beamCfg->exc_signal == 2) {
-        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
             for ( jj=2 ; jj<gridCfg->Ny ; jj+=2 ) {
@@ -1102,7 +1106,6 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
             }
         }
     } else if ( beamCfg->exc_signal == 3) {
-        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
             for ( jj=2 ; jj<gridCfg->Ny ; jj+=2 ) {
@@ -1118,6 +1121,8 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
             }
         }
     } else if ( beamCfg->exc_signal == 4) {
+        // elliptically polarized for optimum O-SX conversion using Hansen's
+        // formula for calculating ratio of wave electric fields 
 
         // calculate factor defining ratio of perpendicular E-fields according to Hansen
         theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
@@ -1132,13 +1137,11 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
             printf( " E_x/E_z  = %f\n", fact2_Hansen_corr );
         }
 
-        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
             for ( jj=2 ; jj<gridCfg->Ny ; jj+=2 ) {
-                // note: for X-mode injection, switch cos and sin of source_1 and source_2
-                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 // Ex
+                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 EB_WAVE[ii+1][jj  ][beamCfg->ant_z  ] += source;
                 // Ey
                 //source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)] + M_PI/2.) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
@@ -1151,7 +1154,6 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
         }
     } else if ( beamCfg->exc_signal == 5) {
         // linearly polarized beam for oblique injection (added: 2023-02-13)
-        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
             for ( jj=2 ; jj<gridCfg->Ny ; jj+=2 ) {
@@ -1183,21 +1185,14 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
         t_rise, 
         source;
 
-    theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
-    fact1_Hansen_corr   = .5*(Y*pow(sin(theta_rad),2) 
-                              +sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )      // O-mode
-                              //-sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )    // X-mode
-                             );
-    fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad);
-
-    if (t_int < 1) {
-        printf( "|E_x/E_y| = %f\n", fact1_Hansen_corr );
-        printf( " E_x/E_z  = %f\n", fact2_Hansen_corr );
-    }
-
+    // If the amplitude of the wave electric field is increasing too fast,
+    // higher harmonics can in principle be excited which can result in an 
+    // oscillating behaviour in the detected power when analyzing mode
+    // conversion scenarios. To avoid this, the field is increased slowly
+    // in time. 
+    t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 
     if ( beamCfg->exc_signal == 1 ) {
-        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
             for ( jj=2 ; jj<gridCfg->Ny ; jj+=2 ) {
@@ -1219,7 +1214,6 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
             }
         }
     } else if ( beamCfg->exc_signal == 3) {
-        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
             for ( jj=2 ; jj<gridCfg->Ny ; jj+=2 ) {
@@ -1233,13 +1227,26 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
             }
         }
     } else if ( beamCfg->exc_signal == 4) {
-        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
+        // elliptically polarized for optimum O-SX conversion using Hansen's
+        // formula for calculating ratio of wave electric fields 
+
+        theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
+        fact1_Hansen_corr   = .5*(Y*pow(sin(theta_rad),2) 
+                                  +sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )      // O-mode
+                                  //-sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )    // X-mode
+                                 );
+        fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad);
+
+        if (t_int < 1) {
+            printf( "|E_x/E_y| = %f\n", fact1_Hansen_corr );
+            printf( " E_x/E_z  = %f\n", fact2_Hansen_corr );
+        }
+
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
             for ( jj=2 ; jj<gridCfg->Ny ; jj+=2 ) {
-                // note: for X-mode injection, switch cos and sin of source_1 and source_2
-                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 // Ex
+                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 EB_WAVE[ii+1][jj  ][beamCfg->ant_z  ] += source;
                 // Ey
                 //source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)] + M_PI/2.) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
@@ -1252,7 +1259,6 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
         }
     } else if ( beamCfg->exc_signal == 5) {
         // linearly polarized beam for oblique injection (added: 2023-02-13)
-        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
         for ( ii=2 ; ii<gridCfg->Nx ; ii+=2 ) {
             for ( jj=2 ; jj<gridCfg->Ny ; jj+=2 ) {
