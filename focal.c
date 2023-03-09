@@ -64,7 +64,8 @@ typedef struct gridConfiguration {
 typedef struct beamConfiguration {
     int
         exc_signal,
-        ant_x, ant_y, ant_z;
+        ant_x, ant_y, ant_z,
+        rampUpMethod;
     double
         antAngle_zy, antAngle_zx,
         ant_w0x, ant_w0y,
@@ -83,6 +84,7 @@ int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
 int make_B0_profile( gridConfiguration *gridCfg,
                      double cntrl_para, 
                      double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
+double antenna_field_rampup( int rampUpMethod, double period, int t_int );
 int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
                 double Y, 
                 int t_int, double omega_t, 
@@ -331,6 +333,7 @@ int main( int argc, char *argv[] ) {
     }
 
     beamCfg.exc_signal  = 5;//3;//4;
+    beamCfg.rampUpMethod= 1;
     beamCfg.ant_x       = gridCfg.d_absorb + 8*gridCfg.period;//gridCfg.Nx/2;
     beamCfg.ant_y       = gridCfg.Ny/2;
     beamCfg.ant_z       = gridCfg.d_absorb + 4;
@@ -1061,6 +1064,31 @@ int make_B0_profile( gridConfiguration *gridCfg,
 }//}}}
 
 
+double antenna_field_rampup( int rampUpMethod, double period, int t_int ){
+//{{{
+
+    double
+        t_rise;
+
+    // If the amplitude of the wave electric field is increasing too fast,
+    // higher harmonics can in principle be excited which can result in an 
+    // oscillating behaviour in the detected power when analyzing mode
+    // conversion scenarios. To avoid this, the field is increased slowly
+    // in time.
+
+    if (rampUpMethod == 1) {
+        // exponential increase reaching 1 after roughly 30 oscillation periods
+        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/period), 2 )/100. );
+    } else {
+        printf( "antenna_field_rampup: WARNING, rampUpMethod %d does not exist\n", rampUpMethod );
+        printf( "                      ==> no smooth ramp-up, just set instantly to 1\n" );
+        t_rise  = 1.;
+    }
+
+    return t_rise;
+} //}}}
+
+
 int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
                 double Y, 
                 int t_int, double omega_t, 
@@ -1078,12 +1106,8 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
         t_rise, 
         source;
 
-    // If the amplitude of the wave electric field is increasing too fast,
-    // higher harmonics can in principle be excited which can result in an 
-    // oscillating behaviour in the detected power when analyzing mode
-    // conversion scenarios. To avoid this, the field is increased slowly
-    // in time. 
-    t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
+    // slowly increase field in time 
+    t_rise  = antenna_field_rampup( beamCfg->rampUpMethod, gridCfg->period, t_int );
 
     if ( beamCfg->exc_signal == 1 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
@@ -1185,12 +1209,8 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
         t_rise, 
         source;
 
-    // If the amplitude of the wave electric field is increasing too fast,
-    // higher harmonics can in principle be excited which can result in an 
-    // oscillating behaviour in the detected power when analyzing mode
-    // conversion scenarios. To avoid this, the field is increased slowly
-    // in time. 
-    t_rise  = 1. - exp( -1*pow( ((double)(t_int)/gridCfg->period), 2 )/100. );
+    // slowly increase field in time 
+    t_rise  = antenna_field_rampup( beamCfg->rampUpMethod, gridCfg->period, t_int );
 
     if ( beamCfg->exc_signal == 1 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
