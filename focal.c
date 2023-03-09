@@ -85,6 +85,7 @@ int make_B0_profile( gridConfiguration *gridCfg,
                      double cntrl_para, 
                      double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
 double antenna_field_rampup( int rampUpMethod, double period, int t_int );
+double antenna_calcHansenExEy_O( double theta_rad, double Y );
 int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
                 double Y, 
                 int t_int, double omega_t, 
@@ -1089,6 +1090,20 @@ double antenna_field_rampup( int rampUpMethod, double period, int t_int ){
 } //}}}
 
 
+double antenna_calcHansenExEy_O( double theta_rad, double Y ){
+    //{{{
+
+    double
+        ExEy;
+
+    ExEy    = .5*(Y*pow(sin(theta_rad),2) 
+                  +sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )
+                 );
+
+    return ExEy;
+}//}}}
+
+
 int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
                 double Y, 
                 int t_int, double omega_t, 
@@ -1150,10 +1165,7 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
 
         // calculate factor defining ratio of perpendicular E-fields according to Hansen
         theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
-        fact1_Hansen_corr   = .5*(Y*pow(sin(theta_rad),2) 
-                                  +sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )      // O-mode
-                                  //-sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )    // X-mode
-                                 );
+        fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, Y );
         fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad);
 
         if (t_int < 1) {
@@ -1251,10 +1263,7 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
         // formula for calculating ratio of wave electric fields 
 
         theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
-        fact1_Hansen_corr   = .5*(Y*pow(sin(theta_rad),2) 
-                                  +sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )      // O-mode
-                                  //-sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )    // X-mode
-                                 );
+        fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, Y );
         fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad);
 
         if (t_int < 1) {
