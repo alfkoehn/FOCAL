@@ -1069,7 +1069,10 @@ double antenna_field_rampup( int rampUpMethod, double period, int t_int ){
 //{{{
 
     double
-        t_rise;
+        t_rise,
+        tau;
+
+    tau = 100.;
 
     // If the amplitude of the wave electric field is increasing too fast,
     // higher harmonics can in principle be excited which can result in an 
@@ -1079,7 +1082,7 @@ double antenna_field_rampup( int rampUpMethod, double period, int t_int ){
 
     if (rampUpMethod == 1) {
         // exponential increase reaching 1 after roughly 30 oscillation periods
-        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/period), 2 )/100. );
+        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/period), 2 )/tau );
     } else {
         printf( "antenna_field_rampup: WARNING, rampUpMethod %d does not exist\n", rampUpMethod );
         printf( "                      ==> no smooth ramp-up, just set instantly to 1\n" );
