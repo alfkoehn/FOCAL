@@ -107,6 +107,8 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
 int apply_absorber_v2( size_t N_x, size_t N_y, size_t N_z, int d_absorb, double eco, 
                        char absorber[],
                        double EB_WAVE[N_x][N_y][N_z] );
+int apply_numerical_viscosity( gridConfiguration *gridCfg,
+                               double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
 int abc_Mur_saveOldE_xdir( gridConfiguration *gridCfg, 
                            double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
                            double E_old[8][gridCfg->Ny][gridCfg->Nz] );
@@ -508,6 +510,9 @@ int main( int argc, char *argv[] ) {
         // advance E
         advance_E(     &gridCfg, EB_WAVE,     J_B0 );
         advance_E_ref( &gridCfg, EB_WAVE_ref       );
+
+        // optionally, apply numerical viscosity
+        //apply_numerical_viscosity( &gridCfg, EB_WAVE );
 
         // apply Mur's boundary conditions
 #if BOUNDARY == 2
@@ -1617,6 +1622,38 @@ int apply_absorber_v2( size_t N_x, size_t N_y, size_t N_z, int d_absorb, double 
             }
         }
     }
+    return EXIT_SUCCESS;
+}//}}}
+
+
+int apply_numerical_viscosity( gridConfiguration *gridCfg,
+                               double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] ) {
+    //{{{
+    // Ex: odd-even-even
+    // Ey: even-odd-even
+    // Ez: even-even-odd
+
+    size_t
+        ii, jj, kk;
+
+    double
+        aux, ny;
+
+    ny  = 1e-4;
+    
+#pragma omp parallel for default(shared) private(ii,jj,kk,aux)
+    for (ii=2 ; ii<gridCfg->Nx-2 ; ii+=2) {
+        for (jj=2 ; jj<gridCfg->Ny-2 ; jj+=2) {
+            for (kk=2 ; kk<gridCfg->Nz-2 ; kk+=2) {
+                aux = ny*(   EB_WAVE[ii  ][jj  ][kk+1+2] 
+                          +  EB_WAVE[ii  ][jj  ][kk+1-2]
+                          -2*EB_WAVE[ii  ][jj  ][kk+1  ]
+                        );
+                EB_WAVE[ii  ][jj  ][kk+1] += aux;
+            }
+        }
+    }
+
     return EXIT_SUCCESS;
 }//}}}
 
