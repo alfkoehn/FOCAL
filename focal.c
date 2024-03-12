@@ -261,9 +261,9 @@ int main( int argc, char *argv[] ) {
 #elif BOUNDARY == 2
     gridCfg.d_absorb= 8;
 #endif
-    gridCfg.Nx  = (400+200)*scale;
-    gridCfg.Ny  = (300+100)*scale;
-    gridCfg.Nz  = (200+150)*scale;
+    gridCfg.Nx  = (400+0*200)*scale;
+    gridCfg.Ny  = (300+0*100)*scale;
+    gridCfg.Nz  = (200+0*150)*scale;
     gridCfg.Nz_ref  = 2*gridCfg.d_absorb + (int)gridCfg.period;
     gridCfg.t_end   = (int)((100)*gridCfg.period);
 
