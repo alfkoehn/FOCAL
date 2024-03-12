@@ -60,9 +60,6 @@
 int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
                               char absorber[], 
                               double n_e[gridCfg->Nx/2][gridCfg->Ny/2][gridCfg->Nz/2] );
-int make_B0_profile( gridConfiguration *gridCfg,
-                     double cntrl_para, 
-                     double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
 int apply_absorber( gridConfiguration *gridCfg, 
                     double eco, 
                     double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
@@ -797,34 +794,6 @@ int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
 
     return EXIT_SUCCESS;
 } //}}}
-
-
-int make_B0_profile( gridConfiguration *gridCfg, 
-                     double cntrl_para, 
-                     double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] ) {
-//{{{
-    size_t
-        ii, jj, kk; 
-//    double
-//        aux;
-
-    // B0x: even-odd-odd
-    // B0y: odd-even-odd
-    // B0z: odd-odd-even
-    if ( gridCfg->B0_profile == 1 ) {
-        // constant field
-        for (ii=0 ; ii<gridCfg->Nx ; ii+=2) {
-            for (jj=0 ; jj<gridCfg->Ny ; jj+=2) {
-                for (kk=0 ; kk<gridCfg->Nz ; kk+=2) {
-                    J_B0[ii  ][jj+1][kk+1] = cntrl_para;
-                    J_B0[ii+1][jj  ][kk+1] = cntrl_para*.0;
-                    J_B0[ii+1][jj+1][kk  ] = cntrl_para*.0;
-                }
-            }
-        }
-    } 
-    return EXIT_SUCCESS;
-}//}}}
 
 
 int apply_absorber( gridConfiguration *gridCfg, 
