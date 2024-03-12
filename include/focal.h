@@ -101,5 +101,8 @@ int abc_Mur_1st_ref( gridConfiguration *gridCfg,
                      double E_old_ydir[gridCfg->Nx][8][gridCfg->Nz_ref], 
                      double E_old_zdir[gridCfg->Nx][gridCfg->Ny][8] );
 
+int set2zero_1D( size_t N_x, double arr_1D[N_x] );
+int set2zero_3D( size_t N_x, size_t N_y, size_t N_z, double arr_3D[N_x][N_y][N_z] );
+
 #endif  // FOCAL_H
 
