@@ -54,6 +54,7 @@
 #include "focal.h"
 #include "antenna.h"
 #include "grid_io.h"
+#include "background_profiles.h"
 
 
 // prototyping
