@@ -6,6 +6,8 @@
     #define M_PI 3.14159265358979323846
 #endif
 
+#define ABSORBER_DAMPING(eco,damp) (1.-eco*damp*damp)
+
 // define structures
 typedef struct gridConfiguration {
     int
