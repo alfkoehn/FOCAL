@@ -51,10 +51,10 @@
 #define DETECTOR_ANTENNA_1D
 
 
-//#include "include/focal.h"
-//#include "include/antenna.h"
 #include "focal.h"
 #include "antenna.h"
+#include "grid_io.h"
+
 
 // prototyping
 int make_density_profile( gridConfiguration *gridCfg, 
@@ -66,8 +66,6 @@ int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
 int make_B0_profile( gridConfiguration *gridCfg,
                      double cntrl_para, 
                      double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
-//double antenna_field_rampup( int rampUpMethod, double period, int t_int );
-//double antenna_calcHansenExEy_O( double theta_rad, double Y );
 int apply_absorber( gridConfiguration *gridCfg, 
                     double eco, 
                     double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
@@ -108,19 +106,6 @@ int abc_Mur_1st_ref( gridConfiguration *gridCfg,
                      double E_old_xdir[8][gridCfg->Ny][gridCfg->Nz_ref], 
                      double E_old_ydir[gridCfg->Nx][8][gridCfg->Nz_ref], 
                      double E_old_zdir[gridCfg->Nx][gridCfg->Ny][8] );
-//int advance_J( gridConfiguration *gridCfg, 
-//               double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
-//               double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz],
-//               double n_e[gridCfg->Nx/2][gridCfg->Ny/2][gridCfg->Nz/2] ); 
-//int advance_B( gridConfiguration *gridCfg, 
-//               double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
-//int advance_B_ref( gridConfiguration *gridCfg, 
-//                   double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz_ref] );
-//int advance_E( gridConfiguration *gridCfg, 
-//               double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
-//               double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] );
-//int advance_E_ref( gridConfiguration *gridCfg, 
-//                   double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz_ref] ); 
 double calc_poynt_4( gridConfiguration *gridCfg, 
                      int pwr_dect, char absorber[],
                      double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
@@ -139,8 +124,6 @@ double calc_power_EE_1( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
                        double EB_WAVE[N_x][N_y][N_z], double EB_WAVE_ref[N_x][N_y][N_z_ref] );
 int set2zero_1D( size_t N_x, double arr_1D[N_x] );
 int set2zero_3D( size_t N_x, size_t N_y, size_t N_z, double arr_3D[N_x][N_y][N_z] );
-int writeTimetraces2ascii( int dim0, int dim1, int t_end, double period, 
-                           char filename[], double timetraces[dim0][dim1] );
 #ifdef DETECTOR_ANTENNA_1D
 int detAnt1D_storeValues( gridConfiguration *gridCfg,
                           size_t detAnt_ypos, size_t detAnt_zpos,
@@ -3313,44 +3296,6 @@ int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], do
     return EXIT_SUCCESS;
 }//#}}}
 #endif
-
-
-int writeTimetraces2ascii( int dim0, int dim1, int t_end, double period, 
-                           char filename[], double timetraces[dim0][dim1] ) {
-//{{{
-
-    size_t
-        ii;
-
-    FILE
-        *file_pntr;
-
-    // open file in w(rite) mode; might consider using a+ instead
-    file_pntr   = fopen( filename, "w" );
-    if (file_pntr == NULL) {
-        printf( "ERROR: Unable to create file for timetraces.\n" );
-        return EXIT_FAILURE;
-    } else {
-        // NOTE: if return value of printf < 0, then writing failed.
-        //       might be good idea to implicetely check this
-        //       e.g. if ( (fprintf( file_pntr, "a b c" )) < 0 ) ....
-        fprintf( file_pntr, "# T  poynt_z1  poynt_z2  poynt_x1  poynt_x2  poynt_y1  poynt_y2  P_out\n" ); 
-        for ( ii=0 ; ii<(t_end/(int)period) ; ++ii )
-            fprintf( file_pntr, " %4d  %13.6e  %13.6e  %13.6e  %13.6e  %13.6e  %13.6e  %13.6e\n",
-                    (int)timetraces[ii][1], 
-                    timetraces[ii][2], timetraces[ii][3],
-                    timetraces[ii][4], timetraces[ii][5],
-                    timetraces[ii][6], timetraces[ii][7],
-                    (timetraces[ii][2]+timetraces[ii][3] + timetraces[ii][4]+timetraces[ii][5] + timetraces[ii][6]+timetraces[ii][7])
-                  );
-        if ((fclose(file_pntr)) == EOF) {
-            printf( "ERROR: could not close file for timetraces.\n" );
-        }
-    }
-    printf( "successfully written timetraces into %s\n", filename );
-    return EXIT_SUCCESS;
-
-}//}}}
 
 
 int set2zero_1D( size_t N_x, double arr_1D[N_x] ){
