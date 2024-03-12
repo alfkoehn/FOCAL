@@ -80,7 +80,7 @@ def plot_simple( fname_in, dSet_name='',
         contLevels  = np.logspace( np.log10(1e-2), np.log10(np.amax(E_abs)), 8)[3:].tolist()
 
     if not silent:
-        print( funcname )
+        print( funcName )
         print( "  status: contour levels = ", contLevels )
 
     fig1    = mlab.figure( bgcolor=(1,1,1),
