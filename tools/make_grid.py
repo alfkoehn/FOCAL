@@ -82,8 +82,32 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                     arr[ii, jj, kk] = ii+jj+kk
 
     elif ne_profile == 2:
+        # mirror/jump parallel to yz-plane
         arr[ :int(Nx/2), :, : ]  = 0
         arr[ int(Nx/2):, :, : ]  = 5
+    elif ne_profile == 3:
+        # mirror/jump parallel to xz-plane
+        arr[ :, :int(Ny/2), : ]  = 0
+        arr[ :, int(Ny/2):, : ]  = 5
+    elif ne_profile == 4:
+        # mirror/jump parallel to xy-plane
+        arr[ :, :, :int(Nz/2) ]  = 0
+        arr[ :, :, int(Nz/2): ]  = 5
+
+    elif ne_profile == 5:
+        # tilted xy-plane (rotated around y-axis)
+        # z = m*x + b = dz/dx + z0 = (z1-z0)/dx + z0
+        z0  = round(Nz/2 - Nz/5)
+        z1  = round(Nz/2 + Nz/5)
+        dx  = Nx
+        z   = lambda x : (z1-z0)/dx*x + z0
+        ne_max  = 5
+        for ii in range(Nx):
+            for kk in range(Nz):
+                if kk < z(ii):
+                    arr[ii, :, round(kk)]  = 0
+                else:
+                    arr[ii, :, round(kk)]  = ne_max
 
     return arr
     #}}}
@@ -92,7 +116,7 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
 def main():
     #{{{
 
-    n_e = make_ne_profile( 2, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
+    n_e = make_ne_profile( 5, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
     
     write2hdf5( [], n_e, fname='grid.h5', dSet_name='n_e' )
 

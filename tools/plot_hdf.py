@@ -57,6 +57,7 @@ def readhdf5( fname, dSet_name ):
 
 
 def plot_simple( fname_in, dSet_name='',
+                 contLevels=20, 
                  fname_out='',
                  silent=True, 
                ):
@@ -75,7 +76,7 @@ def plot_simple( fname_in, dSet_name='',
 
     colScale    = 'lin'
     if colScale == 'lin':
-        contLevels  = np.linspace( 0, np.amax(data2plot), 20 )[1:].tolist()
+        contLevels  = np.linspace( 0, np.amax(data2plot), contLevels )[1:].tolist()
     elif colScale == 'log':
         contLevels  = np.logspace( np.log10(1e-2), np.log10(np.amax(E_abs)), 8)[3:].tolist()
 
@@ -130,16 +131,20 @@ def main():
                          help="Filename of hdf5 output file from FOCAL." )
     parser.add_argument( "-d", "--dSet_name", type=str, default="",
                          help="Dataset name to be plotted." )
+    parser.add_argument( "-c", "--contLevels", type=int, default=20,
+                         help="Number of contour levels used." )
+
     # read all argments from command line
     args        = parser.parse_args()
     fname       = args.filename
     dSet_name   = args.dSet_name
+    contLevels  = args.contLevels
 
     print( "  Following arguments are set (via command line options): " )
     print( "    fname = {0}".format(fname) )
     print( "    dSet_name = {0}".format(dSet_name) )
 
-    plot_simple(fname, dSet_name=dSet_name, silent=False)
+    plot_simple(fname, dSet_name=dSet_name, contLevels=contLevels, silent=False)
 
     #}}}
 
