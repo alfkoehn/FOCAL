@@ -92,7 +92,7 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
 def main():
     #{{{
 
-    n_e = make_ne_profile( 2, Nx=400, Ny=300, Nz=200 )
+    n_e = make_ne_profile( 2, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
     
     write2hdf5( [], n_e, fname='grid.h5', dSet_name='n_e' )
 

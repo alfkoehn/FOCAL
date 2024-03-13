@@ -4,6 +4,8 @@
 
 #include "focal.h"
 #include "background_profiles.h"
+#include "hdf5.h"
+#include "grid_io.h"
 
 int make_density_profile( gridConfiguration *gridCfg, 
                           double cntrl_para, 
@@ -94,6 +96,12 @@ int make_density_profile( gridConfiguration *gridCfg,
                 }
             }
         }
+    } else if ( gridCfg->ne_profile == 5 ) {
+        // filename and dataset-name are currently hard-coded
+        //   ==> change this
+        //       either provide additional parameter in function call
+        //       or not load the profile here, but directly in main
+        readMyHDF( gridCfg->Nx/2, gridCfg->Ny/2, gridCfg->Nz/2, "input/grid.h5", "n_e", n_e );
     }
     return EXIT_SUCCESS;
 }//}}}

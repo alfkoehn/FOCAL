@@ -1,7 +1,8 @@
 # this is a makefile
 # a set of rules are defined below, where each rule consists of 3 parts:
 # 	target: pre-requisites
-# 		command					<-- needs to be indented by 1 tab
+# 		command1				<-- needs to be indented by 1 tab
+# 		command2
 # running make without arguments, starts the target "all"
 #
 # automatic variables:
@@ -35,6 +36,11 @@ CFLAGS = -Wall -O2 -fopenmp -I$(HEADER_DIR)
 
 all: $(EXE_NAME)
 
+# create build directory if it does not exists
+#$(BUILD_DIR):
+#	@echo "Folder $(BUILD_DIR) does not exist, will be created"
+#	mkdir -p $@
+
 # build executable
 $(EXE_NAME): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(BIN_DIR)/$@ $^
@@ -47,6 +53,11 @@ $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.c
 show: $(SOURCES) $(OBJECTS)
 	echo $^
 
+# setup build and bin directories
+#dir:
+#	@mkdir -p $(BUILD_DIR) $(BIN_DIR)
+
+# clean build and bin directories
 clean:
 	rm -f $(BUILD_DIR)/*.o $(BIN_DIR)/$(EXE_NAME)
 

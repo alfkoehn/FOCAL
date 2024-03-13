@@ -1,6 +1,10 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
+#include "focal.h"
+#include "hdf5.h"
 #include "grid_io.h"
 
 int writeTimetraces2ascii( int dim0, int dim1, int t_end, double period, 
@@ -41,7 +45,7 @@ int writeTimetraces2ascii( int dim0, int dim1, int t_end, double period,
 }//}}}
 
 
-#ifdef HDF5
+//#ifdef HDF5
 int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[], double array_3D[dim0][dim1][dim2] ) {
     //#{{{
 
@@ -203,10 +207,10 @@ int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[]
     
     return EXIT_SUCCESS;
 }//#}}}
-#endif
+//#endif
 
 
-#ifdef HDF5
+//#ifdef HDF5
 int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, char filename[] ) {
     //#{{{
 
@@ -425,10 +429,10 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, cha
     
     return EXIT_SUCCESS;
 }//#}}}
-#endif
+//#endif
 
 
-#ifdef HDF5
+//#ifdef HDF5
 int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], double array_3D[dim0][dim1][dim2]) {
     //#{{{
 
@@ -461,10 +465,10 @@ int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], do
 
     return EXIT_SUCCESS;
 }//#}}}
-#endif
+//#endif
 
 
-#ifdef DETECTOR_ANTENNA_1D
+//#ifdef DETECTOR_ANTENNA_1D
 int detAnt1D_storeValues( gridConfiguration *gridCfg, 
                           size_t detAnt_ypos, size_t detAnt_zpos,
                           int tt, 
@@ -509,10 +513,10 @@ int detAnt1D_storeValues( gridConfiguration *gridCfg,
     return EXIT_SUCCESS;
 
 }//}}}
-#endif
+//#endif
 
 
-#if defined(HDF5) && defined(DETECTOR_ANTENNA_1D)
+//#if defined(HDF5) && defined(DETECTOR_ANTENNA_1D)
 int detAnt1D_write2hdf5( int N_x, 
                          char filename[], char detAnt_groupName[], 
                          size_t detAnt_ypos, size_t detAnt_zpos,
@@ -775,6 +779,6 @@ int detAnt1D_write2hdf5( int N_x,
 
     return EXIT_SUCCESS;
 }//#}}}
-#endif
+//#endif
 
 

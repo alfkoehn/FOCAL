@@ -134,7 +134,7 @@ int main( int argc, char *argv[] ) {
     gridCfg.t_end   = (int)((100-50)*gridCfg.period);
 
     gridCfg.B0_profile  = 0;
-    gridCfg.ne_profile  = 2;
+    gridCfg.ne_profile  = 2+3;
 
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
