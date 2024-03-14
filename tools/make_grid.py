@@ -161,15 +161,10 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
         dz  = Nz/4
         ne_max      = 5
         arr[:,:,:]  = 0
+        arr[ round(xc-dx/2):round(xc+dx/2), 
+             round(yc-dy/2):round(yc+dy/2),   
+             round(zc-dz/2):round(zc+dz/2) ] = ne_max
         # note that this can be done more efficient (i.e. w/o a for-loop)
-        for ii in range(Nx):
-            for jj in range(Ny):
-                for kk in range(Nz):
-                    if (    (ii > (xc-dx/2) and ii < (xc+dx/2))
-                        and (jj > (yc-dy/2) and jj < (yc+dy/2))
-                        and (kk > (zc-dz/2) and kk < (zc+dz/2))
-                       ):
-                        arr[ii,jj,kk]   = ne_max
 
     elif ne_profile == 8:
         # sphere
@@ -227,7 +222,7 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                              round(new_coords[1,0]),
                              round(new_coords[2,0]) ] = ne_max/2.
 
-    elif ne_profile == 9:
+    elif ne_profile == 10:
         # cube rotated around x-axis
         xc  = Nx/2
         yc  = Ny/2
@@ -316,7 +311,7 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
 def main():
     #{{{
 
-    n_e = make_ne_profile( 11, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
+    n_e = make_ne_profile( 7, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
     
     write2hdf5( [], n_e, fname='grid.h5', dSet_name='n_e' )
 
