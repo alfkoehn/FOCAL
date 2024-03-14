@@ -133,6 +133,7 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
         dz  = Nz/4
         ne_max      = 5
         arr[:,:,:]  = 0
+        # note that this can be done more efficient (i.e. w/o a for-loop)
         for ii in range(Nx):
             for jj in range(Ny):
                 for kk in range(Nz):
@@ -141,8 +142,21 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                         and (kk > (zc-dz/2) and kk < (zc+dz/2))
                        ):
                         arr[ii,jj,kk]   = ne_max
-                        #print( 'arr{{0},{1},{2}] = {3}'.format(ii,jj,kk,arr[ii,jj,kk]))
 
+    elif ne_profile == 8:
+        # sphere
+        xc  = Nx/2
+        yc  = Ny/2
+        zc  = Nz/2
+        dr  = Nz/4
+        ne_max      = 5
+        arr[:,:,:]  = 0
+        for ii in range(Nx):
+            for jj in range(Ny):
+                for kk in range(Nz):
+                    r = np.sqrt( (xc-ii)**2 + (yc-jj)**2 + (zc-kk)**2 )
+                    if r < dr:
+                        arr[ii,jj,kk]   = ne_max
 
     return arr
     #}}}
@@ -151,7 +165,7 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
 def main():
     #{{{
 
-    n_e = make_ne_profile( 7, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
+    n_e = make_ne_profile( 8, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
     
     write2hdf5( [], n_e, fname='grid.h5', dSet_name='n_e' )
 
