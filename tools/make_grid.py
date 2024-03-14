@@ -65,7 +65,37 @@ def write2hdf5( params, data2save,
 
     print( '    done, dataset <{0}> successfully written into file {1}'.format( dSet_name, fname ) )
     #}}}
- 
+
+
+def Rx(alpha, angle='deg'):
+    #{{{
+    if angle == 'deg':
+        alpha   = np.radians(alpha)
+    return np.matrix([[ 1, 0            , 0             ],
+                      [ 0, np.cos(alpha), -np.sin(alpha)],
+                      [ 0, np.sin(alpha), np.cos(alpha) ]])
+    #}}}
+
+
+def Ry(beta, angle='deg'):
+    #{{{
+    if angle == 'deg':
+        beta   = np.radians(beta)
+    return np.matrix([[  np.cos(beta) , 0. , np.sin(beta ) ],
+                      [  0.           , 1. , 0.            ],
+                      [ -np.sin(beta) , 0. , np.cos(beta) ]])
+    #}}}
+
+
+def Rz(gamma, angle='deg'):
+    #{{{
+    if angle == 'deg':
+        gamma   = np.radians(gamma)
+    return np.matrix([[ np.cos(gamma) , -np.sin(gamma) , 0. ],
+                      [ np.sin(gamma) ,  np.cos(gamma) , 0. ],
+                      [ 0             , 0.             , 1. ]])
+    #}}}
+
 
 def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40, 
                      fname='grid.h5', dSet_name='n_e',
@@ -158,6 +188,132 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                     if r < dr:
                         arr[ii,jj,kk]   = ne_max
 
+    elif ne_profile == 9:
+        # cube rotated around x-axis
+        xc  = Nx/2
+        yc  = Ny/2
+        zc  = Nz/2
+        dx  = Nx/4
+        dy  = Ny/4
+        dz  = Nz/4
+        ne_max      = 5
+        alpha       = 20    # rotation angle in degrees
+        arr[:,:,:]  = 0
+        # note that this can be done more efficient (i.e. w/o a for-loop)
+        for ii in range(Nx):
+            for jj in range(Ny):
+                for kk in range(Nz):
+                    if (    (ii > (xc-dx/2) and ii < (xc+dx/2))
+                        and (jj > (yc-dy/2) and jj < (yc+dy/2))
+                        and (kk > (zc-dz/2) and kk < (zc+dz/2))
+                       ):
+                        arr[ii,jj,kk]   = ne_max
+
+                        # apply the rotation with checks if indices are outside of coordinate system
+                        new_coords  = Rx(alpha)*np.array([[ii],[jj],[kk]])
+                        # check boundaries
+                        if new_coords[0] < 0:
+                            new_coords[0] = 0
+                        elif new_coords[0] >= Nx:
+                            new_coords[0] = Nx-1
+                        if new_coords[1] < 0:
+                            new_coords[1] = 0
+                        elif new_coords[1] >= Ny:
+                            new_coords[1] = Ny-1
+                        if new_coords[2] < 0:
+                            new_coords[2] = 0
+                        elif new_coords[2] >= Nz:
+                            new_coords[2] = Nz-1
+                        # set density of rotated cube to a different value
+                        arr[ round(new_coords[0,0]),
+                             round(new_coords[1,0]),
+                             round(new_coords[2,0]) ] = ne_max/2.
+
+    elif ne_profile == 9:
+        # cube rotated around x-axis
+        xc  = Nx/2
+        yc  = Ny/2
+        zc  = Nz/2
+        dx  = Nx/4
+        dy  = Ny/4
+        dz  = Nz/4
+        ne_max      = 5
+        alpha       = 20    # rotation angle in degrees
+        arr[:,:,:]  = 0
+        # note that this can be done more efficient (i.e. w/o a for-loop)
+        for ii in range(Nx):
+            for jj in range(Ny):
+                for kk in range(Nz):
+                    if (    (ii > (xc-dx/2) and ii < (xc+dx/2))
+                        and (jj > (yc-dy/2) and jj < (yc+dy/2))
+                        and (kk > (zc-dz/2) and kk < (zc+dz/2))
+                       ):
+                        arr[ii,jj,kk]   = ne_max
+
+                        # apply the rotation with checks if indices are outside of coordinate system
+                        new_coords  = Rx(alpha)*np.array([[ii],[jj],[kk]])
+                        # check boundaries
+                        if new_coords[0] < 0:
+                            new_coords[0] = 0
+                        elif new_coords[0] >= Nx:
+                            new_coords[0] = Nx-1
+                        if new_coords[1] < 0:
+                            new_coords[1] = 0
+                        elif new_coords[1] >= Ny:
+                            new_coords[1] = Ny-1
+                        if new_coords[2] < 0:
+                            new_coords[2] = 0
+                        elif new_coords[2] >= Nz:
+                            new_coords[2] = Nz-1
+                        # set density of rotated cube to a different value
+                        arr[ round(new_coords[0,0]),
+                             round(new_coords[1,0]),
+                             round(new_coords[2,0]) ] = ne_max/2.
+    elif ne_profile == 11:
+        # cube rotated around z-axis
+        xc  = Nx/2
+        yc  = Ny/2
+        zc  = Nz/2
+        dx  = Nx/4
+        dy  = Ny/4
+        dz  = Nz/4
+        ne_max      = 5
+        gamma       = 20    # rotation angle in degrees
+        arr[:,:,:]  = 0
+        # note that this can be done more efficient (i.e. w/o a for-loop)
+        for ii in range(Nx):
+            for jj in range(Ny):
+                for kk in range(Nz):
+                    if (    (ii > (xc-dx/2) and ii < (xc+dx/2))
+                        and (jj > (yc-dy/2) and jj < (yc+dy/2))
+                        and (kk > (zc-dz/2) and kk < (zc+dz/2))
+                       ):
+                        arr[ii,jj,kk]   = ne_max
+
+                        # apply the rotation with checks if indices are outside of coordinate system
+                        # v_new = R*v_old, where v are vectors with the coordinates
+                        new_coords  = Rz(gamma)*np.array([[ii],[jj],[kk]])
+                        # check boundaries
+                        if new_coords[0] < 0:
+                            new_coords[0] = 0
+                        elif new_coords[0] >= Nx:
+                            new_coords[0] = Nx-1
+                        if new_coords[1] < 0:
+                            new_coords[1] = 0
+                        elif new_coords[1] >= Ny:
+                            new_coords[1] = Ny-1
+                        if new_coords[2] < 0:
+                            new_coords[2] = 0
+                        elif new_coords[2] >= Nz:
+                            new_coords[2] = Nz-1
+                        # set density of rotated cube to a different value
+                        arr[ round(new_coords[0,0]),
+                             round(new_coords[1,0]),
+                             round(new_coords[2,0]) ] = ne_max/2.
+
+
+
+
     return arr
     #}}}
 
@@ -165,7 +321,7 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
 def main():
     #{{{
 
-    n_e = make_ne_profile( 8, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
+    n_e = make_ne_profile( 11, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
     
     write2hdf5( [], n_e, fname='grid.h5', dSet_name='n_e' )
 
