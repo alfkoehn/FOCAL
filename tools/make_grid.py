@@ -152,7 +152,7 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                     arr[:, jj, round(kk)]  = ne_max
 
     elif ne_profile == 7:
-        # cube
+        # cuboid
         xc  = Nx/2
         yc  = Ny/2
         zc  = Nz/2
@@ -182,7 +182,7 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                         arr[ii,jj,kk]   = ne_max
 
     elif ne_profile == 9:
-        # cube rotated around x-axis
+        # cuboid rotated around x-axis
         xc  = Nx/2
         yc  = Ny/2
         zc  = Nz/2
@@ -217,13 +217,13 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                             new_coords[2] = 0
                         elif new_coords[2] >= Nz:
                             new_coords[2] = Nz-1
-                        # set density of rotated cube to a different value
+                        # set density of rotated cuboid to a different value
                         arr[ round(new_coords[0,0]),
                              round(new_coords[1,0]),
                              round(new_coords[2,0]) ] = ne_max/2.
 
     elif ne_profile == 10:
-        # cube rotated around x-axis
+        # cuboid rotated around x-axis
         xc  = Nx/2
         yc  = Ny/2
         zc  = Nz/2
@@ -258,12 +258,12 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                             new_coords[2] = 0
                         elif new_coords[2] >= Nz:
                             new_coords[2] = Nz-1
-                        # set density of rotated cube to a different value
+                        # set density of rotated cuboid to a different value
                         arr[ round(new_coords[0,0]),
                              round(new_coords[1,0]),
                              round(new_coords[2,0]) ] = ne_max/2.
     elif ne_profile == 11:
-        # cube rotated around z-axis
+        # cuboid rotated around z-axis
         xc  = Nx/2
         yc  = Ny/2
         zc  = Nz/2
@@ -299,7 +299,7 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                             new_coords[2] = 0
                         elif new_coords[2] >= Nz:
                             new_coords[2] = Nz-1
-                        # set density of rotated cube to a different value
+                        # set density of rotated cuboid to a different value
                         arr[ round(new_coords[0,0]),
                              round(new_coords[1,0]),
                              round(new_coords[2,0]) ] = ne_max/2.
