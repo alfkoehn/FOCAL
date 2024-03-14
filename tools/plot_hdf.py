@@ -8,13 +8,11 @@ __copyright__   = 'University of Stuttgart'
 # import standard modules
 import argparse
 import h5py
-import matplotlib.pyplot as plt
 import numpy as np
 import os.path
 
 # import modules for visualization of 3D data
 from mayavi import mlab
-import pyvista as py
 
 
 def readhdf5( fname, dSet_name ):

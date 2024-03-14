@@ -8,13 +8,11 @@ __copyright__   = 'University of Stuttgart'
 # import standard modules
 import argparse
 import h5py
-import matplotlib.pyplot as plt
 import numpy as np
 import os.path
 
 # import modules for visualization of 3D data
 from mayavi import mlab
-import pyvista as py
 
 
 def write2hdf5( params, data2save, 
@@ -310,9 +308,6 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                         arr[ round(new_coords[0,0]),
                              round(new_coords[1,0]),
                              round(new_coords[2,0]) ] = ne_max/2.
-
-
-
 
     return arr
     #}}}
