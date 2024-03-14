@@ -108,6 +108,41 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                     arr[ii, :, round(kk)]  = 0
                 else:
                     arr[ii, :, round(kk)]  = ne_max
+    elif ne_profile == 6:
+        # tilted xy-plane (rotated around x-axis)
+        # z = m*y + b = dz/dy + z0 = (z1-z0)/dy + z0
+        z0  = round(Nz/2 - Nz/5)
+        z1  = round(Nz/2 + Nz/5)
+        dy  = Ny
+        z   = lambda y : (z1-z0)/dy*y + z0
+        ne_max  = 5
+        for jj in range(Ny):
+            for kk in range(Nz):
+                if kk < z(jj):
+                    arr[:, jj, round(kk)]  = 0
+                else:
+                    arr[:, jj, round(kk)]  = ne_max
+
+    elif ne_profile == 7:
+        # cube
+        xc  = Nx/2
+        yc  = Ny/2
+        zc  = Nz/2
+        dx  = Nx/4
+        dy  = Ny/4
+        dz  = Nz/4
+        ne_max      = 5
+        arr[:,:,:]  = 0
+        for ii in range(Nx):
+            for jj in range(Ny):
+                for kk in range(Nz):
+                    if (    (ii > (xc-dx/2) and ii < (xc+dx/2))
+                        and (jj > (yc-dy/2) and jj < (yc+dy/2))
+                        and (kk > (zc-dz/2) and kk < (zc+dz/2))
+                       ):
+                        arr[ii,jj,kk]   = ne_max
+                        #print( 'arr{{0},{1},{2}] = {3}'.format(ii,jj,kk,arr[ii,jj,kk]))
+
 
     return arr
     #}}}
@@ -116,7 +151,7 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
 def main():
     #{{{
 
-    n_e = make_ne_profile( 5, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
+    n_e = make_ne_profile( 7, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
     
     write2hdf5( [], n_e, fname='grid.h5', dSet_name='n_e' )
 
