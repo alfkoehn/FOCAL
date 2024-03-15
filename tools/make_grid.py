@@ -345,23 +345,15 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                         # apply the rotation with checks if indices are outside of coordinate system
                         # v_new = R*v_old, where v are vectors with the coordinates
                         new_coords  = Rz(gamma)*np.array([[ii],[jj],[kk]])
-                        # check boundaries
-                        if new_coords[0] < 0:
-                            new_coords[0] = 0
-                        elif new_coords[0] >= Nx:
-                            new_coords[0] = Nx-1
-                        if new_coords[1] < 0:
-                            new_coords[1] = 0
-                        elif new_coords[1] >= Ny:
-                            new_coords[1] = Ny-1
-                        if new_coords[2] < 0:
-                            new_coords[2] = 0
-                        elif new_coords[2] >= Nz:
-                            new_coords[2] = Nz-1
-                        # set density of rotated cuboid to a different value
-                        arr[ round(new_coords[0,0]),
-                             round(new_coords[1,0]),
-                             round(new_coords[2,0]) ] = ne_max/2.
+
+                        bounds_ok   = check_boundaries( np.array( [new_coords[0,0],new_coords[1,0],new_coords[2,0]]) , 
+                                                        np.array([0,0,0]), 
+                                                        np.array([Nx,Ny,Nz]) )
+
+                        if bounds_ok:
+                            arr[ round(new_coords[0,0]),
+                                 round(new_coords[1,0]),
+                                 round(new_coords[2,0]) ] = ne_max/2.
 
     elif ne_profile == 12:
         # cuboid rotated around x-axis, with rotation realized by 3 skews
@@ -403,7 +395,7 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
 def main():
     #{{{
 
-    n_e = make_ne_profile( 12, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
+    n_e = make_ne_profile( 11, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
     
     write2hdf5( [], n_e, fname='grid.h5', dSet_name='n_e' )
 
