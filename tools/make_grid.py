@@ -304,6 +304,48 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                              round(new_coords[1,0]),
                              round(new_coords[2,0]) ] = ne_max/2.
 
+    elif ne_profile == 12:
+        # cuboid rotated around x-axis, with rotation realized by 3 skews
+        # read here: 
+        xc  = Nx/2
+        yc  = Ny/2
+        zc  = Nz/2
+        dx  = Nx/4
+        dy  = Ny/4
+        dz  = Nz/4
+        ne_max      = 5
+        alpha       = 20    # rotation angle in degrees
+        arr[:,:,:]  = 0
+        # note that this can be done more efficient (i.e. w/o a for-loop)
+        for ii in range(Nx):
+            for jj in range(Ny):
+                for kk in range(Nz):
+                    if (    (ii > (xc-dx/2) and ii < (xc+dx/2))
+                        and (jj > (yc-dy/2) and jj < (yc+dy/2))
+                        and (kk > (zc-dz/2) and kk < (zc+dz/2))
+                       ):
+                        arr[ii,jj,kk]   = ne_max
+                        
+                        # translations
+                        skew_1  = np.tan(np.radians(alpha)/2.)
+                        skew_2  = -np.sin(np.radians(alpha))
+                        skew_3  = skew_1
+                        kk_new  = kk + round(skew_1*jj)
+                        jj_new  = jj + round(skew_2*kk_new)
+                        kk_new  = kk_new + round(skew_3*jj_new)
+
+                        # check boundaries
+                        if jj_new < 0:
+                            jj_new = 0
+                        elif jj_new >= Ny:
+                            jj_new = Ny-1
+                        if kk_new < 0:
+                            kk_new = 0
+                        elif kk_new >= Nz:
+                            kk_new = Nz-1
+                        # set density of rotated cuboid to a different value
+                        arr[ ii, jj_new, kk_new ] = ne_max/2.
+
     return arr
     #}}}
 
@@ -311,7 +353,7 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
 def main():
     #{{{
 
-    n_e = make_ne_profile( 7, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
+    n_e = make_ne_profile( 12, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
     
     write2hdf5( [], n_e, fname='grid.h5', dSet_name='n_e' )
 
