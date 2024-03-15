@@ -134,6 +134,26 @@ def rotate_via_skewing( coords_in, angle_in_degree, rot_axis='x' ):
     #}}}
 
 
+def check_boundaries( coords_new, coords_min, coords_max ):
+    #{{{
+
+    # check if coordinates are out of bounds, to be used after rotation/translation
+    # return false if out of bounds, true if ok
+
+    # check boundaries
+    if coords_new[0] < coords_min[0]    : return False#np.nan#coords_new[0] = 0
+    elif coords_new[0] >= coords_max[0] : return False#np.nan#coords_new[0] = coords_max[0]-1
+
+    if coords_new[1] < coords_min[1]    : return False#np.nan#coords_new[1] = 0
+    elif coords_new[1] >= coords_max[1] : return False#np.nan#coords_new[1] = coords_max[1]-1
+
+    if coords_new[2] < coords_min[2]    : return False#np.nan#coords_new[2] = 0
+    elif coords_new[2] >= coords_max[2] : return False#np.nan#coords_new[2] = coords_max[2]-1
+
+    return True
+    #}}}
+
+
 def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40, 
                      fname='grid.h5', dSet_name='n_e',
                    ):
@@ -368,16 +388,13 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                         and (kk > (zc-dz/2) and kk < (zc+dz/2))
                        ):
                         # rotate via translations
-                        coords_new  = rotate_via_skewing( np.array([ii,jj,kk]), alpha, rot_axis='x' )
+                        coords_new  = rotate_via_skewing( np.array([ii,jj,kk]), 3*alpha, rot_axis='x' )
 
-                        # check boundaries
-                        if coords_new[1] < 0    : coords_new[1] = 0
-                        elif coords_new[1] >= Ny: coords_new[1] = Ny-1
-                        if coords_new[2] < 0    : coords_new[2] = 0
-                        elif coords_new[2] >= Nz: coords_new[2] = Nz-1
+                        bounds_ok   = check_boundaries( coords_new, np.array([0,0,0]), np.array([Nx,Ny,Nz]) )
 
                         # set density of rotated cuboid to a different value
-                        arr[ coords_new[0], coords_new[1], coords_new[2] ] = ne_max/2.
+                        if bounds_ok:
+                            arr[ coords_new[0], coords_new[1], coords_new[2] ] = ne_max/2.
 
     return arr
     #}}}
