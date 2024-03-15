@@ -120,6 +120,14 @@ def rotate_via_skewing( coords_in, angle_in_degree, rot_axis='x' ):
         z_new   = z_new + round(skew_3*x_new)
 
         y_new   = coords_in[1]
+
+    elif rot_axis == 'z':
+        z_new   = coords_in[2]
+        # apply the translations (i.e. skew the vector)
+        y_new   = coords_in[1] + round(skew_1*coords_in[0])
+        x_new   = coords_in[0] + round(skew_2*y_new)
+        y_new   = y_new + round(skew_3*x_new)
+
     
     return np.array( [x_new, y_new, z_new] )
 
@@ -360,7 +368,7 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                         and (kk > (zc-dz/2) and kk < (zc+dz/2))
                        ):
                         # rotate via translations
-                        coords_new  = rotate_via_skewing( np.array([ii,jj,kk]), alpha, rot_axis='y' )
+                        coords_new  = rotate_via_skewing( np.array([ii,jj,kk]), alpha, rot_axis='x' )
 
                         # check boundaries
                         if coords_new[1] < 0    : coords_new[1] = 0
