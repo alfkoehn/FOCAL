@@ -95,6 +95,28 @@ def Rz(gamma, angle='deg'):
     #}}}
 
 
+def rotate_via_skewing( coords_in, angle_in_degree, rot_axis='x' ):
+    #{{{
+
+    alpha   = np.radians(angle_in_degree)
+
+    if rot_axis == 'x':
+        # translations
+        skew_1  = np.tan(alpha/2.)
+        skew_2  = -np.sin(alpha)
+        skew_3  = skew_1
+        # apply the translations (i.e. skew the vector)
+        z_new   = coords_in[2] + round(skew_1*coords_in[1])
+        y_new   = coords_in[1] + round(skew_2*z_new)
+        z_new   = z_new + round(skew_3*y_new)
+
+        x_new   = coords_in[0]
+    
+    return np.array( [x_new, y_new, z_new] )
+
+    #}}}
+
+
 def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40, 
                      fname='grid.h5', dSet_name='n_e',
                    ):
@@ -315,7 +337,11 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
         dz  = Nz/4
         ne_max      = 5
         alpha       = 20    # rotation angle in degrees
+        #make the original cuboid
         arr[:,:,:]  = 0
+        arr[ round(xc-dx/2):round(xc+dx/2), 
+             round(yc-dy/2):round(yc+dy/2),   
+             round(zc-dz/2):round(zc+dz/2) ] = ne_max
         # note that this can be done more efficient (i.e. w/o a for-loop)
         for ii in range(Nx):
             for jj in range(Ny):
@@ -324,27 +350,17 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
                         and (jj > (yc-dy/2) and jj < (yc+dy/2))
                         and (kk > (zc-dz/2) and kk < (zc+dz/2))
                        ):
-                        arr[ii,jj,kk]   = ne_max
-                        
-                        # translations
-                        skew_1  = np.tan(np.radians(alpha)/2.)
-                        skew_2  = -np.sin(np.radians(alpha))
-                        skew_3  = skew_1
-                        kk_new  = kk + round(skew_1*jj)
-                        jj_new  = jj + round(skew_2*kk_new)
-                        kk_new  = kk_new + round(skew_3*jj_new)
+                        # rotate via translations
+                        coords_new  = rotate_via_skewing( np.array([ii,jj,kk]), alpha, rot_axis='x' )
 
                         # check boundaries
-                        if jj_new < 0:
-                            jj_new = 0
-                        elif jj_new >= Ny:
-                            jj_new = Ny-1
-                        if kk_new < 0:
-                            kk_new = 0
-                        elif kk_new >= Nz:
-                            kk_new = Nz-1
+                        if coords_new[1] < 0    : coords_new[1] = 0
+                        elif coords_new[1] >= Ny: coords_new[1] = Ny-1
+                        if coords_new[2] < 0    : coords_new[2] = 0
+                        elif coords_new[2] >= Nz: coords_new[2] = Nz-1
+
                         # set density of rotated cuboid to a different value
-                        arr[ ii, jj_new, kk_new ] = ne_max/2.
+                        arr[ coords_new[0], coords_new[1], coords_new[2] ] = ne_max/2.
 
     return arr
     #}}}
