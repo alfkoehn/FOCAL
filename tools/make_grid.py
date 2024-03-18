@@ -95,10 +95,15 @@ def Rz(gamma, angle='deg'):
     #}}}
 
 
-def rotate_via_skewing( coords_in, angle_in_degree, rot_axis='x' ):
+def rotate_via_skewing( coords_in, angle_in_degree, rot_axis='x', rot_center=np.array([0,0,0]) ):
     #{{{
 
     alpha   = np.radians(angle_in_degree)
+    
+    # transform coordinate system such that rotation center is at origin
+    coords_in[0] -= rot_center[0]
+    coords_in[1] -= rot_center[1]
+    coords_in[2] -= rot_center[2]
 
     # translations
     skew_1  = np.tan(alpha/2.)
@@ -128,10 +133,60 @@ def rotate_via_skewing( coords_in, angle_in_degree, rot_axis='x' ):
         x_new   = coords_in[0] + round(skew_2*y_new)
         y_new   = y_new + round(skew_3*x_new)
 
+    # transform coordinate system back to original system
+    x_new += rot_center[0]
+    y_new += rot_center[1]
+    z_new += rot_center[2]
     
     return np.array( [x_new, y_new, z_new] )
 
     #}}}
+
+
+def rotate_arr3D_via_shearing( arr_in, angle_in_degrees, 
+                               rot_axis='z', rot_center=np.array([0,0]) ):
+    alpha = angle_in_degrees
+    
+    Ny, Ny = arr_in.shape[0], arr_in.shape[1]
+    
+    #rot_center = np.array([round(Nx/2),round(Ny/2)])
+    
+    arr_rotated = np.zeros( (Nx,Ny) )
+
+    for xx in range(Nx):
+        for yy in range(Ny):
+            if arr_in[xx,yy] > 0:
+                # rotate via rotation matrix
+# rotate_vec_via_shearing
+                coords_new = rotate_via_shearing( np.array([xx,yy]), alpha, 
+                                                  rot_axis='z', 
+                                                  rot_center=rot_center )
+                if check_boundaries(coords_new, np.array([0,0]), np.array([Ny, Ny])):
+                    arr_rotated[ coords_new[0], coords_new[1] ] = 1
+                
+    return arr_rotated
+
+
+def rotate_arr_via_rotMatrix( arr_in, angle_in_degrees,
+                              rot_axis='z', rot_center=np.array([0,0])):
+    alpha = angle_in_degrees
+
+    Ny, Ny = arr_in.shape[0], arr_in.shape[1]
+    
+    arr_rotated = np.zeros( (Nx,Ny) )
+
+    for xx in range(Nx):
+        for yy in range(Ny):
+            if arr_in[xx,yy] > 0:
+                # rotate via rotation matrix
+# rotate_vec_via_rotMatrix
+                coords_new = rotate_via_rotMatrix( np.array([xx,yy]), alpha, 
+                                                   rot_axis='z', 
+                                                   rot_center=rot_center )
+                if check_boundaries(coords_new, np.array([0,0]), np.array([Ny, Ny])):
+                    arr_rotated[ coords_new[0], coords_new[1] ] = 1
+                
+    return arr_rotated
 
 
 def check_boundaries( coords_new, coords_min, coords_max ):
