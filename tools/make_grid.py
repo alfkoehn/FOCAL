@@ -95,14 +95,14 @@ def Rz(gamma, angle='deg'):
     #}}}
 
 
-def rotate_vec_via_skewing( coords_in, angle_in_degree, 
+def rotate_vec_via_skewing( coords_in, angle_in_degrees, 
                             rot_axis='x', rot_center=np.array([0,0,0]) ):
     #{{{
     """
     Rotate via shearing/skewing
     """
 
-    alpha   = np.radians(angle_in_degree)
+    alpha   = np.radians(angle_in_degrees)
     
     # transform coordinate system such that rotation center is at origin
     coords_in[0] -= rot_center[0]
@@ -150,8 +150,6 @@ def rotate_vec_via_skewing( coords_in, angle_in_degree,
 def rotate_arr3D_via_shearing( arr_in, angle_in_degrees, 
                                rot_axis='z', rot_center=np.array([0,0,0]) ):
     #{{{
-    alpha = angle_in_degrees
-    
     # copy of original array for rotated array
     Nx, Ny, Nz  = arr_in.shape[0], arr_in.shape[1], arr_in.shape[2]
     arr_rotated = np.zeros( (Nx,Ny,Nz) )
@@ -162,11 +160,11 @@ def rotate_arr3D_via_shearing( arr_in, angle_in_degrees,
             for zz in range(Nz):
                 if arr_in[xx,yy,zz] > 0:
                     # rotate via shearing
-                    coords_new = rotate_vec_via_skewing(  np.array([xx,yy,zz]), alpha, 
+                    coords_new = rotate_vec_via_skewing(  np.array([xx,yy,zz]), angle_in_degrees, 
                                                           rot_axis=rot_axis, 
                                                           rot_center=rot_center )
                     # handle coordinates which are out of bounds after rotation
-                    if check_boundaries(coords_new, np.array([0,0,0]), np.array([Ny, Ny, Nz])):
+                    if check_boundaries(coords_new, np.array([0,0,0]), np.array([Nx, Ny, Nz])):
                         arr_rotated[ coords_new[0], 
                                      coords_new[1], 
                                      coords_new[2] ] = arr_in[xx,yy,zz]
@@ -178,24 +176,31 @@ def rotate_arr3D_via_shearing( arr_in, angle_in_degrees,
 def rotate_arr3D_via_rotMatrix( arr_in, angle_in_degrees,
                                 rot_axis='z', rot_center=np.array([0,0,0])):
     #{{{
-    alpha = angle_in_degrees
-
-    Ny, Ny, Nz  = arr_in.shape[0], arr_in.shape[1], arr_in.shape[2]
+    # copy of original array for rotated array
+    Nx, Ny, Nz  = arr_in.shape[0], arr_in.shape[1], arr_in.shape[2]
     arr_rotated = np.zeros( (Nx,Ny,Nz) )
 
-    if rot_axis == 'z':
-        for xx in range(Nx):
-            for yy in range(Ny):
-                for zz in range(Nz):
-                    if arr_in[xx,yy,zz] > 0:
-                        # rotate via rotation matrix
-                        coords_new  = Rx(alpha,angle='deg')*np.array([[ii],[jj],[kk]])
-# rotate_vec_via_rotMatrix
-#                    coords_new = rotate_via_rotMatrix( np.array([xx,yy]), alpha, 
-#                                                       rot_axis='z', 
-#                                                       rot_center=rot_center )
-#                    if check_boundaries(coords_new, np.array([0,0]), np.array([Ny, Ny])):
-#                        arr_rotated[ coords_new[0], coords_new[1] ] = 1
+    for xx in range(Nx):
+        for yy in range(Ny):
+            for zz in range(Nz):
+                if arr_in[xx,yy,zz] > 0:
+                    # rotate via rotation matrix
+                    if rot_axis == 'x':
+                        coords_new  = Rx(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
+                    elif rot_axis == 'y':
+                        coords_new  = Ry(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
+                    elif rot_axis == 'z':
+                        coords_new  = Rz(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
+                    # round new coordinates to integers (as they are array indices)
+                    coords_new = np.array([round(coords_new[0,0]), 
+                                           round(coords_new[1,0]),
+                                           round(coords_new[2,0])])
+                    # check if rotated coordinates are out of boundaries
+                    if check_boundaries(coords_new, 
+                                        np.array([0,0,0]), np.array([Nx,Ny,Nz])):
+                        arr_rotated[ coords_new[0], 
+                                     coords_new[1], 
+                                     coords_new[2] ] = arr_in[xx,yy,zz]
                 
     return arr_rotated
     #}}}
@@ -309,71 +314,43 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
 
     elif ne_profile == 9:
         # cuboid rotated around x-axis
-        xc  = Nx/2
-        yc  = Ny/2
-        zc  = Nz/2
-        dx  = Nx/4
-        dy  = Ny/4
-        dz  = Nz/4
+        xc, yc, zc  = Nx/2, Ny/2, Nz/2
+        dx, dy, dz  = Nx/4, Ny/4, Nz/4
         ne_max      = 5
-        alpha       = 20    # rotation angle in degrees
+        gamma       = 20    # rotation angle in degrees
+        # make the original cuboid
         arr[:,:,:]  = 0
-        # note that this can be done more efficient (i.e. w/o a for-loop)
-        for ii in range(Nx):
-            for jj in range(Ny):
-                for kk in range(Nz):
-                    if (    (ii > (xc-dx/2) and ii < (xc+dx/2))
-                        and (jj > (yc-dy/2) and jj < (yc+dy/2))
-                        and (kk > (zc-dz/2) and kk < (zc+dz/2))
-                       ):
-                        arr[ii,jj,kk]   = ne_max
+        arr[ round(xc-dx/2):round(xc+dx/2), 
+             round(yc-dy/2):round(yc+dy/2),   
+             round(zc-dz/2):round(zc+dz/2) ] = ne_max
 
-                        # apply the rotation with checks if indices are outside of coordinate system
-                        new_coords  = Rx(alpha)*np.array([[ii],[jj],[kk]])
+        # rotate cuboid
+        arr_rotated = rotate_arr3D_via_rotMatrix( arr, gamma,
+                                                  rot_axis='x', 
+                                                  rot_center=np.array([0,0,0]))
 
-                        bounds_ok   = check_boundaries( np.array( [new_coords[0,0],new_coords[1,0],new_coords[2,0]]) , 
-                                                        np.array([0,0,0]), 
-                                                        np.array([Nx,Ny,Nz]) )
-
-                        # set density of rotated cuboid to a different value
-                        if bounds_ok:
-                            arr[ round(new_coords[0,0]),
-                                 round(new_coords[1,0]),
-                                 round(new_coords[2,0]) ] = ne_max/2.
+        # overlay original and rotated cuboid
+        arr = arr + arr_rotated
 
     elif ne_profile == 10:
-        # cuboid rotated around x-axis
-        xc  = Nx/2
-        yc  = Ny/2
-        zc  = Nz/2
-        dx  = Nx/4
-        dy  = Ny/4
-        dz  = Nz/4
+        # cuboid rotated around y-axis
+        xc, yc, zc  = Nx/2, Ny/2, Nz/2
+        dx, dy, dz  = Nx/4, Ny/4, Nz/4
         ne_max      = 5
-        alpha       = 20    # rotation angle in degrees
+        gamma       = 20    # rotation angle in degrees
+        # make the original cuboid
         arr[:,:,:]  = 0
-        # note that this can be done more efficient (i.e. w/o a for-loop)
-        for ii in range(Nx):
-            for jj in range(Ny):
-                for kk in range(Nz):
-                    if (    (ii > (xc-dx/2) and ii < (xc+dx/2))
-                        and (jj > (yc-dy/2) and jj < (yc+dy/2))
-                        and (kk > (zc-dz/2) and kk < (zc+dz/2))
-                       ):
-                        arr[ii,jj,kk]   = ne_max
+        arr[ round(xc-dx/2):round(xc+dx/2), 
+             round(yc-dy/2):round(yc+dy/2),   
+             round(zc-dz/2):round(zc+dz/2) ] = ne_max
 
-                        # apply the rotation with checks if indices are outside of coordinate system
-                        new_coords  = Rx(alpha)*np.array([[ii],[jj],[kk]])
+        # rotate cuboid
+        arr_rotated = rotate_arr3D_via_rotMatrix( arr, gamma,
+                                                  rot_axis='y', 
+                                                  rot_center=np.array([0,0,0]))
 
-                        bounds_ok   = check_boundaries( np.array( [new_coords[0,0],new_coords[1,0],new_coords[2,0]]) , 
-                                                        np.array([0,0,0]), 
-                                                        np.array([Nx,Ny,Nz]) )
-
-                        # set density of rotated cuboid to a different value
-                        if bounds_ok:
-                            arr[ round(new_coords[0,0]),
-                                round(new_coords[1,0]),
-                                 round(new_coords[2,0]) ] = ne_max/2.
+        # overlay original and rotated cuboid
+        arr = arr + arr_rotated
 
     elif ne_profile == 11:
         # cuboid rotated around z-axis
@@ -385,29 +362,19 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
         dz  = Nz/4
         ne_max      = 5
         gamma       = 20    # rotation angle in degrees
+        # make the original cuboid
         arr[:,:,:]  = 0
-        # note that this can be done more efficient (i.e. w/o a for-loop)
-        for ii in range(Nx):
-            for jj in range(Ny):
-                for kk in range(Nz):
-                    if (    (ii > (xc-dx/2) and ii < (xc+dx/2))
-                        and (jj > (yc-dy/2) and jj < (yc+dy/2))
-                        and (kk > (zc-dz/2) and kk < (zc+dz/2))
-                       ):
-                        arr[ii,jj,kk]   = ne_max
+        arr[ round(xc-dx/2):round(xc+dx/2), 
+             round(yc-dy/2):round(yc+dy/2),   
+             round(zc-dz/2):round(zc+dz/2) ] = ne_max
 
-                        # apply the rotation with checks if indices are outside of coordinate system
-                        # v_new = R*v_old, where v are vectors with the coordinates
-                        new_coords  = Rz(gamma)*np.array([[ii],[jj],[kk]])
+        # rotate cuboid
+        arr_rotated = rotate_arr3D_via_rotMatrix( arr, gamma,
+                                                  rot_axis='z', 
+                                                  rot_center=np.array([0,0,0]))
 
-                        bounds_ok   = check_boundaries( np.array( [new_coords[0,0],new_coords[1,0],new_coords[2,0]]) , 
-                                                        np.array([0,0,0]), 
-                                                        np.array([Nx,Ny,Nz]) )
-
-                        if bounds_ok:
-                            arr[ round(new_coords[0,0]),
-                                 round(new_coords[1,0]),
-                                 round(new_coords[2,0]) ] = ne_max/2.
+        # overlay original and rotated cuboid
+        arr = arr + arr_rotated
 
     elif ne_profile == 12:
         # cuboid rotated around x-axis, with rotation realized by 3 skews
@@ -454,9 +421,22 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
 def main():
     #{{{
 
-    n_e = make_ne_profile( 12, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
+    # initialize parser for command line options
+    parser  = argparse.ArgumentParser()
+    # add optional arguments
+    parser.add_argument( "-f", "--filename", type=str, default="grid.h5",
+                         help="Filename of hdf5 output file for FOCAL." )
+    parser.add_argument( "-n", "--ne_profile", type=int, default=12,
+                         help="ne_profile (look into source code for all possible options)." )
+
+    # read all argments from command line
+    args        = parser.parse_args()
+    fname       = args.filename
+    ne_profile  = args.ne_profile
+
+    n_e = make_ne_profile( ne_profile, Nx=int(400/2), Ny=int(300/2), Nz=int(200/2) )
     
-    write2hdf5( [], n_e, fname='grid.h5', dSet_name='n_e' )
+    write2hdf5( [], n_e, fname=fname, dSet_name='n_e' )
 
     #}}}
 
