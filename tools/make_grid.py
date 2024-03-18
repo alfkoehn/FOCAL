@@ -284,18 +284,13 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
 
     elif ne_profile == 7:
         # cuboid
-        xc  = Nx/2
-        yc  = Ny/2
-        zc  = Nz/2
-        dx  = Nx/4
-        dy  = Ny/4
-        dz  = Nz/4
+        xc, yc, zc  = Nx/2, Ny/2, Nz/2
+        dx, dy, dz  = Nx/4, Ny/4, Nz/4
         ne_max      = 5
         arr[:,:,:]  = 0
         arr[ round(xc-dx/2):round(xc+dx/2), 
              round(yc-dy/2):round(yc+dy/2),   
              round(zc-dz/2):round(zc+dz/2) ] = ne_max
-        # note that this can be done more efficient (i.e. w/o a for-loop)
 
     elif ne_profile == 8:
         # sphere
@@ -354,12 +349,8 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
 
     elif ne_profile == 11:
         # cuboid rotated around z-axis
-        xc  = Nx/2
-        yc  = Ny/2
-        zc  = Nz/2
-        dx  = Nx/4
-        dy  = Ny/4
-        dz  = Nz/4
+        xc, yc, zc  = Nx/2, Ny/2, Nz/2
+        dx, dy, dz  = Nx/4, Ny/4, Nz/4
         ne_max      = 5
         gamma       = 20    # rotation angle in degrees
         # make the original cuboid
@@ -379,12 +370,8 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
     elif ne_profile == 12:
         # cuboid rotated around x-axis, with rotation realized by 3 skews
         # read here: 
-        xc  = Nx/2
-        yc  = Ny/2
-        zc  = Nz/2
-        dx  = Nx/4
-        dy  = Ny/4
-        dz  = Nz/4
+        xc, yc, zc  = Nx/2, Ny/2, Nz/2
+        dx, dy, dz  = Nx/4, Ny/4, Nz/4
         ne_max      = 5
         alpha       = 20    # rotation angle in degrees
         #make the original cuboid
@@ -397,22 +384,6 @@ def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40,
         arr = rotate_arr3D_via_shearing( arr, alpha, 
                                          rot_axis='z', rot_center=np.array([0,0,0]) )
 
-        # note that this can be done more efficient (i.e. w/o a for-loop)
-#        for ii in range(Nx):
-#            for jj in range(Ny):
-#                for kk in range(Nz):
-#                    if (    (ii > (xc-dx/2) and ii < (xc+dx/2))
-#                        and (jj > (yc-dy/2) and jj < (yc+dy/2))
-#                        and (kk > (zc-dz/2) and kk < (zc+dz/2))
-#                       ):
-                        # rotate via translations
-#                        coords_new  = rotate_vec_via_skewing( np.array([ii,jj,kk]), 3*alpha, rot_axis='x' )
-
-#                        bounds_ok   = check_boundaries( coords_new, np.array([0,0,0]), np.array([Nx,Ny,Nz]) )
-
-                        # set density of rotated cuboid to a different value
-#                        if bounds_ok:
-#                            arr[ coords_new[0], coords_new[1], coords_new[2] ] = ne_max/2.
 
     return arr
     #}}}
