@@ -67,6 +67,10 @@ def write2hdf5( params, data2save,
 
 def Rx(alpha, angle='deg'):
     #{{{
+    """
+    Returns the rotation matrix for rotation around the x-axis. A rotation 
+    of a vector would be performed by Rx*vec.
+    """
     if angle == 'deg':
         alpha   = np.radians(alpha)
     return np.matrix([[ 1, 0            , 0             ],
@@ -77,6 +81,10 @@ def Rx(alpha, angle='deg'):
 
 def Ry(beta, angle='deg'):
     #{{{
+    """
+    Returns the rotation matrix for rotation around the y-axis. A rotation 
+    of a vector would be performed by Ry*vec.
+    """
     if angle == 'deg':
         beta   = np.radians(beta)
     return np.matrix([[  np.cos(beta) , 0. , np.sin(beta ) ],
@@ -87,6 +95,10 @@ def Ry(beta, angle='deg'):
 
 def Rz(gamma, angle='deg'):
     #{{{
+    """
+    Returns the rotation matrix for rotation around the z-axis. A rotation 
+    of a vector would be performed by Rz*vec.
+    """
     if angle == 'deg':
         gamma   = np.radians(gamma)
     return np.matrix([[ np.cos(gamma) , -np.sin(gamma) , 0. ],
@@ -99,7 +111,22 @@ def rotate_vec_via_skewing( coords_in, angle_in_degrees,
                             rot_axis='x', rot_center=np.array([0,0,0]) ):
     #{{{
     """
-    Rotate via shearing/skewing
+    Rotate a 3-element vector via shearing/skewing.
+
+    Parameters
+    ----------
+    coords_in: numpy array with 3 elements
+        coordinates of vector to be rotated
+    angle_in_degrees: float
+        rotation angle in degrees
+    rot_axis: str
+        axis around which the vector
+    rot_center: numpy array with 3 elements
+        center around which rotation will be performed
+
+    Returns
+    -------
+    numpy array with 3 elements
     """
 
     alpha   = np.radians(angle_in_degrees)
@@ -143,13 +170,32 @@ def rotate_vec_via_skewing( coords_in, angle_in_degrees,
     z_new += rot_center[2]
     
     return np.array( [x_new, y_new, z_new] )
-
     #}}}
 
 
 def rotate_arr3D_via_shearing( arr_in, angle_in_degrees, 
                                rot_axis='z', rot_center=np.array([0,0,0]) ):
     #{{{
+
+    """
+    Rotate a 3D array via shearing/skewing.
+
+    Parameters
+    ----------
+    arr_in: numpy array with Nx*Ny*Nz elements
+        array to be rotated
+    angle_in_degrees: float
+        rotation angle in degrees
+    rot_axis: str
+        axis around which the vector
+    rot_center: numpy array with 3 elements
+        center around which rotation will be performed
+
+    Returns
+    -------
+    numpy array with Nx*Ny*Nz elements
+    """
+
     # copy of original array for rotated array
     Nx, Ny, Nz  = arr_in.shape[0], arr_in.shape[1], arr_in.shape[2]
     arr_rotated = np.zeros( (Nx,Ny,Nz) )
@@ -176,6 +222,25 @@ def rotate_arr3D_via_shearing( arr_in, angle_in_degrees,
 def rotate_arr3D_via_rotMatrix( arr_in, angle_in_degrees,
                                 rot_axis='z', rot_center=np.array([0,0,0])):
     #{{{
+    """
+    Rotate a 3D array via rotation matrices.
+
+    Parameters
+    ----------
+    arr_in: numpy array with Nx*Ny*Nz elements
+        array to be rotated
+    angle_in_degrees: float
+        rotation angle in degrees
+    rot_axis: str
+        axis around which the vector
+    rot_center: numpy array with 3 elements
+        center around which rotation will be performed
+
+    Returns
+    -------
+    numpy array with Nx*Ny*Nz elements
+    """
+
     # copy of original array for rotated array
     Nx, Ny, Nz  = arr_in.shape[0], arr_in.shape[1], arr_in.shape[2]
     arr_rotated = np.zeros( (Nx,Ny,Nz) )
