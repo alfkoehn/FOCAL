@@ -204,16 +204,15 @@ def rotate_arr3D_via_shearing( arr_in, angle_in_degrees,
     for xx in range(Nx):
         for yy in range(Ny):
             for zz in range(Nz):
-                if arr_in[xx,yy,zz] > 0:
-                    # rotate via shearing
-                    coords_new = rotate_vec_via_skewing(  np.array([xx,yy,zz]), angle_in_degrees, 
-                                                          rot_axis=rot_axis, 
-                                                          rot_center=rot_center )
-                    # handle coordinates which are out of bounds after rotation
-                    if check_boundaries(coords_new, np.array([0,0,0]), np.array([Nx, Ny, Nz])):
-                        arr_rotated[ coords_new[0], 
-                                     coords_new[1], 
-                                     coords_new[2] ] = arr_in[xx,yy,zz]
+                # rotate via shearing
+                coords_new = rotate_vec_via_skewing(  np.array([xx,yy,zz]), angle_in_degrees, 
+                                                      rot_axis=rot_axis, 
+                                                      rot_center=rot_center )
+                # handle coordinates which are out of bounds after rotation
+                if check_boundaries(coords_new, np.array([0,0,0]), np.array([Nx, Ny, Nz])):
+                    arr_rotated[ coords_new[0], 
+                                 coords_new[1], 
+                                 coords_new[2] ] = arr_in[xx,yy,zz]
                 
     return arr_rotated
     #}}}
