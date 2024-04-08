@@ -26,12 +26,13 @@ def write2hdf5( params, data2save,
     Parameters
     ----------
     params:
-    data2save:
+    data2save: numpy array
     fname: str
         filename of hdf5-file including full path
     dSet_name: str
         name of dataset to be read from hdf5-file
-    write_config:
+    write_config: bool
+        include configurational full-wave parameters if true
 
     Returns
     -------
@@ -49,6 +50,7 @@ def write2hdf5( params, data2save,
         h5f.create_dataset( 'config/f_0',    data=params['f_0'] )
         h5f.create_dataset( 'config/N_z',    data=params['N_z'] )
         h5f.create_dataset( 'config/N_y',    data=params['N_y'] )
+        h5f.create_dataset( 'config/N_x',    data=params['N_x'] )
 
     # write array provided in function call into file
     # check if it exists
