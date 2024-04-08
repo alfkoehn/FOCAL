@@ -144,20 +144,18 @@ def rotate_vec_via_skewing( coords_in, angle_in_degrees,
     skew_3  = skew_1
 
     if rot_axis == 'x':
+        x_new   = coords_in[0]
         # apply the translations (i.e. skew the vector)
         z_new   = coords_in[2] + round(skew_1*coords_in[1])
         y_new   = coords_in[1] + round(skew_2*z_new)
         z_new   = z_new + round(skew_3*y_new)
 
-        x_new   = coords_in[0]
-
     elif rot_axis == 'y':
+        y_new   = coords_in[1]
         # apply the translations (i.e. skew the vector)
         z_new   = coords_in[2] + round(skew_1*coords_in[0])
         x_new   = coords_in[0] + round(skew_2*z_new)
         z_new   = z_new + round(skew_3*x_new)
-
-        y_new   = coords_in[1]
 
     elif rot_axis == 'z':
         z_new   = coords_in[2]
