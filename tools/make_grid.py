@@ -71,7 +71,7 @@ def Rx(alpha, angle='deg'):
     #{{{
     """
     Returns the rotation matrix for rotation around the x-axis. A rotation 
-    of a vector would be performed by Rx*vec.
+    of a vector would be performed by vec_new=Rx*vec_old.
     """
     if angle == 'deg':
         alpha   = np.radians(alpha)
@@ -85,7 +85,7 @@ def Ry(beta, angle='deg'):
     #{{{
     """
     Returns the rotation matrix for rotation around the y-axis. A rotation 
-    of a vector would be performed by Ry*vec.
+    of a vector would be performed by vec_new=Ry*vec_old.
     """
     if angle == 'deg':
         beta   = np.radians(beta)
@@ -99,7 +99,7 @@ def Rz(gamma, angle='deg'):
     #{{{
     """
     Returns the rotation matrix for rotation around the z-axis. A rotation 
-    of a vector would be performed by Rz*vec.
+    of a vector would be performed by vec_new=Rz*vec_old.
     """
     if angle == 'deg':
         gamma   = np.radians(gamma)
