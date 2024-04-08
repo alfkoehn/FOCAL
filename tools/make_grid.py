@@ -247,24 +247,23 @@ def rotate_arr3D_via_rotMatrix( arr_in, angle_in_degrees,
     for xx in range(Nx):
         for yy in range(Ny):
             for zz in range(Nz):
-                if arr_in[xx,yy,zz] > 0:
-                    # rotate via rotation matrix
-                    if rot_axis == 'x':
-                        coords_new  = Rx(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
-                    elif rot_axis == 'y':
-                        coords_new  = Ry(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
-                    elif rot_axis == 'z':
-                        coords_new  = Rz(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
-                    # round new coordinates to integers (as they are array indices)
-                    coords_new = np.array([round(coords_new[0,0]), 
-                                           round(coords_new[1,0]),
-                                           round(coords_new[2,0])])
-                    # check if rotated coordinates are out of boundaries
-                    if check_boundaries(coords_new, 
-                                        np.array([0,0,0]), np.array([Nx,Ny,Nz])):
-                        arr_rotated[ coords_new[0], 
-                                     coords_new[1], 
-                                     coords_new[2] ] = arr_in[xx,yy,zz]
+                # rotate via rotation matrix
+                if rot_axis == 'x':
+                    coords_new  = Rx(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
+                elif rot_axis == 'y':
+                    coords_new  = Ry(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
+                elif rot_axis == 'z':
+                    coords_new  = Rz(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
+                # round new coordinates to integers (as they are array indices)
+                coords_new = np.array([round(coords_new[0,0]), 
+                                       round(coords_new[1,0]),
+                                       round(coords_new[2,0])])
+                # check if rotated coordinates are out of boundaries
+                if check_boundaries(coords_new, 
+                                    np.array([0,0,0]), np.array([Nx,Ny,Nz])):
+                    arr_rotated[ coords_new[0], 
+                                 coords_new[1], 
+                                 coords_new[2] ] = arr_in[xx,yy,zz]
                 
     return arr_rotated
     #}}}
