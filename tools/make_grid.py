@@ -276,14 +276,14 @@ def check_boundaries( coords_new, coords_min, coords_max ):
     # return false if out of bounds, true if ok
 
     # check boundaries
-    if coords_new[0] < coords_min[0]    : return False#np.nan#coords_new[0] = 0
-    elif coords_new[0] >= coords_max[0] : return False#np.nan#coords_new[0] = coords_max[0]-1
+    if coords_new[0] < coords_min[0]    : return False
+    elif coords_new[0] >= coords_max[0] : return False
 
-    if coords_new[1] < coords_min[1]    : return False#np.nan#coords_new[1] = 0
-    elif coords_new[1] >= coords_max[1] : return False#np.nan#coords_new[1] = coords_max[1]-1
+    if coords_new[1] < coords_min[1]    : return False
+    elif coords_new[1] >= coords_max[1] : return False
 
-    if coords_new[2] < coords_min[2]    : return False#np.nan#coords_new[2] = 0
-    elif coords_new[2] >= coords_max[2] : return False#np.nan#coords_new[2] = coords_max[2]-1
+    if coords_new[2] < coords_min[2]    : return False
+    elif coords_new[2] >= coords_max[2] : return False
 
     return True
     #}}}
