@@ -11,6 +11,15 @@ int make_density_profile( gridConfiguration *gridCfg,
                           double cntrl_para, 
                           double n_e[gridCfg->Nx/2][gridCfg->Ny/2][gridCfg->Nz/2] ) {
 //{{{
+    // This function allows to defines the plasma density profiles. The
+    // parameter "cntrl_para" allows to switch between varies options. The
+    // plasma density is written into the array "n_e", which has half of the 
+    // resoltion of the full-wave grid (half of the size into each direction),
+    // as 1 Yee-cell consists of 2 grid points and we don't want the background
+    // to vary inside of 1 Yee-cell.
+    // Option 5 might be the most usefull option, as it simply reads the data
+    // from an hdf5 file (for further details, see below in the code).
+
     size_t
         ii, jj, kk, 
         ne_start_z;
