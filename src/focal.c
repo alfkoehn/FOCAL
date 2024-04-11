@@ -9,6 +9,16 @@ int advance_J( gridConfiguration *gridCfg,
                double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz],
                double n_e[gridCfg->Nx/2][gridCfg->Ny/2][gridCfg->Nz/2] ) { 
 //{{{
+    // This functions advances the current density J in time. J is calculated
+    // from the fluid equation of motion of the electrons and reads
+    // J_new = J_old + epsion_0*w_pe^2*E - w_ce*(Jx\hat(B)_0) - nu*J
+    // Note that w_pe^2 --> n_e and w_ce --> B_0 with \hat(B) being the unit
+    // vector pointing into the direction of B_0.
+    // nu is a term corresponding to collisional damping that can be used to
+    // respresent the effect of collisional and/or avoid some numerical 
+    // instabilities that might arise at resonance like the upper-hybrid
+    // resonance.
+
     size_t
         ii, jj, kk;
 
@@ -54,6 +64,8 @@ int advance_J( gridConfiguration *gridCfg,
 int advance_B( gridConfiguration *gridCfg, 
                double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] ) {
 //{{{
+    // B_new = B_old - nabla x E
+
     size_t
         ii, jj, kk;
 
@@ -119,6 +131,8 @@ int advance_E( gridConfiguration *gridCfg,
                double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
                double J_B0[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz] ) {
 //{{{
+    // E_new = E_old + c^2*nablaxB - 1/epsilon_0*J
+
     size_t
         ii, jj, kk;
 
