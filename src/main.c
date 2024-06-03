@@ -90,8 +90,6 @@ int main( int argc, char *argv[] ) {
         eco,
 #endif
 
-        //ant_phase, 
-
         poynt_x1, poynt_x2,
         poynt_y1, poynt_y2,
         poynt_z1, poynt_z2,
@@ -101,13 +99,6 @@ int main( int argc, char *argv[] ) {
         power_abs_y1, power_abs_y2,
         power_abs_z1, power_abs_z2,
         power_abs_ref,
-
-        /*
-        power_EE_x1, power_EE_x2, 
-        power_EE_y1, power_EE_y2, 
-        power_EE_z1, power_EE_z2, 
-        power_EE_ref, 
-        */
 
         omega_t;
 
@@ -267,15 +258,6 @@ int main( int argc, char *argv[] ) {
     poynt_z1       = .0;
     poynt_z1_ref   = .0;
     poynt_z2       = .0;
-    /*
-    power_EE_x1    = .0;
-    power_EE_x2    = .0;
-    power_EE_y1    = .0;
-    power_EE_y2    = .0;
-    power_EE_z1    = .0;
-    power_EE_z2    = .0;
-    power_EE_ref   = .0;
-    */
     printf( "...done setting all variables to 0\n" );
 
     printf( "starting do define antenna field...\n" );
@@ -447,20 +429,6 @@ int main( int argc, char *argv[] ) {
             power_abs_y1    = .99*power_abs_y1  + .01*poynt_y1;
             power_abs_y2    = .99*power_abs_y2  + .01*poynt_y2;
 
-            /*
-            // EE
-            // z1-plane and z2-plane
-            power_EE_ref    += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, gridCfg.d_absorb, "ref_z1", EB_WAVE, EB_WAVE_ref );
-            power_EE_z1     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, gridCfg.d_absorb, "z1",     EB_WAVE, EB_WAVE_ref );
-            power_EE_z2     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, gridCfg.d_absorb, "z2",     EB_WAVE, EB_WAVE_ref );
-            // x1-plane and x2-plane
-            power_EE_x1     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, gridCfg.d_absorb, "x1",     EB_WAVE, EB_WAVE_ref );
-            power_EE_x2     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, gridCfg.d_absorb, "x2",     EB_WAVE, EB_WAVE_ref );
-            // y1-plane and y2-plane
-            power_EE_y1     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, gridCfg.d_absorb, "y1",     EB_WAVE, EB_WAVE_ref );
-            power_EE_y2     += calc_power_EE_1( gridCfg.Nx, gridCfg.Ny, gridCfg.Nz, gridCfg.Nz_ref, gridCfg.d_absorb, "y2",     EB_WAVE, EB_WAVE_ref );
-            */
-
         }
 
 
@@ -475,18 +443,6 @@ int main( int argc, char *argv[] ) {
                     power_abs_y2/power_abs_ref,
                     (power_abs_x1+power_abs_x2 + power_abs_y1+power_abs_y2 + power_abs_z1+power_abs_z2)/power_abs_ref * 100.
                     );
-            /*
-            printf( "        Power_EE_d-abs: z1 = %13.6e, z2 = %13.6e, x1 = %13.6e, x2 = %13.6e, y1 = %13.6e, y2 = %13.6e, ref = %13.6e\n",
-                    power_EE_z1, 
-                    power_EE_z2,
-                    power_EE_x1, 
-                    power_EE_x2,
-                    power_EE_y1, 
-                    power_EE_y2,
-                    power_EE_ref
-//                    (power_abs_x1+power_abs_x2 + power_abs_y1+power_abs_y2 + power_abs_z1+power_abs_z2)/power_abs_ref * 100.
-                    );
-            */
             timetraces[T_wave][0]   = (double)t_int;
             timetraces[T_wave][1]   = (double)T_wave;
             timetraces[T_wave][2]   = power_abs_z1/power_abs_ref;
