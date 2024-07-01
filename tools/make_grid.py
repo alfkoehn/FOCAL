@@ -26,12 +26,13 @@ def write2hdf5( params, data2save,
     Parameters
     ----------
     params:
-    data2save:
+    data2save: numpy array
     fname: str
         filename of hdf5-file including full path
     dSet_name: str
         name of dataset to be read from hdf5-file
-    write_config:
+    write_config: bool
+        include configurational full-wave parameters if true
 
     Returns
     -------
@@ -49,6 +50,7 @@ def write2hdf5( params, data2save,
         h5f.create_dataset( 'config/f_0',    data=params['f_0'] )
         h5f.create_dataset( 'config/N_z',    data=params['N_z'] )
         h5f.create_dataset( 'config/N_y',    data=params['N_y'] )
+        h5f.create_dataset( 'config/N_x',    data=params['N_x'] )
 
     # write array provided in function call into file
     # check if it exists
@@ -69,7 +71,7 @@ def Rx(alpha, angle='deg'):
     #{{{
     """
     Returns the rotation matrix for rotation around the x-axis. A rotation 
-    of a vector would be performed by Rx*vec.
+    of a vector would be performed by vec_new=Rx*vec_old.
     """
     if angle == 'deg':
         alpha   = np.radians(alpha)
@@ -83,7 +85,7 @@ def Ry(beta, angle='deg'):
     #{{{
     """
     Returns the rotation matrix for rotation around the y-axis. A rotation 
-    of a vector would be performed by Ry*vec.
+    of a vector would be performed by vec_new=Ry*vec_old.
     """
     if angle == 'deg':
         beta   = np.radians(beta)
@@ -97,7 +99,7 @@ def Rz(gamma, angle='deg'):
     #{{{
     """
     Returns the rotation matrix for rotation around the z-axis. A rotation 
-    of a vector would be performed by Rz*vec.
+    of a vector would be performed by vec_new=Rz*vec_old.
     """
     if angle == 'deg':
         gamma   = np.radians(gamma)
@@ -142,20 +144,18 @@ def rotate_vec_via_skewing( coords_in, angle_in_degrees,
     skew_3  = skew_1
 
     if rot_axis == 'x':
+        x_new   = coords_in[0]
         # apply the translations (i.e. skew the vector)
         z_new   = coords_in[2] + round(skew_1*coords_in[1])
         y_new   = coords_in[1] + round(skew_2*z_new)
         z_new   = z_new + round(skew_3*y_new)
 
-        x_new   = coords_in[0]
-
     elif rot_axis == 'y':
+        y_new   = coords_in[1]
         # apply the translations (i.e. skew the vector)
         z_new   = coords_in[2] + round(skew_1*coords_in[0])
         x_new   = coords_in[0] + round(skew_2*z_new)
         z_new   = z_new + round(skew_3*x_new)
-
-        y_new   = coords_in[1]
 
     elif rot_axis == 'z':
         z_new   = coords_in[2]
@@ -204,16 +204,15 @@ def rotate_arr3D_via_shearing( arr_in, angle_in_degrees,
     for xx in range(Nx):
         for yy in range(Ny):
             for zz in range(Nz):
-                if arr_in[xx,yy,zz] > 0:
-                    # rotate via shearing
-                    coords_new = rotate_vec_via_skewing(  np.array([xx,yy,zz]), angle_in_degrees, 
-                                                          rot_axis=rot_axis, 
-                                                          rot_center=rot_center )
-                    # handle coordinates which are out of bounds after rotation
-                    if check_boundaries(coords_new, np.array([0,0,0]), np.array([Nx, Ny, Nz])):
-                        arr_rotated[ coords_new[0], 
-                                     coords_new[1], 
-                                     coords_new[2] ] = arr_in[xx,yy,zz]
+                # rotate via shearing
+                coords_new = rotate_vec_via_skewing(  np.array([xx,yy,zz]), angle_in_degrees, 
+                                                      rot_axis=rot_axis, 
+                                                      rot_center=rot_center )
+                # handle coordinates which are out of bounds after rotation
+                if check_boundaries(coords_new, np.array([0,0,0]), np.array([Nx, Ny, Nz])):
+                    arr_rotated[ coords_new[0], 
+                                 coords_new[1], 
+                                 coords_new[2] ] = arr_in[xx,yy,zz]
                 
     return arr_rotated
     #}}}
@@ -248,24 +247,23 @@ def rotate_arr3D_via_rotMatrix( arr_in, angle_in_degrees,
     for xx in range(Nx):
         for yy in range(Ny):
             for zz in range(Nz):
-                if arr_in[xx,yy,zz] > 0:
-                    # rotate via rotation matrix
-                    if rot_axis == 'x':
-                        coords_new  = Rx(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
-                    elif rot_axis == 'y':
-                        coords_new  = Ry(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
-                    elif rot_axis == 'z':
-                        coords_new  = Rz(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
-                    # round new coordinates to integers (as they are array indices)
-                    coords_new = np.array([round(coords_new[0,0]), 
-                                           round(coords_new[1,0]),
-                                           round(coords_new[2,0])])
-                    # check if rotated coordinates are out of boundaries
-                    if check_boundaries(coords_new, 
-                                        np.array([0,0,0]), np.array([Nx,Ny,Nz])):
-                        arr_rotated[ coords_new[0], 
-                                     coords_new[1], 
-                                     coords_new[2] ] = arr_in[xx,yy,zz]
+                # rotate via rotation matrix
+                if rot_axis == 'x':
+                    coords_new  = Rx(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
+                elif rot_axis == 'y':
+                    coords_new  = Ry(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
+                elif rot_axis == 'z':
+                    coords_new  = Rz(angle_in_degrees,angle='deg')*np.array([[xx],[yy],[zz]])
+                # round new coordinates to integers (as they are array indices)
+                coords_new = np.array([round(coords_new[0,0]), 
+                                       round(coords_new[1,0]),
+                                       round(coords_new[2,0])])
+                # check if rotated coordinates are out of boundaries
+                if check_boundaries(coords_new, 
+                                    np.array([0,0,0]), np.array([Nx,Ny,Nz])):
+                    arr_rotated[ coords_new[0], 
+                                 coords_new[1], 
+                                 coords_new[2] ] = arr_in[xx,yy,zz]
                 
     return arr_rotated
     #}}}
@@ -278,14 +276,14 @@ def check_boundaries( coords_new, coords_min, coords_max ):
     # return false if out of bounds, true if ok
 
     # check boundaries
-    if coords_new[0] < coords_min[0]    : return False#np.nan#coords_new[0] = 0
-    elif coords_new[0] >= coords_max[0] : return False#np.nan#coords_new[0] = coords_max[0]-1
+    if coords_new[0] < coords_min[0]    : return False
+    elif coords_new[0] >= coords_max[0] : return False
 
-    if coords_new[1] < coords_min[1]    : return False#np.nan#coords_new[1] = 0
-    elif coords_new[1] >= coords_max[1] : return False#np.nan#coords_new[1] = coords_max[1]-1
+    if coords_new[1] < coords_min[1]    : return False
+    elif coords_new[1] >= coords_max[1] : return False
 
-    if coords_new[2] < coords_min[2]    : return False#np.nan#coords_new[2] = 0
-    elif coords_new[2] >= coords_max[2] : return False#np.nan#coords_new[2] = coords_max[2]-1
+    if coords_new[2] < coords_min[2]    : return False
+    elif coords_new[2] >= coords_max[2] : return False
 
     return True
     #}}}

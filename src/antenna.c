@@ -289,17 +289,22 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
 double antenna_field_rampup( int rampUpMethod, double period, int t_int ){
 //{{{
 
+    // If the amplitude of the wave electric field is increased too fast,
+    // higher harmonics can in principle be excited which can result in an 
+    // oscillating behaviour in the detected power when analyzing mode
+    // conversion scenarios. To avoid this, the field is increased slowly
+    // in time. To achieve this, this function returns a factor which is to
+    // be multiplied with the antenna field added to the full-wave grid (i.e.
+    // the antenna) at each time step. This factor, called t_rise, will be 0
+    // at the beginning and ramped-up to 1 exponentially. The speed of the 
+    // ramp-up can be varied with the parameter tau, for tau=100, this 
+    // corresponds to needed roughly 30 oscillation periods to reach one. 
+    
     double
         t_rise,
         tau;
 
     tau = 100.;
-
-    // If the amplitude of the wave electric field is increasing too fast,
-    // higher harmonics can in principle be excited which can result in an 
-    // oscillating behaviour in the detected power when analyzing mode
-    // conversion scenarios. To avoid this, the field is increased slowly
-    // in time.
 
     if (rampUpMethod == 1) {
         // exponential increase reaching 1 after roughly 30 oscillation periods

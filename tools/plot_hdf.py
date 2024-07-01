@@ -31,6 +31,7 @@ def readhdf5( fname, dSet_name ):
 
     Returns
     -------
+    numpy array
     """
 
     err_value = 1
@@ -45,6 +46,8 @@ def readhdf5( fname, dSet_name ):
     # trying to read dataset
     if dSet_name in h5f:
         data_in = h5f[ dSet_name ][()]
+        # note that the dataset.value attribute was deprecated, i.e. 
+        # data_in = h5f.get(dSet_name).value is no longer working
     else:
         print( 'ERROR: dataset <{0}> does not exists in file <{1}>'.format( dSet_name, fname ) )
         return err_value
