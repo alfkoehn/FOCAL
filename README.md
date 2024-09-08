@@ -2,7 +2,7 @@
 <h3 align="center"> FOCAL </h3>
 
 Developers: [Alf Köhn-Seemann](https://www.igvp.uni-stuttgart.de/team/Koehn-Seemann/)\
-&emsp;	    [Luis Carlos Herrera Quesada](https://www.linkedin.com/in/lherreraquesada/)
+&emsp;&emsp;&emsp;	    [Luis Carlos Herrera Quesada](https://www.linkedin.com/in/lherreraquesada/)
 	    
 **Desription**: 3D FDTD code for propagation of electromagnetic waves in cold magnetized plasma.
 
