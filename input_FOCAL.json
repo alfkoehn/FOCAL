@@ -1,0 +1,34 @@
+{	
+    "Main_Project": "../Simulations",
+    "foldername":   "Density_test_1",
+    "filename_hdf5": "fileout.h5",
+    "filename_timetraces": "timetraces2.dat",
+    
+    "scale": 1,
+    "period": 16,
+    "Grid_size_Nx": 300,
+    "Grid_size_Ny": 300,
+    "Grid_size_Nz": 400,
+    "t_end": 50,
+    
+    "B0_profile":1,
+    "ne_profile":5,
+    "ne_value":0.5,
+    
+    "Boundary_Method": 1,
+    
+    "Antenna_Pos_x": 150,
+    "Antenna_Pos_y": 150,
+    "Antenna_Pos_z": 52,
+    "Antenna_Angle_zx": 0,
+    "Antenna_Angle_zy": 0,
+    
+    "External_signal": 4,
+    "RampUp_Method": 1,
+    "Antena_w0x": 2.0,
+    "Antena_w0y": 2.0,
+    "z2waist":-298.87,
+    
+    "Detector_Antenna": 1
+    
+}
