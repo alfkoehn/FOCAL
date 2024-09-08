@@ -1,4 +1,3 @@
-# FOCAL
 <h3 align="center"> FOCAL </h3>
 
 Developers: [Alf Köhn-Seemann](https://www.igvp.uni-stuttgart.de/team/Koehn-Seemann/)\
