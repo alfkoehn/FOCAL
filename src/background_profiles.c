@@ -28,8 +28,7 @@ int make_density_profile( gridConfiguration *gridCfg,
         ne_k0Ln,
         aux;
 
-    // if density is larger than this value, FDTD code becomes instable
-    ne_max  = gridCfg->period * 2./5.;
+    ne_max  = gridCfg->ne_max;
 
     if ( gridCfg->ne_profile == 1 ) {
         // plasma mirror
@@ -89,7 +88,7 @@ int make_density_profile( gridConfiguration *gridCfg,
                     n_e[ii][jj][kk]    = exp( -1.* (
                                                  pow((double)jj-(double)gridCfg->Ny/4., 2)/(2*pow(gridCfg->period/2.,2)) 
                                                 +pow((double)kk-(double)gridCfg->Nz/4., 2)/(2*pow(gridCfg->period/2.,2))
-                                             )) * 5.;
+                                             )) * ne_max;
                 }
             }
         }
@@ -101,11 +100,23 @@ int make_density_profile( gridConfiguration *gridCfg,
                     n_e[ii][jj][kk]    = exp( -1.* (
                                                  pow((double)ii-(double)gridCfg->Nx/4., 2)/(2*pow(gridCfg->period/2.,2)) 
                                                 +pow((double)kk-(double)gridCfg->Nz/4., 2)/(2*pow(gridCfg->period/2.,2))
-                                             )) * 2;//5.;
+                                             )) * ne_max;
                 }
             }
         }
     } else if ( gridCfg->ne_profile == 5 ) {
+        // same as ne_profile = 3, but plasma cylinder is now along z
+        for (ii=0 ; ii<(gridCfg->Nx/2) ; ++ii) {
+            for (jj=0 ; jj<(gridCfg->Ny/2) ; ++jj) {
+                for (kk=0 ; kk<(gridCfg->Nz/2) ; ++kk) {
+                    n_e[ii][jj][kk]    = exp( -1.* (
+                                                 pow((double)ii-(double)gridCfg->Nx/4., 2)/(2*pow(gridCfg->period/2.,2)) 
+                                                +pow((double)jj-(double)gridCfg->Ny/4., 2)/(2*pow(gridCfg->period/2.,2))
+                                             )) * ne_max;
+                }
+            }
+        }
+    } else if ( gridCfg->ne_profile == 6 ) {
         // filename and dataset-name are currently hard-coded
         //   ==> change this
         //       either provide additional parameter in function call
@@ -133,9 +144,9 @@ int make_B0_profile( gridConfiguration *gridCfg,
         for (ii=0 ; ii<gridCfg->Nx ; ii+=2) {
             for (jj=0 ; jj<gridCfg->Ny ; jj+=2) {
                 for (kk=0 ; kk<gridCfg->Nz ; kk+=2) {
-                    J_B0[ii  ][jj+1][kk+1] = cntrl_para;
+                    J_B0[ii  ][jj+1][kk+1] = cntrl_para*.0;
                     J_B0[ii+1][jj  ][kk+1] = cntrl_para*.0;
-                    J_B0[ii+1][jj+1][kk  ] = cntrl_para*.0;
+                    J_B0[ii+1][jj+1][kk  ] = cntrl_para;
                 }
             }
         }
