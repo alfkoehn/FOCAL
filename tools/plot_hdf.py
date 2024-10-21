@@ -130,6 +130,34 @@ def calc_wci( B0=1., m_i=consts.m_p, Z=1 ):
 #}}}
 
 
+def calc_wL( B0=1., density=1e20):
+#;{{{
+    """
+    Calculate the left-hand angular frequency w_L.
+
+    w_L = sqrt( 0.25* w_ce^2 + w_pe^2 ) - 0.5*w_ce
+
+    Parameters
+    ----------
+    B0: float
+        magnetic field strength in Tesla
+    density: float
+        electron plasma density in m^-3
+
+    Returns
+    -------
+    float
+        angular frequency in rad s^-1
+    """
+
+    # calculate the characteristic frequency needed
+    w_ce = calc_wce( B0 )
+    w_pe = calc_wpe( density)
+
+    return np.sqrt( .25*w_ce**2 + w_pe**2 ) - .5*w_ce
+#;}}}
+
+
 def calc_wR( B0=1., density=1e20):
 #;{{{
     """
@@ -158,12 +186,12 @@ def calc_wR( B0=1., density=1e20):
 #;}}}
 
 
-def calc_wL( B0=1., density=1e20):
+def calc_wUH( B0=1., density=1e20):
 #;{{{
     """
-    Calculate the left-hand angular frequency w_L.
+    Calculate the upper hybrid angular frequency w_UH.
 
-    w_L = sqrt( 0.25* w_ce^2 + w_pe^2 ) - 0.5*w_ce
+    w_UH = sqrt( w_pe^2 + w_ce^2 )
 
     Parameters
     ----------
@@ -182,7 +210,7 @@ def calc_wL( B0=1., density=1e20):
     w_ce = calc_wce( B0 )
     w_pe = calc_wpe( density)
 
-    return np.sqrt( .25*w_ce**2 + w_pe**2 ) - .5*w_ce
+    return np.sqrt( w_pe**2 + w_ce**2 )
 #;}}}
 
 
