@@ -210,7 +210,7 @@ def calc_wUH( B0=1., density=1e20):
     w_ce = calc_wce( B0 )
     w_pe = calc_wpe( density)
 
-    return np.sqrt( w_pe**2 + w_ce**2 )
+    return np.sqrt( w_pe**2 + w_ce**2 ) 
 #;}}}
 
 
@@ -233,9 +233,12 @@ def plot_simple( fname_in, dSet_name='',
 
     data2plot   = readhdf5( fname_in, dSet_name )
 
+    print("dataset-name = {0}, min = {1}, max = {2}".format(dSet_name, np.amin(data2plot), np.amax(data2plot)) )
+
     colScale    = 'lin'
     if colScale == 'lin':
         contLevels  = np.linspace( 0, np.amax(data2plot), contLevels )[1:].tolist()
+        #contLevels  = np.linspace( np.amin(data2plot), np.amax(data2plot), contLevels )[1:].tolist()
     elif colScale == 'log':
         contLevels  = np.logspace( np.log10(1e-2), np.log10(np.amax(E_abs)), 8)[3:].tolist()
 
