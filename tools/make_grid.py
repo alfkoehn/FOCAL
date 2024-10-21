@@ -11,6 +11,9 @@ import h5py
 import numpy as np
 import os.path
 
+# open-source just-in-time (jit) compilier for generating hightly optimized code
+from numba import jit
+
 # import modules for visualization of 3D data
 from mayavi import mlab
 
@@ -109,6 +112,7 @@ def Rz(gamma, angle='deg'):
     #}}}
 
 
+@jit
 def rotate_vec_via_skewing( coords_in, angle_in_degrees, 
                             rot_axis='x', rot_center=np.array([0,0,0]) ):
     #{{{
@@ -173,6 +177,7 @@ def rotate_vec_via_skewing( coords_in, angle_in_degrees,
     #}}}
 
 
+@jit
 def rotate_arr3D_via_shearing( arr_in, angle_in_degrees, 
                                rot_axis='z', rot_center=np.array([0,0,0]) ):
     #{{{
@@ -218,6 +223,7 @@ def rotate_arr3D_via_shearing( arr_in, angle_in_degrees,
     #}}}
 
 
+@jit
 def rotate_arr3D_via_rotMatrix( arr_in, angle_in_degrees,
                                 rot_axis='z', rot_center=np.array([0,0,0])):
     #{{{
@@ -269,6 +275,7 @@ def rotate_arr3D_via_rotMatrix( arr_in, angle_in_degrees,
     #}}}
 
 
+@jit
 def check_boundaries( coords_new, coords_min, coords_max ):
     #{{{
 
@@ -289,6 +296,7 @@ def check_boundaries( coords_new, coords_min, coords_max ):
     #}}}
 
 
+@jit
 def make_ne_profile( ne_profile, Nx=100, Ny=70, Nz=40, 
                      fname='grid.h5', dSet_name='n_e',
                    ):
