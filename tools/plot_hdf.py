@@ -103,6 +103,33 @@ def calc_wce( B0 ):
 #;}}}
 
 
+def calc_wci( B0=1., m_i=consts.m_p, Z=1 ):
+#{{{
+    """
+    Calculate the ion cyclotron angular frequency.
+
+    w_ci = e * B0/m_i
+
+    Parameters
+    ----------
+    B0: float
+        magnetic field strength in Tesla
+    m_i: float
+        ion mass in kg
+    Z: int
+        number of positive or negative charges of ion
+        NOTE: currently not implemented
+
+    Returns
+    -------
+    float
+        angular frequency in rad s^-1
+    """
+
+    return consts.e*B0/m_i
+#}}}
+
+
 def calc_wR( B0=1., density=1e20):
 #;{{{
     """
