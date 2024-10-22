@@ -88,7 +88,6 @@ int make_antenna_profile( gridConfiguration *gridCfg, beamConfiguration *beamCfg
 
 
 int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
-                double Y, 
                 int t_int, double omega_t, 
                 double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], 
                 double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2],
@@ -147,9 +146,10 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
         // formula for calculating ratio of wave electric fields 
 
         // calculate factor defining ratio of perpendicular E-fields according to Hansen
-        theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
-        fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, Y );
-        fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad);
+        //theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
+        theta_rad           = beamCfg->theta_at_X1/180. * M_PI;
+        fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, beamCfg->Y_at_X1 );
+        fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad) * .0;
 
         if (t_int < 1) {
             printf( "|E_x/E_y| = %f\n", fact1_Hansen_corr );
@@ -167,8 +167,12 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
                 source  = cos(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 EB_WAVE[ii  ][jj+1][beamCfg->ant_z  ] += source/fact1_Hansen_corr;
                 // Ez
-                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
-                EB_WAVE[ii  ][jj  ][beamCfg->ant_z+1] += source/fact2_Hansen_corr;
+                //source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                //EB_WAVE[ii  ][jj  ][beamCfg->ant_z+1] += source/fact2_Hansen_corr;
+                // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // WARNING: Ez has been switched off 
+                //          ==> no O-mode injection for angled injection possible this way
+                // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
         }
     } else if ( beamCfg->exc_signal == 5) {
@@ -188,7 +192,6 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
 
 
 int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
-                    double Y, 
                     int t_int, double omega_t, 
                     double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], 
                     double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2],
@@ -245,9 +248,10 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
         // elliptically polarized for optimum O-SX conversion using Hansen's
         // formula for calculating ratio of wave electric fields 
 
-        theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
-        fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, Y );
-        fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad);
+        //theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
+        theta_rad           = beamCfg->theta_at_X1/180. * M_PI;
+        fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, beamCfg->Y_at_X1 );
+        fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad) * .0;
 
         if (t_int < 1) {
             printf( "|E_x/E_y| = %f\n", fact1_Hansen_corr );
@@ -265,8 +269,12 @@ int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
                 source  = cos(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
                 EB_WAVE[ii  ][jj+1][beamCfg->ant_z  ] += source/fact1_Hansen_corr;
                 // Ez
-                source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
-                EB_WAVE[ii  ][jj  ][beamCfg->ant_z+1] += source/fact2_Hansen_corr;
+                //source  = sin(omega_t + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                //EB_WAVE[ii  ][jj  ][beamCfg->ant_z+1] += source/fact2_Hansen_corr;
+                // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // WARNING: Ez has been switched off 
+                //          ==> no O-mode injection for angled injection possible this way
+                // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
         }
     } else if ( beamCfg->exc_signal == 5) {
@@ -321,13 +329,19 @@ double antenna_field_rampup( int rampUpMethod, double period, int t_int ){
 
 double antenna_calcHansenExEy_O( double theta_rad, double Y ){
     //{{{
+    //
+    // TODO: requires tests if it actually works
+    //       compare this value with value deduced from python scripts
 
     double
         ExEy;
 
     ExEy    = .5*(Y*pow(sin(theta_rad),2) 
+    //ExEy    = .5*(Y*Y*pow(sin(theta_rad),2) // <--- is this correct ? TODO: check! also check sign!!
                   +sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )
                  );
+
+    ExEy    = 0.52;
 
     return ExEy;
 }//}}}
