@@ -286,8 +286,9 @@ def plot_simple( fname_in, dSet_name='',
 def plot_fullwave( fname_in, fname_plot='',
                    f_0=28e9,
                    t_int=0,
-                   N_contLevels=20, 
-                   include_absorbers=False, oplot_dens_projection=False,
+                   N_contLevels=20, colScale='lin',
+                   include_absorbers=False, cutExtended_fact=1.,
+                   oplot_dens_projection=False,
                    scale_axes_to_meters=False,
                    oplot_Efieldcut=None,
                  ):
@@ -304,6 +305,8 @@ def plot_fullwave( fname_in, fname_plot='',
     d_absorb    = readhdf5( fname_in, 'config/d_absorb' )[0]
 
     l_0         = consts.c/f_0
+
+    pts2cut     = round(d_absorb/2)
 
     print( 'configurational parameters: ' )
     print( '    period  : {0}'.format(period) )
@@ -376,32 +379,69 @@ def plot_fullwave( fname_in, fname_plot='',
         print( 'absorbers will not be included in plot, will actually be cut from data' )
         print( 'E_abs.shape = {0}, d_absorb = {1}, Nx = {2}, Ny = {3}, Nz = {4}, ant_z = {5}'.format(
             E_abs.shape, d_absorb, Nx, Ny, Nz, ant_z) )
-        if isinstance(density, np.ndarray):
-            density = density[d_absorb:(Nx-d_absorb), 
-                              d_absorb:(Ny-d_absorb), 
-                              ant_z:(Nz-d_absorb) ]
-        E_abs   = E_abs[  d_absorb:(Nx-d_absorb), 
-                          d_absorb:(Ny-d_absorb), 
-                          ant_z:(Nz-d_absorb) ]
-        X   = X[      d_absorb:(Nx-d_absorb), 
-                      d_absorb:(Ny-d_absorb), 
-                      ant_z:(Nz-d_absorb) ]
-        Y   = Y[      d_absorb:(Nx-d_absorb), 
-                      d_absorb:(Ny-d_absorb), 
-                      ant_z:(Nz-d_absorb) ]
-        Z   = Z[      d_absorb:(Nx-d_absorb), 
-                      d_absorb:(Ny-d_absorb), 
-                      ant_z:(Nz-d_absorb) ]
-        if isinstance(B0_abs, np.ndarray):
-            B0_abs  = B0_abs[ d_absorb:(Nx-d_absorb), 
-                              d_absorb:(Ny-d_absorb), 
-                              ant_z:(Nz-d_absorb) ]
+#        if isinstance(density, np.ndarray):
+#            density = density[d_absorb:(Nx-d_absorb), 
+#                              d_absorb:(Ny-d_absorb), 
+#                              #ant_z:(Nz-d_absorb) ]    #!!!!!!!!!WRONG, removed 2024-08-15 on rs2 (2024-10-21 on git-repo)
+#                              d_absorb:(Nz-d_absorb) ]
+#        E_abs   = E_abs[  d_absorb:(Nx-d_absorb), 
+#                          d_absorb:(Ny-d_absorb), 
+#                          #ant_z:(Nz-d_absorb) ] 
+#                          d_absorb:(Nz-d_absorb) ]
+#        X   = X[      d_absorb:(Nx-d_absorb), 
+#                      d_absorb:(Ny-d_absorb), 
+#                      #ant_z:(Nz-d_absorb) ]
+#                      d_absorb:(Nz-d_absorb) ]
+#        Y   = Y[      d_absorb:(Nx-d_absorb), 
+#                      d_absorb:(Ny-d_absorb), 
+#                      #ant_z:(Nz-d_absorb) ]
+#                      d_absorb:(Nz-d_absorb) ]
+#        Z   = Z[      d_absorb:(Nx-d_absorb), 
+#                      d_absorb:(Ny-d_absorb), 
+#                      #ant_z:(Nz-d_absorb) ]
+#                      d_absorb:(Nz-d_absorb) ]
+#        if isinstance(B0_abs, np.ndarray):
+#            B0_abs  = B0_abs[ d_absorb:(Nx-d_absorb), 
+#                              d_absorb:(Ny-d_absorb), 
+#                              #ant_z:(Nz-d_absorb) ]
+#                              d_absorb:(Nz-d_absorb) ]
+#
+        if pts2cut > 0:
+            print( "will in addition cut following amount of grid points from each side: {0}".format(pts2cut) )
+            cut_x   = round(pts2cut*cutExtended_fact)
+            cut_y   = round(pts2cut*cutExtended_fact)
+            cut_z   = round(pts2cut)
+            if isinstance(density, np.ndarray):
+                density = density[cut_x:-cut_x,
+                                  cut_y:-cut_y, 
+                                  cut_z:-cut_z ]
+            E_abs   = E_abs[  cut_x:-cut_x, 
+                              cut_y:-cut_y, 
+                              cut_z:-cut_z ]
+            X   = X[      cut_x:-cut_x, 
+                          cut_y:-cut_y, 
+                          cut_z:-cut_z ]
+            Y   = Y[      cut_x:-cut_x, 
+                          cut_y:-cut_y, 
+                          cut_z:-cut_z ]
+            Z   = Z[      cut_x:-cut_x, 
+                          cut_y:-cut_y, 
+                          cut_z:-cut_z ]
+            if isinstance(B0_abs, np.ndarray):
+                B0_abs  = B0_abs[ cut_x:-cut_x, 
+                                  cut_y:-cut_y, 
+                                  cut_z:-cut_z ]
 
+        print( 'E_abs.shape = {0}, d_absorb = {1}, Nx = {2}, Ny = {3}, Nz = {4}, ant_z = {5}'.format(
+            E_abs.shape, d_absorb, Nx, Ny, Nz, ant_z) )
 
     # |E| = sqrt(Ex^2 + Ey^2 + Ez^2)
-    contLevels  = np.linspace( 0, np.amax(E_abs), N_contLevels )[1:].tolist()
-    #contLevels  = np.linspace( 0, .1*np.amax(E_abs), 10 )[1:].tolist()
-    #contLevels  = np.logspace( np.log10(1e-2), np.log10(np.amax(E_abs)), 8 )[3:].tolist()
+    if colScale == 'lin':
+        contLevels  = np.linspace( 0, np.amax(E_abs), N_contLevels )[1:].tolist()
+    elif colScale == 'log':
+        contLevels  = np.logspace( np.log10(1e-2),
+                                   np.log10(np.amax(E_abs)*.9), # added factor 0.9 to avoid traits-error (2024-08-15), to github 2024-10-22
+                                   N_contLevels)[3:].tolist()
 
     print( 'contour levels: ', contLevels )
 
@@ -554,6 +594,8 @@ def main():
                          help="Plot type." )
     parser.add_argument( "-t", "--time", type=int, default=0,
                          help="Timestep." )
+    parser.add_argument( "-s", "--colScale", type=str, default="lin",
+                         help="Lin or log color scale for contour plot." )
 
     # read all argments from command line
     args                = parser.parse_args()
@@ -563,19 +605,25 @@ def main():
     plotReductionLevel  = args.plotReductionLevel
     plot_type           = args.plot_type
     t_int               = args.time
+    colScale            = args.colScale
 
-    print( "  Following arguments are set (via command line options): " )
+    print( "  Following arguments are set via command line options (if not set explicitely, their default values are used): " )
     print( "    fname = {0}".format(fname) )
     print( "    dSet_name = {0}".format(dSet_name) )
+    print( "    contLevels = {0}".format(contLevels) )
+    print( "    plotReductionLevel = {0}".format(plotReductionLevel) )
+    print( "    t_int = {0}".format(t_int) )
+    print( "    colScale = {0}".format(colScale) )
 
     if plot_type == 1:
         plot_simple(fname, dSet_name=dSet_name, 
                     contLevels=contLevels, plotReductionLevel=plotReductionLevel, 
                     silent=False)
     elif plot_type == 2:
-        plot_fullwave( fname, t_int=t_int, include_absorbers=False, 
+        plot_fullwave( fname, t_int=t_int, 
+                       include_absorbers=False, cutExtended_fact=1.5,
                        oplot_dens_projection=False,
-                       N_contLevels=contLevels,
+                       N_contLevels=contLevels, colScale=colScale, 
                        #oplot_Efieldcut='x1z1',
                      )
 
