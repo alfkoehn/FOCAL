@@ -127,6 +127,10 @@ int main( int argc, char *argv[] ) {
     gridCfg.B0_profile  = 0;
     gridCfg.ne_profile  = 2+3;
 
+    beamCfg.Y_at_X1     = .41;
+    beamCfg.k0Ln_at_X1  = 6.;
+    beamCfg.theta_at_X1 = 78.;
+
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
     double (*EB_WAVE)[gridCfg.Ny][gridCfg.Nz]           = calloc(gridCfg.Nx, sizeof *EB_WAVE);
@@ -194,7 +198,7 @@ int main( int argc, char *argv[] ) {
 
     beamCfg.exc_signal  = 5;//3;//4;
     beamCfg.rampUpMethod= 1;
-    beamCfg.ant_x       = gridCfg.d_absorb + 8*gridCfg.period;//gridCfg.Nx/2;
+    beamCfg.ant_x       = gridCfg.Nx/2;
     beamCfg.ant_y       = gridCfg.Ny/2;
     beamCfg.ant_z       = gridCfg.d_absorb + 4;
     // positions have to be even numbers, to ensure fields are accessed correctly
@@ -271,7 +275,7 @@ int main( int argc, char *argv[] ) {
     make_density_profile( &gridCfg,  
             // cntrl_para: ne_profile=1 --> 0: plane mirror; oblique mirror: -.36397; 20 degrees: -.17633
             //             ne_profile=2 --> k0*Ln: 25
-            25,
+            beamCfg.k0Ln_at_X1,
             n_e );
     printf( " ...setting density in absorber to 0...\n ");
     //set_densityInAbsorber_v2( &gridCfg, "z1", n_e );
@@ -286,7 +290,7 @@ int main( int argc, char *argv[] ) {
     make_B0_profile(
             &gridCfg,
             // cntrl_para: B0_profile=1 --> value of Y
-            .85, 
+            beamCfg.Y_at_X1, 
             J_B0 );
     printf( "...done defining background magnetic field\n" );
 
@@ -328,11 +332,9 @@ int main( int argc, char *argv[] ) {
 
         // add source
         add_source( &gridCfg, &beamCfg,
-                    .85*0.,     // .85=Y, this values should be calculated/extracted from ne-profile
                     t_int, omega_t, 
                     antField_xy, antPhaseTerms, EB_WAVE );
         add_source_ref( &gridCfg, &beamCfg,
-                        .85*0.,     // .85=Y, this values should be calculated/extracted from ne-profile
                         t_int, omega_t, 
                         antField_xy, antPhaseTerms, EB_WAVE_ref );
 
@@ -418,8 +420,8 @@ int main( int argc, char *argv[] ) {
             poynt_y2        = calc_poynt_4( &gridCfg, pwr_dect, "y2", EB_WAVE, EB_WAVE_ref );
 
             
-//            printf( "t = %d, power_abs_ref = %13.5e, power_abs_z1 = %13.5e, power_abs_z2 = %13.5e, poynt_z1 = %13.5e, poynt_z2 = %13.5e\n",
-//                    t_int, power_abs_ref, power_abs_z1, power_abs_z2, poynt_z1, poynt_z2 );
+            //printf( "t = %d, power_abs_ref = %13.5e, power_abs_z1 = %13.5e, power_abs_z2 = %13.5e, poynt_z1 = %13.5e, poynt_z2 = %13.5e\n",
+            //        t_int, power_abs_ref, power_abs_z1, power_abs_z2, poynt_z1, poynt_z2 );
 
             power_abs_ref   = .99*power_abs_ref + .01*poynt_z1_ref;
             power_abs_z1    = .99*power_abs_z1  + .01*poynt_z1;
