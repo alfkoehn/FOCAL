@@ -139,7 +139,49 @@ int make_B0_profile( gridConfiguration *gridCfg,
                 }
             }
         }
-    } 
+    } else if ( gridCfg->B0_profile == 2 ) {
+        // filename and dataset-name are currently hard-coded
+        // (just an urgent, quick, and dirty hack, sorry)
+        //   ==> change this
+        //       either provide additional parameter in function call
+        //       or not load the profile here, but directly in main
+        
+        double (*B0_tmp)[gridCfg->Ny/2][gridCfg->Nz/2]  = calloc(gridCfg->Nx/2, sizeof *B0_tmp);
+
+        // B0_x
+        readMyHDF( gridCfg->Nx/2, gridCfg->Ny/2, gridCfg->Nz/2, "input/grid.h5", "B0_x", B0_tmp );
+        for (ii=0 ; ii<gridCfg->Nx ; ii+=2) {
+            for (jj=0 ; jj<gridCfg->Ny ; jj+=2) {
+                for (kk=0 ; kk<gridCfg->Nz ; kk+=2) {
+                    J_B0[ii  ][jj+1][kk+1] = B0_tmp[ii/2][jj/2][kk/2];
+                    B0_tmp[ii/2][jj/2][kk/2] = .0;
+                }
+            }
+        }
+        // B0_y
+        readMyHDF( gridCfg->Nx/2, gridCfg->Ny/2, gridCfg->Nz/2, "input/grid.h5", "B0_y", B0_tmp );
+        for (ii=0 ; ii<gridCfg->Nx ; ii+=2) {
+            for (jj=0 ; jj<gridCfg->Ny ; jj+=2) {
+                for (kk=0 ; kk<gridCfg->Nz ; kk+=2) {
+                    J_B0[ii+1][jj  ][kk+1] = B0_tmp[ii/2][jj/2][kk/2];
+                    B0_tmp[ii/2][jj/2][kk/2] = .0;
+                }
+            }
+        }
+        // B0_z
+        readMyHDF( gridCfg->Nx/2, gridCfg->Ny/2, gridCfg->Nz/2, "input/grid.h5", "B0_z", B0_tmp );
+        for (ii=0 ; ii<gridCfg->Nx ; ii+=2) {
+            for (jj=0 ; jj<gridCfg->Ny ; jj+=2) {
+                for (kk=0 ; kk<gridCfg->Nz ; kk+=2) {
+                    J_B0[ii+1][jj+1][kk  ] = B0_tmp[ii/2][jj/2][kk/2];
+                    B0_tmp[ii/2][jj/2][kk/2] = .0;
+                }
+            }
+        }
+
+        free( B0_tmp );
+    }
+
     return EXIT_SUCCESS;
 }//}}}
 
