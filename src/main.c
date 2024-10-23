@@ -125,7 +125,7 @@ int main( int argc, char *argv[] ) {
     gridCfg.t_end   = (int)((100-50)*gridCfg.period);
 
     gridCfg.B0_profile  = 0;
-    gridCfg.ne_profile  = 2+3;
+    gridCfg.ne_profile  = 3;
 
     beamCfg.Y_at_X1     = .41;
     beamCfg.k0Ln_at_X1  = 6.;
