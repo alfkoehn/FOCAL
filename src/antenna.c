@@ -1,12 +1,13 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "focal-struct.h"
 
 //#include "../include/focal.h"
 #include "focal.h"
 #include "antenna.h"
 
-int make_antenna_profile( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
+int make_antenna_profile( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, 
                           double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2] ) {
 //{{{
 // like make_antenna_profile_3 but with previously missing optional for z2waist
@@ -87,7 +88,7 @@ int make_antenna_profile( gridConfiguration *gridCfg, beamConfiguration *beamCfg
 }//}}}
 
 
-int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
+int add_source( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, 
                 int t_int, double omega_t, 
                 double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], 
                 double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2],
@@ -191,7 +192,7 @@ int add_source( gridConfiguration *gridCfg, beamConfiguration *beamCfg,
 }//}}}
 
 
-int add_source_ref( gridConfiguration *gridCfg, beamConfiguration *beamCfg, 
+int add_source_ref( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, 
                     int t_int, double omega_t, 
                     double antField_xy[gridCfg->Nx/2][gridCfg->Ny/2], 
                     double antPhaseTerms[gridCfg->Nx/2][gridCfg->Ny/2],

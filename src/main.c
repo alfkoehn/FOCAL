@@ -49,7 +49,7 @@
 
 #define DETECTOR_ANTENNA_1D
 
-
+#include "focal-struct.h"
 #include "focal.h"
 #include "antenna.h"
 #include "grid_io.h"
@@ -61,7 +61,7 @@ int main( int argc, char *argv[] ) {
 //{{{
 
     struct gridConfiguration gridCfg;
-    struct beamConfiguration beamCfg;
+    struct beamAntennaConfiguration beamCfg;
 
     int
         ii,jj,kk,

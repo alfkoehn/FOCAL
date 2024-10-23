@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include "focal-struct.h"
 
 #include "focal.h"
 #include "hdf5.h"
@@ -211,7 +212,7 @@ int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[]
 
 
 //#ifdef HDF5
-int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, char filename[] ) {
+int writeConfig2HDF( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, char filename[] ) {
     //#{{{
 
     long        data2write_long[1];

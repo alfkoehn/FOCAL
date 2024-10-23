@@ -59,7 +59,8 @@ typedef struct beamAntennaConfiguration {   /*Antenna configuration variables*/
         *antField_xy, *antPhaseTerms,
         antAngle_zy, antAngle_zx,
         ant_w0x, ant_w0y,
-        z2waist;
+        z2waist,
+        Y_at_X1, k0Ln_at_X1, theta_at_X1;
 } beamAntennaConfiguration;
 
 typedef struct antennaDetector{

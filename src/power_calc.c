@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "focal-struct.h"
 #include "focal.h"
 #include "power_calc.h"
 

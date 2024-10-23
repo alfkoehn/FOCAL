@@ -9,7 +9,7 @@
 #define ABSORBER_DAMPING(eco,damp) (1.-eco*damp*damp)
 
 // define structures
-typedef struct gridConfiguration {
+/*typedef struct gridConfiguration {
     int
         Nx, Ny, Nz,     // maybe size_t would be better
         Nz_ref,
@@ -30,7 +30,7 @@ typedef struct beamConfiguration {
         ant_w0x, ant_w0y,
         z2waist,
         Y_at_X1, k0Ln_at_X1, theta_at_X1;
-} beamConfiguration;
+} beamConfiguration;*/
 
 
 int advance_J( gridConfiguration *gridCfg, 
