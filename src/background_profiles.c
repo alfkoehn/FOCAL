@@ -185,4 +185,3 @@ int make_B0_profile( gridConfiguration *gridCfg,
 
     return EXIT_SUCCESS;
 }//}}}
-

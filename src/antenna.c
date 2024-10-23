@@ -1,8 +1,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "focal-struct.h"
 
+#include "focal-struct.h"
 //#include "../include/focal.h"
 #include "focal.h"
 #include "antenna.h"
@@ -346,5 +346,3 @@ double antenna_calcHansenExEy_O( double theta_rad, double Y ){
 
     return ExEy;
 }//}}}
-
-

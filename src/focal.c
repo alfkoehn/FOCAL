@@ -1,8 +1,8 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include "focal-struct.h"
 
+#include "focal-struct.h"
 #include "focal.h"
 
 int advance_J( gridConfiguration *gridCfg, 
@@ -1263,5 +1263,3 @@ int set2zero_3D( size_t N_x, size_t N_y, size_t N_z, double arr_3D[N_x][N_y][N_z
 
     return EXIT_SUCCESS;
 } //}}}
-
-

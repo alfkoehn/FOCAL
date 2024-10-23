@@ -6,6 +6,7 @@
 #include "focal.h"
 #include "power_calc.h"
 
+
 double calc_poynt_4( gridConfiguration *gridCfg, 
                      int pwr_dect, char absorber[],
                      double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
@@ -610,5 +611,4 @@ double calc_poynt_7( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
     
     return fabs(poynt);
 } //}}}
-
 

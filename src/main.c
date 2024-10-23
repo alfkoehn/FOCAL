@@ -50,6 +50,7 @@
 #define DETECTOR_ANTENNA_1D
 
 #include "focal-struct.h"
+#include "alloc-memory.h"
 #include "focal.h"
 #include "antenna.h"
 #include "grid_io.h"
@@ -113,6 +114,7 @@ int main( int argc, char *argv[] ) {
     // set-up grid
     scale           = 1;
     gridCfg.period  = 16*scale;
+    
 #if BOUNDARY == 1
     gridCfg.d_absorb= (int)(3*gridCfg.period);
 #elif BOUNDARY == 2

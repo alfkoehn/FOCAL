@@ -782,4 +782,3 @@ int detAnt1D_write2hdf5( int N_x,
 }//#}}}
 //#endif
 
-
