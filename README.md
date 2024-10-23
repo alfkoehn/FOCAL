@@ -5,7 +5,7 @@ Developers: [Alf Köhn-Seemann](https://www.igvp.uni-stuttgart.de/team/Koehn-See
 	    
 **Desription**: 3D FDTD code for propagation of electromagnetic waves in cold magnetized plasma.
 
-* **Features**: FOCAl receives a JSON as an input file, allowing a faster and easiest operation. Focal have a series of plasma density profiles that can be selected by the user, also the code can read external profiles developed by the user. Code is fully parallelized with OpenMP. User may choose between different implemented boundaries as ABC, Mur and split-PML. The output consists of a text file for the energy power values, a JSON file with the parameters specified by the user and a HDF5 file containing the electric field, plasma density volume. Code has been benchmarked for vacuum propagation, power calculation, against EMIT-3D and cold plasma theory (to be updated).
+* **Features**: FOCAl receives a JSON as an input file, using the cJSON library provided by Dave Gamble, see https://github.com/DaveGamble/cJSON, allowing a faster and easiest operation. Focal have a series of plasma density profiles that can be selected by the user, also the code can read external profiles developed by the user. Code is fully parallelized with OpenMP. User may choose between different implemented boundaries as ABC, Mur and split-PML. The output consists of a text file for the energy power values, a JSON file with the parameters specified by the user and a HDF5 file containing the electric field, plasma density volume. Code has been benchmarked for vacuum propagation, power calculation, against EMIT-3D and cold plasma theory (to be updated).
 
 * **Example Results**: 
 
