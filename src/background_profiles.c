@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "focal-struct.h"
 #include "focal.h"
 #include "background_profiles.h"
 #include "hdf5.h"
@@ -184,4 +185,3 @@ int make_B0_profile( gridConfiguration *gridCfg,
 
     return EXIT_SUCCESS;
 }//}}}
-

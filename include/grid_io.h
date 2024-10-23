@@ -1,12 +1,13 @@
 #ifndef GRID_IO_H
 #define GRID_IO_H
 
+
 int writeTimetraces2ascii( int dim0, int dim1, int t_end, double period, 
                            char filename[], double timetraces[dim0][dim1] );
 
 //#ifdef HDF5
 int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[], double array_3D[dim0][dim1][dim2] );
-int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, char filename[] );
+int writeConfig2HDF( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, char filename[] );
 int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], double array_3D[dim0][dim1][dim2]);
 //#endif
 
@@ -24,7 +25,5 @@ int detAnt1D_write2hdf5( int N_x,
                          size_t detAnt_ypos, size_t detAnt_zpos,
                          double detAnt_fields[N_x/2][5] );
 //#endif
-
-
 
 #endif  // GRID_IO_H
