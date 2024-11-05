@@ -2,7 +2,7 @@
 #define FOCAL_STRUCT_H
 
 // define structures
-typedef struct gridConfiguration {      /*Saves the main physical parameters of the system*/
+struct gridConfiguration {      /*Saves the main physical parameters of the system*/
     int
         Nx, Ny, Nz,   
         Nz_ref,
@@ -14,41 +14,36 @@ typedef struct gridConfiguration {      /*Saves the main physical parameters of 
         period,
         dx,dt,
         ne_0, B0_value;
-} gridConfiguration;
+};
 
-typedef struct systemGrid{              /*Stores the wave components, plasma current, magnetic field and plasma density*/
-    double *EB_WAVE, *EB_WAVE_ref,
-           *J_B0,    *n_e;
-} systemGrid;
-
-typedef struct saveData{                /*Variables related to simulation data saving*/
-    double *data2save,
+/*typedef struct saveData{*/                /*Variables related to simulation data saving*/
+    /*double *data2save,
            *timetraces;
     const char 	*foldername, *projectPath,
     		    *file_hdf5, *file_trace,
                 *file_config;
     int     t_save;
-} saveData;
+} saveData;*/
 
-typedef struct boundaryGrid{            /*Store grid value for the boundary variables*/
+/*typedef struct boundaryGrid{*/            /*Store grid value for the boundary variables*/
 
     /*ABC boundary*/
-    double eco,
+    /*double eco,*/
     
     /*Mur boundary*/
-    *E_Xdir_OLD, *E_Ydir_OLD, *E_Zdir_OLD,
-    *E_Xdir_OLD_ref, *E_Ydir_OLD_ref, *E_Zdir_OLD_ref,
+    /**E_Xdir_OLD, *E_Ydir_OLD, *E_Zdir_OLD,
+    *E_Xdir_OLD_ref, *E_Ydir_OLD_ref, *E_Zdir_OLD_ref,*/
 
     /*UPML boundary*/
-    *DH_WAVE, *DH_WAVE_ref,
+    /**DH_WAVE, *DH_WAVE_ref,
     *F1x, *F1y, *F1z,
     *F2x, *F2y, *F2z,
     *Cx, *Cy, *Cz,
     *F1zr, *F2zr,
     *Czr;
-} boundaryGrid;
+} boundaryGrid;*/
 
-typedef struct beamAntennaConfiguration {   /*Antenna configuration variables*/
+struct beamAntennaConfiguration {   /*Antenna configuration variables*/
     int
         T_wave,
         exc_signal,
@@ -56,14 +51,14 @@ typedef struct beamAntennaConfiguration {   /*Antenna configuration variables*/
         rampUpMethod;
     double
         omega_t,
-        *antField_xy, *antPhaseTerms,
+        /**antField_xy, *antPhaseTerms,*/
         antAngle_zy, antAngle_zx,
         ant_w0x, ant_w0y,
         z2waist,
         Y_at_X1, k0Ln_at_X1, theta_at_X1;
-} beamAntennaConfiguration;
+};
 
-typedef struct antennaDetector{
+/*typedef struct antennaDetector{
     int 
         antDetect_1D, 
         detAnt_01_zpos, detAnt_02_zpos,
@@ -74,9 +69,9 @@ typedef struct antennaDetector{
         *detAnt_02_fields,
         *detAnt_03_fields,
         *detAnt_04_fields;
-} antennaDetector;
+} antennaDetector;*/
 
-typedef struct powerCalcValues{
+/*typedef struct powerCalcValues{
     int 
         pwr_dect;
 
@@ -90,21 +85,24 @@ typedef struct powerCalcValues{
         poynt_y1, poynt_y2,
         poynt_z1, poynt_z2,
         poynt_z1_ref;    
-} powerCalcValues;
+} powerCalcValues;*/
 
-typedef struct codeDiagnostics{
+/*typedef struct codeDiagnostics{
 
     double 
         *E, *R,
         *A_ref, *A_inc,
         *PML_values;
-} codeDiagnostics;
+} codeDiagnostics;*/
 
-enum FieldID {
+/*enum FieldID {
     FIELD_01,
     FIELD_02,
     FIELD_03,
     FIELD_04
-};
+};*/
+
+typedef struct gridConfiguration gridConfiguration;
+typedef struct beamAntennaConfiguration beamAntennaConfiguration;
 
 #endif

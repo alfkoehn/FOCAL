@@ -1,6 +1,8 @@
 #ifndef MACROS_BOUNDARY_H
 #define MACROS_BOUNDARY_H
 
+#include "focal-struct.h"
+
 /*Macros for grid configuration*/
 #define NxG(gridCfg)            gridCfg->Nx
 #define NyG(gridCfg)            gridCfg->Ny
@@ -33,7 +35,7 @@
 #define boundary_sel            boundaryG(gridCfg)
 
 /*Macros for Grid system*/
-#define EB_WAVEg(G,i,j,k)             G->EB_WAVE[((i) * (Ny) + j) * (Nz) + k]
+/*#define EB_WAVEg(G,i,j,k)             G->EB_WAVE[((i) * (Ny) + j) * (Nz) + k]
 #define EB_WAVE_refg(G,i,j,k)         G->EB_WAVE_ref[((i) * (Ny) + j) * (Nz_ref) + k]
 #define J_B0g(G,i,j,k)                G->J_B0[((i) * (Ny) + j) * (Nz) + k]
 #define n_eg(G,i,j,k)                 G->n_e[((i) * (Ny/2) + j) * (Nz/2) + k]
@@ -41,10 +43,10 @@
 #define EB_WAVE(i,j,k)                EB_WAVEg(G,i,j,k)
 #define EB_WAVE_ref(i,j,k)            EB_WAVE_refg(G,i,j,k)
 #define J_B0(i,j,k)                   J_B0g(G,i,j,k)
-#define n_e(i,j,k)                    n_eg(G,i,j,k)
+#define n_e(i,j,k)                    n_eg(G,i,j,k)*/
 
 /*Macros for save data*/
-#define data2saveSt(saveDCfg,i,j,k)     saveDCfg->data2save[((i) * (Ny/2) + j) * (Nz/2) + k]
+/*#define data2saveSt(saveDCfg,i,j,k)     saveDCfg->data2save[((i) * (Ny/2) + j) * (Nz/2) + k]
 #define timetracesSt(saveDCfg,i,j)      saveDCfg->timetraces[((i) * (8) ) + j]
 #define projectPathSt(saveDCfg)         saveDCfg->projectPath
 #define foldernameSt(saveDCfg)          saveDCfg->foldername
@@ -60,46 +62,52 @@
 #define file_hdf5                       file_hdf5St(saveDCfg)
 #define file_trace                      file_traceSt(saveDCfg)
 #define file_config                     file_ConfigSt(saveDCfg)
-#define t_save                          t_saveSt(saveDCfg)
+#define t_save                          t_saveSt(saveDCfg)*/
 
 /*Macros for antenna injection*/
-#define antFieldBG(beamAnt,i,j)         beamAnt->antField_xy[( (i) * (Ny/2) ) + j ]
-#define antPhaseBG(beamAnt,i,j)         beamAnt->antPhaseTerms[( (i) * (Ny/2) ) + j ]
-#define T_waveBG(beamAnt)               beamAnt->T_wave
-#define exc_signalBG(beamAnt)           beamAnt->exc_signal
-#define ant_xBG(beamAnt)                beamAnt->ant_x
-#define ant_yBG(beamAnt)                beamAnt->ant_y
-#define ant_zBG(beamAnt)                beamAnt->ant_z
-#define rampUpMBG(beamAnt)              beamAnt->rampUpMethod
-#define omega_tBG(beamAnt)              beamAnt->omega_t
-#define antAngle_zxBG(beamAnt)          beamAnt->antAngle_zx
-#define antAngle_zyBG(beamAnt)          beamAnt->antAngle_zy
-#define ant_w0xBG(beamAnt)              beamAnt->ant_w0x
-#define ant_w0yBG(beamAnt)              beamAnt->ant_w0y
-#define z2waistBG(beamAnt)              beamAnt->z2waist
+/*#define antFieldBG(beamCfg,i,j)         beamCfg->antField_xy[( (i) * (Ny/2) ) + j ]
+#define antPhaseBG(beamCfg,i,j)         beamCfg->antPhaseTerms[( (i) * (Ny/2) ) + j ]
+#define T_waveBG(beamCfg)               beamCfg->T_wave*/
+#define exc_signalBG(beamCfg)           beamCfg->exc_signal
+#define ant_xBG(beamCfg)                beamCfg->ant_x
+#define ant_yBG(beamCfg)                beamCfg->ant_y
+#define ant_zBG(beamCfg)                beamCfg->ant_z
+#define rampUpMBG(beamCfg)              beamCfg->rampUpMethod
+//#define omega_tBG(beamCfg)              beamCfg->omega_t
+#define antAngle_zxBG(beamCfg)          beamCfg->antAngle_zx
+#define antAngle_zyBG(beamCfg)          beamCfg->antAngle_zy
+#define ant_w0xBG(beamCfg)              beamCfg->ant_w0x
+#define ant_w0yBG(beamCfg)              beamCfg->ant_w0y
+#define z2waistBG(beamCfg)              beamCfg->z2waist
+#define Y_at_X1BG(beamCfg)              beamCfg->Y_at_X1
+#define k0Ln_at_X1BG(beamCfg)           beamCfg->k0Ln_at_X1
+#define theta_at_X1BG(beamCfg)          beamCfg->theta_at_X1
 
-#define antField_xy(i,j)                antFieldBG(beamAnt,i,j)         
-#define antPhaseTerms(i,j)              antPhaseBG(beamAnt,i,j)         
-#define T_wave                          T_waveBG(beamAnt)               
-#define exc_signal                      exc_signalBG(beamAnt)           
-#define ant_x                           ant_xBG(beamAnt)               
-#define ant_y                           ant_yBG(beamAnt)               
-#define ant_z                           ant_zBG(beamAnt)               
-#define rampUpMethod                    rampUpMBG(beamAnt)              
-#define t_omega                         omega_tBG(beamAnt)              
-#define antAngle_zx                     antAngle_zxBG(beamAnt)          
-#define antAngle_zy                     antAngle_zyBG(beamAnt)          
-#define ant_w0x                         ant_w0xBG(beamAnt)              
-#define ant_w0y                         ant_w0yBG(beamAnt)              
-#define z2waist                         z2waistBG(beamAnt)              
+/*#define antField_xy(i,j)                antFieldBG(beamCfg,i,j)         
+#define antPhaseTerms(i,j)              antPhaseBG(beamCfg,i,j)         
+#define T_wave                          T_waveBG(beamCfg)*/               
+#define exc_signal                      exc_signalBG(beamCfg)           
+#define ant_x                           ant_xBG(beamCfg)               
+#define ant_y                           ant_yBG(beamCfg)               
+#define ant_z                           ant_zBG(beamCfg)               
+#define rampUpMethod                    rampUpMBG(beamCfg)              
+//#define t_omega                         omega_tBG(beamCfg)              
+#define antAngle_zx                     antAngle_zxBG(beamCfg)          
+#define antAngle_zy                     antAngle_zyBG(beamCfg)          
+#define ant_w0x                         ant_w0xBG(beamCfg)              
+#define ant_w0y                         ant_w0yBG(beamCfg)              
+#define z2waist                         z2waistBG(beamCfg)  
+#define Y_at_X1                         Y_at_X1BG(beamCfg)              
+#define k0Ln_at_X1                      k0Ln_at_X1BG(beamCfg)           
+#define theta_at_X1                     theta_at_X1BG(beamCfg)                     
 
 /*Macros for ABC*/
-#define ecoBG(boundaryG)                        boundaryG->eco
+/*#define ecoBG(boundaryG)                        boundaryG->eco
 
-#define eco                                     ecoBG(boundaryG)
+#define eco                                     ecoBG(boundaryG)*/
 
 /*Macros for Mur boundary*/
-#define E_Xdir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Xdir_OLD[((i) * (Ny) + j) * (Nz) + k]
+/*#define E_Xdir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Xdir_OLD[((i) * (Ny) + j) * (Nz) + k]
 #define E_Ydir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Ydir_OLD[((i) * (d_absorb) + j) * (Nz) + k]
 #define E_Zdir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Zdir_OLD[((i) * (Ny) + j) * (d_absorb) + k]
 #define E_Xdir_OLD_ref_G(boundaryG,i,j,k)       boundaryG->E_Xdir_OLD_ref[((i) * (Ny) + j) * (Nz_ref) + k]
@@ -111,10 +119,10 @@
 #define E_Zdir_OLD(i,j,k)                       E_Zdir_OLD_G(boundaryG,i,j,k)
 #define E_Xdir_OLD_ref(i,j,k)                   E_Xdir_OLD_ref_G(boundaryG,i,j,k)
 #define E_Ydir_OLD_ref(i,j,k)                   E_Ydir_OLD_ref_G(boundaryG,i,j,k)
-#define E_Zdir_OLD_ref(i,j,k)                   E_Zdir_OLD_ref_G(boundaryG,i,j,k)
+#define E_Zdir_OLD_ref(i,j,k)                   E_Zdir_OLD_ref_G(boundaryG,i,j,k)*/
 
 /*Macros for UPML boundary layer*/
-#define DH_WAVEstr(PMLG,i,j,k)                  boundaryG->DH_WAVE[((i) * (Ny) + j) * (Nz) + k]
+/*#define DH_WAVEstr(PMLG,i,j,k)                  boundaryG->DH_WAVE[((i) * (Ny) + j) * (Nz) + k]
 #define DH_WAVE_refStr(PMLG,i,j,k)              boundaryG->DH_WAVE_ref[((i) * (Ny) + j) * (Nz_ref) + k]
 #define F1xStr(PMLG,i)                          boundaryG->F1x[i]
 #define F1yStr(PMLG,j)                          boundaryG->F1y[j]
@@ -144,11 +152,11 @@
 
 #define F1zr(k)                                 F1zrStr(PMLG,k)
 #define F2zr(k)                                 F2zrStr(PMLG,k)
-#define Czr(k)                                  CzrStr(PMLG,k)
+#define Czr(k)                                  CzrStr(PMLG,k)*/
 
 
 /*Macros for Antenna detector*/
-#define DET_ANT_ACCES(antDetect, id, i, j)  \
+/*#define DET_ANT_ACCES(antDetect, id, i, j)  \
     ((id == FIELD_01) ? ( antDetect->detAnt_01_fields[ ((i) * 5) + j ] ) : \
      (id == FIELD_02) ? ( antDetect->detAnt_01_fields[ ((i) * 5) + j ] ) : \
      (id == FIELD_03) ? ( antDetect->detAnt_03_fields[ ((i) * 5) + j ] ) : \
@@ -174,11 +182,11 @@
 #define detAnt_02_z                             detAnt02zG(antDetect)
 #define detAnt_03_z                             detAnt03zG(antDetect)
 #define detAnt_04_z                             detAnt04zG(antDetect)
-#define detAnt_01_y                             detAnt01yG(antDetect)
+#define detAnt_01_y                             detAnt01yG(antDetect)*/
 
 
 /*Macros for power struct*/
-#define powerDectS(powerValStr)                 powerValStr->pwr_dect
+/*#define powerDectS(powerValStr)                 powerValStr->pwr_dect
 #define powerAbsX1S(powerValStr)                powerValStr->power_abs_x1
 #define powerAbsX2S(powerValStr)                powerValStr->power_abs_x2
 #define powerAbsY1S(powerValStr)                powerValStr->power_abs_y1
@@ -208,11 +216,11 @@
 #define poynt_y2                                powerPoyY2S(powerValStr)                
 #define poynt_z1                                powerPoyZ1S(powerValStr)   
 #define poynt_z1_ref                            powerPoyZRS(powerValStr) 
-#define poynt_z2                                powerPoyZ2S(powerValStr)  
+#define poynt_z2                                powerPoyZ2S(powerValStr) */ 
 
 /*Diagnostics Structure*/
-#define TotalEstr(diagnostic, i)                diagnostic->E[i]
+/*#define TotalEstr(diagnostic, i)                diagnostic->E[i]
 
-#define E(i)                                    TotalEstr(diagnostic, i)
+#define E(i)                                    TotalEstr(diagnostic, i)*/
 
 #endif
