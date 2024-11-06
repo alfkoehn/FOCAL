@@ -193,10 +193,6 @@ int main( int argc, char *argv[] ) {
         if (angle_zy_set)   printf( "    antAngle_zy = %f\n", antAngle_zy );
     }
 
-    ant_w0x     = 2;
-    ant_w0y     = 2;
-    z2waist     = -(298.87)*.0;                // .2/l_0*period = -298.87
-
     pwr_dect    = d_absorb;
 
 #ifdef DETECTOR_ANTENNA_1D
