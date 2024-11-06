@@ -52,6 +52,7 @@
 #include "focal-struct.h"
 #include "macros-grid.h"
 #include "alloc-memory.h"
+#include "init_module.h"
 #include "focal.h"
 #include "antenna.h"
 #include "grid_io.h"
@@ -80,8 +81,6 @@ int main( int argc, char *argv[] ) {
     int
         ii,jj,kk,
         t_int, T_wave, 
-
-        scale,
 
 #ifdef _OPENMP
         n_threads,                          // number of threads that will be used (OpenMP)
@@ -125,22 +124,7 @@ int main( int argc, char *argv[] ) {
         angle_zy_set;                       // is antAngle_zy set during call ?
 
     // set-up grid
-    scale           = 1;
-    period  = 16*scale;
-    
-#if BOUNDARY == 1
-    d_absorb= (int)(3*period);
-#elif BOUNDARY == 2
-    d_absorb= 8;
-#endif
-    Nx  = (400+0*200)*scale;
-    Ny  = (300+0*100)*scale;
-    Nz  = (200+0*150)*scale;
-    Nz_ref  = 2*d_absorb + (int)period;
-    t_end   = (int)((100-50)*period);
-
-    B0_profile  = 0;
-    ne_profile  = 3;
+    control_init(  gridCfg, beamCfg );
 
     Y_at_X1     = .41;
     k0Ln_at_X1  = 6.;
@@ -189,9 +173,7 @@ int main( int argc, char *argv[] ) {
     // used for checking if input parameter was provided
     angle_zx_set    = false;
     angle_zy_set    = false;
-    // default values to be used if input parameter are not set
-    antAngle_zx     = 0;
-    antAngle_zy     = 0;
+     
     // loop through input parameter
     printf( "number of input parameters provided during call: %d\n", argc-1 );
     while ( (opt_ret = getopt(argc, argv, "a:b:")) != -1 ){
@@ -211,15 +193,6 @@ int main( int argc, char *argv[] ) {
         if (angle_zy_set)   printf( "    antAngle_zy = %f\n", antAngle_zy );
     }
 
-    exc_signal  = 5;//3;//4;
-    rampUpMethod= 1;
-    ant_x       = Nx/2;
-    ant_y       = Ny/2;
-    ant_z       = d_absorb + 4;
-    // positions have to be even numbers, to ensure fields are accessed correctly
-    if ((ant_x % 2) != 0)  ++ant_x;
-    if ((ant_y % 2) != 0)  ++ant_y;
-    if ((ant_z % 2) != 0)  ++ant_z;
     ant_w0x     = 2;
     ant_w0y     = 2;
     z2waist     = -(298.87)*.0;                // .2/l_0*period = -298.87
@@ -245,14 +218,6 @@ int main( int argc, char *argv[] ) {
                 Nz - d_absorb, detAnt_04_zpos );
     }
 #endif
-
-    // dt/dx = 0.5 is commenly used in 2D FDTD codes
-    // Note that period refers to the wavelength in the numerical grid and not
-    // in the "physical" grid (where one grid cell is equal to one Yee cell).
-    // This means that in the physical grid, the wavelength is period/2, thus
-    // in the equations we have to use period/2 for the wavelength.
-    dx  = 1./(period/2);
-    dt  = 1./(2.*(period/2));
         
 #if BOUNDARY == 1
     eco         = 10./(double)(period);
