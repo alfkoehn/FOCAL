@@ -4,12 +4,10 @@
  * Copyright:   University of Stuttgart
  * 
  * This is a 3D FDTD code for simulating electromagnetic waves in cold 
- * magnetized plasmas.
+ * magnetized plasmas. The code is called FOCAL.
  *
- * NOTE: This is an early version, including some obsolete function, those
- *       will be removed in near future.
- *       Furthermore, everything will be properly split into separate 
- *       libraries, allowing the usage of a nice make file.
+ * NOTE: FOCAL is still in development (but physicswise delivering 
+ *       correct, i.e. benchmarked in some cases, results).
  *
  * Initial release on github: 2022-03-31
  *
