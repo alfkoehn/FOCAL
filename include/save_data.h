@@ -1,6 +1,7 @@
 #ifndef SAVE_DATA_H
 #define SAVE_DATA_H
 
+#include <limits.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>

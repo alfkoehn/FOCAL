@@ -26,7 +26,7 @@ void simulation_folder(const char *path){
 
 void data_folder(const char *path, const char *folder_name){
     
-    char fullPath[1024];
+    char fullPath[PATH_MAX];
 
     // Create the full directory path and check for buffer overflow
     if (snprintf(fullPath, sizeof(fullPath), "%s/%s", path, folder_name) >= sizeof(fullPath)) {
@@ -52,7 +52,7 @@ void data_folder(const char *path, const char *folder_name){
 
 void copyJSON(const char *path, const char *folder_name){
     
-    char destination[1024];
+    char destination[PATH_MAX];
 
     //Read the source file
     FILE *srcFile = fopen("input_FOCAL.json", "rb");
