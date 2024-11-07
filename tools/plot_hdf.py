@@ -621,7 +621,8 @@ def main():
                     silent=False)
     elif plot_type == 2:
         plot_fullwave( fname, t_int=t_int, 
-                       include_absorbers=False, cutExtended_fact=1.5,
+                       include_absorbers=False, 
+                       cutExtended_fact=1.,    # 1.5 might be useful value to crop density profile going to 0 from plot to not mislead user
                        oplot_dens_projection=False,
                        N_contLevels=contLevels, colScale=colScale, 
                        #oplot_Efieldcut='x1z1',
