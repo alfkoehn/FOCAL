@@ -23,4 +23,6 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
 
 char *read_json();
 
+void print_systemConfiguration(gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg );
+
 #endif
