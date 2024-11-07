@@ -65,16 +65,16 @@ int main( int argc, char *argv[] ) {
 
     gridConfiguration            *gridCfg;
     beamAntennaConfiguration     *beamCfg;
-    /*struct saveData                     *saveDCfg;   
-    struct boundaryGrid                 *boundaryG;
+    saveData                     *saveDCfg;   
+    /*struct boundaryGrid                 *boundaryG;
     struct antennaDetector              *antDetect;
     struct codeDiagnostics              *diagnostic;*/
 
     /*Alloc structs in memory*/
     ALLOC_1D( gridCfg, 1, gridConfiguration);
     ALLOC_1D( beamCfg, 1, beamAntennaConfiguration);
-    /*ALLOC_1D( saveDCfg, 1, saveData);
-    ALLOC_1D( boundaryG, 1, boundaryGrid);
+    ALLOC_1D( saveDCfg, 1, saveData);
+    /*ALLOC_1D( boundaryG, 1, boundaryGrid);
     ALLOC_1D( antDetect, 1, antennaDetector );
     ALLOC_1D( diagnostic, 1, codeDiagnostics );*/
 
@@ -124,11 +124,13 @@ int main( int argc, char *argv[] ) {
         angle_zy_set;                       // is antAngle_zy set during call ?
 
     // set-up grid
-    control_init(  gridCfg, beamCfg );
+    control_init(  gridCfg, beamCfg, saveDCfg );
 
     Y_at_X1     = .41;
     k0Ln_at_X1  = 6.;
     theta_at_X1 = 78.;
+
+    create_folder( saveDCfg );
 
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield

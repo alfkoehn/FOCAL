@@ -16,14 +16,13 @@ struct gridConfiguration {      /*Saves the main physical parameters of the syst
         ne_0, B0_value;
 };
 
-/*typedef struct saveData{*/                /*Variables related to simulation data saving*/
-    /*double *data2save,
-           *timetraces;
+typedef struct saveData{                /*Variables related to simulation data saving*/
+    
     const char 	*foldername, *projectPath,
-    		    *file_hdf5, *file_trace,
-                *file_config;
+    		    *file_hdf5, *file_trace;
+
     int     t_save;
-} saveData;*/
+} saveData;
 
 /*typedef struct boundaryGrid{*/            /*Store grid value for the boundary variables*/
 

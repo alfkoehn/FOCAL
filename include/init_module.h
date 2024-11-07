@@ -12,14 +12,17 @@
 #include "macros-grid.h"
 
 void control_init(  gridConfiguration *gridCfg, 
-                    beamAntennaConfiguration *beamCfg );
+                    beamAntennaConfiguration *beamCfg,
+                    saveData *saveDCfg );
 
 void grid_init( gridConfiguration *gridCfg, 
-                beamAntennaConfiguration *beamCfg );
+                beamAntennaConfiguration *beamCfg,
+                saveData *saveDCfg );
 
 /*Functions in charge of JSON reading*/
 void write_JSON_toGrid( gridConfiguration *gridCfg, 
-                        beamAntennaConfiguration *beamCfg );
+                        beamAntennaConfiguration *beamCfg,
+                        saveData *saveDCfg );
 
 char *read_json();
 
