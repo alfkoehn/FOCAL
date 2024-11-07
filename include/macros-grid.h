@@ -17,7 +17,7 @@
 #define ne_0G(gridCfg)          gridCfg->ne_0
 #define B0_profileG(gridCfg)    gridCfg->B0_profile
 #define B0_valueG(gridCfg)      gridCfg->B0_value
-#define boundaryG(gridCfg)      gridCfg->boundary
+#define boundaryG(gridCfg)      gridCfg->sel_boundary
 
 #define Nx                      NxG(gridCfg)            
 #define Ny                      NyG(gridCfg)          
@@ -32,7 +32,7 @@
 #define ne_0                    ne_0G(gridCfg)
 #define B0_profile              B0_profileG(gridCfg)
 #define B0_value                B0_valueG(gridCfg)
-#define boundary_sel            boundaryG(gridCfg)
+#define sel_boundary            boundaryG(gridCfg)
 
 /*Macros for Grid system*/
 /*#define EB_WAVEg(G,i,j,k)             G->EB_WAVE[((i) * (Ny) + j) * (Nz) + k]

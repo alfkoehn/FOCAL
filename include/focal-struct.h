@@ -9,7 +9,7 @@ struct gridConfiguration {      /*Saves the main physical parameters of the syst
         d_absorb,
         t_end,
         ne_profile, B0_profile,
-        boundary;
+        sel_boundary;
     double
         period,
         dx,dt,
