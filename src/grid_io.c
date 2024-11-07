@@ -1,13 +1,6 @@
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-
-#include "focal.h"
-#include "hdf5.h"
 #include "grid_io.h"
 
-int writeTimetraces2ascii( int dim0, int dim1, int t_end, double period, 
+int writeTimetraces2ascii( int dim0, int dim1, int T_end, double Period, 
                            char filename[], double timetraces[dim0][dim1] ) {
 //{{{
 
@@ -27,7 +20,7 @@ int writeTimetraces2ascii( int dim0, int dim1, int t_end, double period,
         //       might be good idea to implicetely check this
         //       e.g. if ( (fprintf( file_pntr, "a b c" )) < 0 ) ....
         fprintf( file_pntr, "# T  poynt_z1  poynt_z2  poynt_x1  poynt_x2  poynt_y1  poynt_y2  P_out\n" ); 
-        for ( ii=0 ; ii<(t_end/(int)period) ; ++ii )
+        for ( ii=0 ; ii<(T_end/(int)Period) ; ++ii )
             fprintf( file_pntr, " %4d  %13.6e  %13.6e  %13.6e  %13.6e  %13.6e  %13.6e  %13.6e\n",
                     (int)timetraces[ii][1], 
                     timetraces[ii][2], timetraces[ii][3],
@@ -211,7 +204,7 @@ int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[]
 
 
 //#ifdef HDF5
-int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, char filename[] ) {
+int writeConfig2HDF( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, char filename[] ) {
     //#{{{
 
     long        data2write_long[1];
@@ -287,7 +280,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, cha
                             H5P_DEFAULT);   // dataset access property list (added in HDF5v1.8)
 
     // write the dataset
-    data2write_long[0]  = (long)gridCfg->period;
+    data2write_long[0]  = (long)period;
     status = H5Dwrite( dataset_id,          // dataset identifier
                        H5T_NATIVE_LONG,   // informs hdf about format of data in memory of computer
                        H5S_ALL,             // identifier of memory dataspace
@@ -303,7 +296,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, cha
     dataset_id = H5Dcreate( file_id, "/config/d_absorb", H5T_NATIVE_LONG,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_long[0]  = (long)gridCfg->d_absorb;
+    data2write_long[0]  = (long)d_absorb;
     status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_long); 
@@ -315,7 +308,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, cha
     dataset_id = H5Dcreate( file_id, "/config/N_x", H5T_NATIVE_LONG,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_long[0]  = (long)gridCfg->Nx;
+    data2write_long[0]  = (long)Nx;
     status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_long); 
@@ -327,7 +320,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, cha
     dataset_id = H5Dcreate( file_id, "/config/N_y", H5T_NATIVE_LONG,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_long[0]  = (long)gridCfg->Ny;
+    data2write_long[0]  = (long)Ny;
     status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_long); 
@@ -339,7 +332,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, cha
     dataset_id = H5Dcreate( file_id, "/config/N_z", H5T_NATIVE_LONG,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_long[0]  = (long)gridCfg->Nz;
+    data2write_long[0]  = (long)Nz;
     status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_long); 
@@ -351,7 +344,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, cha
     dataset_id = H5Dcreate( file_id, "/config/ant_x", H5T_NATIVE_LONG,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_long[0]  = (long)beamCfg->ant_x;
+    data2write_long[0]  = (long)ant_x;
     status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_long); 
@@ -363,7 +356,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, cha
     dataset_id = H5Dcreate( file_id, "/config/ant_y", H5T_NATIVE_LONG,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_long[0]  = (long)beamCfg->ant_y;
+    data2write_long[0]  = (long)ant_y;
     status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_long); 
@@ -375,7 +368,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, cha
     dataset_id = H5Dcreate( file_id, "/config/ant_z", H5T_NATIVE_LONG,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_long[0]  = (long)beamCfg->ant_z;
+    data2write_long[0]  = (long)ant_z;
     status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_long); 
@@ -387,7 +380,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, cha
     dataset_id = H5Dcreate( file_id, "/config/ant_w0x", H5T_NATIVE_DOUBLE,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_double[0]  = beamCfg->ant_w0x;
+    data2write_double[0]  = ant_w0x;
     status = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_double); 
@@ -399,7 +392,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, cha
     dataset_id = H5Dcreate( file_id, "/config/ant_w0y", H5T_NATIVE_DOUBLE,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_double[0]  = beamCfg->ant_w0y;
+    data2write_double[0]  = ant_w0y;
     status = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_double); 
@@ -411,7 +404,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamConfiguration *beamCfg, cha
     dataset_id = H5Dcreate( file_id, "/config/z2waist", H5T_NATIVE_DOUBLE,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_double[0]  = beamCfg->z2waist;
+    data2write_double[0]  = z2waist;
     status = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_double); 
@@ -472,8 +465,8 @@ int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], do
 int detAnt1D_storeValues( gridConfiguration *gridCfg, 
                           size_t detAnt_ypos, size_t detAnt_zpos,
                           int tt, 
-                          double EB_WAVE[gridCfg->Nx][gridCfg->Ny][gridCfg->Nz], 
-                          double detAnt_fields[gridCfg->Nx/2][5] ) { 
+                          double EB_WAVE[Nx][Ny][Nz], 
+                          double detAnt_fields[Nx/2][5] ) { 
     //{{{
     size_t
         ii;
@@ -487,7 +480,7 @@ int detAnt1D_storeValues( gridConfiguration *gridCfg,
 
 #pragma omp parallel default(shared) private(ii,foo)
 #pragma omp for
-    for ( ii=2 ; ii <= gridCfg->Nx-2 ; ii+=2 ) {
+    for ( ii=2 ; ii <= Nx-2 ; ii+=2 ) {
         // calculate abs(E)
         foo = sqrt(  pow(EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos  ],2)
                     +pow(EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos  ],2)
@@ -504,7 +497,7 @@ int detAnt1D_storeValues( gridConfiguration *gridCfg,
         detAnt_fields[ii/2][3]  += foo*foo;
 
         // corresponding to an rms(E)-like quantity
-        detAnt_fields[ii/2][4]  += ( foo * sqrt(1./( (double)(tt)/(double)(gridCfg->period) + 1e-6 )) );
+        detAnt_fields[ii/2][4]  += ( foo * sqrt(1./( (double)(tt)/(double)(period) + 1e-6 )) );
 
         //printf( "tt = %d, ii = %d, sum_t(E*E) = %13.5e\n",
         //        tt, ii, detAnt_fields[ii/2][3] );
@@ -780,5 +773,4 @@ int detAnt1D_write2hdf5( int N_x,
     return EXIT_SUCCESS;
 }//#}}}
 //#endif
-
 
