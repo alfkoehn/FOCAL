@@ -6,8 +6,6 @@ void create_folder(saveData *saveDCfg){
     data_folder( projectPath, foldername );
     copyJSON( projectPath, foldername );
 
-    exit(-1);
-    
 }
 
 void simulation_folder(const char *path){
