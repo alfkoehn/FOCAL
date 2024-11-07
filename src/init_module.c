@@ -1,17 +1,21 @@
 #include "init_module.h"
 
+
 void control_init(  gridConfiguration *gridCfg, 
                     beamAntennaConfiguration *beamCfg,
                     saveData *saveDCfg ){
+//{{{
         
     /*Initialize System*/
     grid_init( gridCfg, beamCfg, saveDCfg );
 
-}
+}//}}}
+
 
 void grid_init( gridConfiguration *gridCfg, 
                 beamAntennaConfiguration *beamCfg,
                 saveData *saveDCfg ){
+    //{{{
 
     write_JSON_toGrid( gridCfg, beamCfg, saveDCfg );
 
@@ -45,13 +49,14 @@ void grid_init( gridConfiguration *gridCfg,
     if ((ant_y % 2) != 0)  ++ant_y;
     if ((ant_z % 2) != 0)  ++ant_z;
 
-}
+}//}}}
 
 
 /*Functions in charge of JSON reading*/
 void write_JSON_toGrid( gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg,
                         saveData *saveDCfg ){
+    //{{{
 
     /*Read JSON and extract data*/
     char *json_file = read_json();
@@ -220,9 +225,11 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
     cJSON_Delete(json);
     free(json_file);
 
-}
+}//}}}
+
 
 char *read_json(){
+    //{{{
 
     FILE *file = fopen("input_FOCAL.json", "rb");
     if (file == NULL) {
@@ -247,10 +254,12 @@ char *read_json(){
     fclose(file);
     return json_data;
 
-}
+}//}}}
+
 
 /*Configuration print on console*/
 void print_systemConfiguration(gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg ){
+    //{{{
 
     // print some info to console
     printf("------System Configuration Parameters------\n");
@@ -264,4 +273,5 @@ void print_systemConfiguration(gridConfiguration *gridCfg, beamAntennaConfigurat
     printf( "Boundary condition set to '%d'\n", sel_boundary );
     printf( "Courant number = %.2f. \n", dt/dx);
 
-}
+}//}}}
+
