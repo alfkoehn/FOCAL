@@ -1,17 +1,19 @@
 #include "init_module.h"
 
 void control_init(  gridConfiguration *gridCfg, 
-                    beamAntennaConfiguration *beamCfg ){
+                    beamAntennaConfiguration *beamCfg,
+                    saveData *saveDCfg ){
         
     /*Initialize System*/
-    grid_init( gridCfg, beamCfg );
+    grid_init( gridCfg, beamCfg, saveDCfg );
 
 }
 
 void grid_init( gridConfiguration *gridCfg, 
-                beamAntennaConfiguration *beamCfg ){
+                beamAntennaConfiguration *beamCfg,
+                saveData *saveDCfg ){
 
-    write_JSON_toGrid( gridCfg, beamCfg );
+    write_JSON_toGrid( gridCfg, beamCfg, saveDCfg );
 
     //Checks that maximum density value is respected
     // if density is larger than this value, FDTD code becomes unstable
@@ -48,7 +50,8 @@ void grid_init( gridConfiguration *gridCfg,
 
 /*Functions in charge of JSON reading*/
 void write_JSON_toGrid( gridConfiguration *gridCfg, 
-                        beamAntennaConfiguration *beamCfg ){
+                        beamAntennaConfiguration *beamCfg,
+                        saveData *saveDCfg ){
 
     /*Read JSON and extract data*/
     char *json_file = read_json();
@@ -68,6 +71,32 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
     }
 
     /*Extract data from JSON and save in struct*/
+
+    //Save folder info
+    cJSON *Main_Project = cJSON_GetObjectItemCaseSensitive(json, "Main_Project");   //Main Project path
+    if( cJSON_IsString(Main_Project) && (Main_Project->valuestring != NULL) ){
+        projectPath = strdup(Main_Project->valuestring);
+    }
+
+    cJSON *FolderName = cJSON_GetObjectItemCaseSensitive(json, "Case_foldername");       //Simulation folder name
+    if( cJSON_IsString(FolderName) && (FolderName->valuestring != NULL) ){
+        foldername = strdup(FolderName->valuestring);
+    }
+    
+    cJSON *Filename_HDF5 = cJSON_GetObjectItemCaseSensitive(json, "filename_hdf5");   //filename hdf5
+    if( cJSON_IsString(Filename_HDF5) && (Filename_HDF5->valuestring != NULL) ){
+        file_hdf5 = strdup(Filename_HDF5->valuestring);
+    }
+
+    cJSON *Filename_TimeTrace = cJSON_GetObjectItemCaseSensitive(json, "filename_timetraces");   //filename datatraces
+    if( cJSON_IsString(Filename_TimeTrace) && (Filename_TimeTrace->valuestring != NULL) ){
+        file_trace = strdup(Filename_TimeTrace->valuestring);
+    }
+
+    cJSON *t_save_f = cJSON_GetObjectItemCaseSensitive(json, "data_save_frequency");   //time step for data saving
+    if( cJSON_IsNumber(t_save_f) ){
+        t_save = t_save_f->valueint;
+    }
 
     /*Grid configuration values*/
     cJSON *item_scale = cJSON_GetObjectItemCaseSensitive(json, "scale");   //scale factor

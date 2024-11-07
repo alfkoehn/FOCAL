@@ -34,35 +34,22 @@
 #define B0_value                B0_valueG(gridCfg)
 #define sel_boundary            boundaryG(gridCfg)
 
-/*Macros for Grid system*/
-/*#define EB_WAVEg(G,i,j,k)             G->EB_WAVE[((i) * (Ny) + j) * (Nz) + k]
-#define EB_WAVE_refg(G,i,j,k)         G->EB_WAVE_ref[((i) * (Ny) + j) * (Nz_ref) + k]
-#define J_B0g(G,i,j,k)                G->J_B0[((i) * (Ny) + j) * (Nz) + k]
-#define n_eg(G,i,j,k)                 G->n_e[((i) * (Ny/2) + j) * (Nz/2) + k]
-
-#define EB_WAVE(i,j,k)                EB_WAVEg(G,i,j,k)
-#define EB_WAVE_ref(i,j,k)            EB_WAVE_refg(G,i,j,k)
-#define J_B0(i,j,k)                   J_B0g(G,i,j,k)
-#define n_e(i,j,k)                    n_eg(G,i,j,k)*/
-
 /*Macros for save data*/
 /*#define data2saveSt(saveDCfg,i,j,k)     saveDCfg->data2save[((i) * (Ny/2) + j) * (Nz/2) + k]
-#define timetracesSt(saveDCfg,i,j)      saveDCfg->timetraces[((i) * (8) ) + j]
+#define timetracesSt(saveDCfg,i,j)      saveDCfg->timetraces[((i) * (8) ) + j]*/
 #define projectPathSt(saveDCfg)         saveDCfg->projectPath
 #define foldernameSt(saveDCfg)          saveDCfg->foldername
 #define file_hdf5St(saveDCfg)           saveDCfg->file_hdf5
 #define file_traceSt(saveDCfg)          saveDCfg->file_trace
-#define file_ConfigSt(saveDCfg)         saveDCfg->file_config
 #define t_saveSt(saveDCfg)              saveDCfg->t_save
 
-#define data2save(i,j,k)                data2saveSt(saveDCfg,i,j,k)
-#define timetraces(i,j)                 timetracesSt(saveDCfg,i,j)
+/*#define data2save(i,j,k)                data2saveSt(saveDCfg,i,j,k)
+#define timetraces(i,j)                 timetracesSt(saveDCfg,i,j)*/
 #define projectPath                     projectPathSt(saveDCfg)
 #define foldername                      foldernameSt(saveDCfg)
 #define file_hdf5                       file_hdf5St(saveDCfg)
 #define file_trace                      file_traceSt(saveDCfg)
-#define file_config                     file_ConfigSt(saveDCfg)
-#define t_save                          t_saveSt(saveDCfg)*/
+#define t_save                          t_saveSt(saveDCfg)
 
 /*Macros for antenna injection*/
 /*#define antFieldBG(beamCfg,i,j)         beamCfg->antField_xy[( (i) * (Ny/2) ) + j ]

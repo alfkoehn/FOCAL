@@ -2,7 +2,6 @@
     "Main_Project": 		"PML_test",
     "Case_foldername": 		"FOCAL_test",
     "filename_hdf5": 		"fileout.h5",
-    "filename_Configuration":	"System_configuration.h5",
     "filename_timetraces": 	"timetraces2.dat",
     
     "scale": 		1,
@@ -25,7 +24,7 @@
     "Antenna_Pos_z": 	52,
     "Antenna_Angle_zx": 0,
     "Antenna_Angle_zy": 0,
-    "Wave_source_type": 3,
+    "Wave_source_type": 5,
     "RampUp_Method": 	1,
     "Antena_w0x": 	2.0,
     "Antena_w0y": 	2.0,
