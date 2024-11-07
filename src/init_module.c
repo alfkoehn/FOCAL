@@ -219,3 +219,20 @@ char *read_json(){
     return json_data;
 
 }
+
+/*Configuration print on console*/
+void print_systemConfiguration(gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg ){
+
+    // print some info to console
+    printf("------System Configuration Parameters------\n");
+    printf( "Nx = %d, Ny = %d, Nz = %d\n", Nx, Ny, Nz );
+    printf( "period = %d\n", (int)(period) );
+    printf( "d_absorb = %d\n", d_absorb );
+    printf( "t_end = %d\n", (int)(t_end) );
+    printf( "antAngle_zx = %.2f, antAngle_zy = %.2f\n", antAngle_zx, antAngle_zy );
+    printf( "ant_w0x = %.2f, ant_w0y = %.2f\n", ant_w0x, ant_w0y ); 
+    printf( "ant_x = %d, ant_y = %d, ant_z = %d\n", ant_x, ant_y, ant_z );
+    printf( "Boundary condition set to '%d'\n", sel_boundary );
+    printf( "Courant number = %.2f. \n", dt/dx);
+
+}

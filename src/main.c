@@ -270,15 +270,6 @@ int main( int argc, char *argv[] ) {
             J_B0 );
     printf( "...done defining background magnetic field\n" );
 
-    // print some info to console
-    printf( "Nx = %d, Ny = %d, Nz = %d\n", Nx, Ny, Nz );
-    printf( "period = %d\n", (int)(period) );
-    printf( "d_absorb = %d\n", d_absorb );
-    printf( "t_end = %d\n", (int)(t_end) );
-    printf( "antAngle_zx = %.2f, antAngle_zy = %.2f\n", antAngle_zx, antAngle_zy );
-    printf( "ant_w0x = %.2f, ant_w0y = %.2f\n", ant_w0x, ant_w0y ); 
-    printf( "ant_x = %d, ant_y = %d, ant_z = %d\n", ant_x, ant_y, ant_z );
-    printf( "Boundary condition set to '%d'\n", BOUNDARY );
 #ifdef DETECTOR_ANTENNA_1D
     printf( "detector antenna positions: z1 = %d, y1 = %d\n", detAnt_01_zpos, detAnt_01_ypos );
     printf( "detector antenna positions: z2 = %d, y1 = %d\n", detAnt_02_zpos, detAnt_01_ypos );
@@ -294,6 +285,7 @@ int main( int argc, char *argv[] ) {
     }
 #endif
 
+    print_systemConfiguration( gridCfg, beamCfg );
 
     for (t_int=0 ; t_int <= t_end ; ++t_int) {
         
