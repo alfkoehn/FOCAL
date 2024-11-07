@@ -220,7 +220,6 @@ char *read_json(){
 
 }
 
-
 /*Configuration print on console*/
 void print_systemConfiguration(gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg ){
 
