@@ -27,7 +27,7 @@
 #define t_end                   t_endG(gridCfg)
 #define period                  periodG(gridCfg)
 #define dx                      dxG(gridCfg)
-#define dt                      dtG(gridCfg)
+#define DT                      dtG(gridCfg)
 #define ne_profile              ne_profileG(gridCfg)
 #define ne_0                    ne_0G(gridCfg)
 #define B0_profile              B0_profileG(gridCfg)
