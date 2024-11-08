@@ -2,7 +2,7 @@
 
 int make_density_profile( gridConfiguration *gridCfg, 
                           double cntrl_para, 
-                          double n_e[Nx/2][Ny/2][Nz/2] ) {
+                          double n_e[NX/2][Ny/2][Nz/2] ) {
 //{{{
     // This function allows to defines the plasma density profiles. The
     // parameter "cntrl_para" allows to switch between varies options. The
@@ -26,7 +26,7 @@ int make_density_profile( gridConfiguration *gridCfg,
 
     if ( ne_profile == 1 ) {
         // plasma mirror
-        for (ii=0 ; ii<(Nx/2) ; ++ii) {
+        for (ii=0 ; ii<(NX/2) ; ++ii) {
             for (jj=0 ; jj<(Ny/2) ; ++jj) {
                 //for (kk=((gridCfg->Nz-gridCfg->d_absorb-4)/2) ; kk<(gridCfg->Nz/2) ; ++kk) {
                 for (kk=0 ; kk<(Nz/2) ; ++kk) {
@@ -50,7 +50,7 @@ int make_density_profile( gridConfiguration *gridCfg,
         ne_k0Ln     = cntrl_para;
         printf( "make_density_profile: ne_profile = %d, ne_start_z = %ld, k0Ln = %f\n", 
                 ne_profile, ne_start_z, ne_k0Ln );
-        for (ii=0 ; ii<(Nx/2) ; ++ii) {
+        for (ii=0 ; ii<(NX/2) ; ++ii) {
             for (jj=0 ; jj<(Ny/2) ; ++jj) {
                 for (kk=0 ; kk<(Nz/2) ; ++kk) {
                     aux = ((double)kk - (double)ne_start_z) * (2.*M_PI / (ne_k0Ln*period));
@@ -76,7 +76,7 @@ int make_density_profile( gridConfiguration *gridCfg,
         // n_e(y,z) = n_e,max * exp( -( ------------ + ------------- ) )
         //                               2*sigma_y^2    2*sigma_z^2
         //
-        for (ii=0 ; ii<(Nx/2) ; ++ii) {
+        for (ii=0 ; ii<(NX/2) ; ++ii) {
             for (jj=0 ; jj<(Ny/2) ; ++jj) {
                 for (kk=0 ; kk<(Nz/2) ; ++kk) {
                     n_e[ii][jj][kk]    = exp( -1.* (
@@ -88,11 +88,11 @@ int make_density_profile( gridConfiguration *gridCfg,
         }
     } else if ( ne_profile == 4 ) {
         // same as ne_profile = 3, but plasma cylinder is now along y
-        for (ii=0 ; ii<(Nx/2) ; ++ii) {
+        for (ii=0 ; ii<(NX/2) ; ++ii) {
             for (jj=0 ; jj<(Ny/2) ; ++jj) {
                 for (kk=0 ; kk<(Nz/2) ; ++kk) {
                     n_e[ii][jj][kk]    = exp( -1.* (
-                                                 pow((double)ii-(double)Nx/4., 2)/(2*pow(period/2.,2)) 
+                                                 pow((double)ii-(double)NX/4., 2)/(2*pow(period/2.,2)) 
                                                 +pow((double)kk-(double)Nz/4., 2)/(2*pow(period/2.,2))
                                              )) * 2;//5.;
                 }
@@ -103,7 +103,7 @@ int make_density_profile( gridConfiguration *gridCfg,
         //   ==> change this
         //       either provide additional parameter in function call
         //       or not load the profile here, but directly in main
-        //readMyHDF( Nx/2, Ny/2, Nz/2, "input/grid.h5", "n_e", n_e );
+        //readMyHDF( NX/2, Ny/2, Nz/2, "input/grid.h5", "n_e", n_e );
     }
     return EXIT_SUCCESS;
 }//}}}
@@ -111,7 +111,7 @@ int make_density_profile( gridConfiguration *gridCfg,
 
 int make_B0_profile( gridConfiguration *gridCfg, 
                      double cntrl_para, 
-                     double J_B0[Nx][Ny][Nz] ) {
+                     double J_B0[NX][Ny][Nz] ) {
 //{{{
     size_t
         ii, jj, kk; 
@@ -123,7 +123,7 @@ int make_B0_profile( gridConfiguration *gridCfg,
     // B0z: odd-odd-even
     if ( B0_profile == 1 ) {
         // constant field
-        for (ii=0 ; ii<Nx ; ii+=2) {
+        for (ii=0 ; ii<NX ; ii+=2) {
             for (jj=0 ; jj<Ny ; jj+=2) {
                 for (kk=0 ; kk<Nz ; kk+=2) {
                     J_B0[ii  ][jj+1][kk+1] = cntrl_para;
@@ -139,11 +139,11 @@ int make_B0_profile( gridConfiguration *gridCfg,
         //       either provide additional parameter in function call
         //       or not load the profile here, but directly in main
         
-        double (*B0_tmp)[Ny/2][Nz/2]  = calloc(Nx/2, sizeof *B0_tmp);
+        double (*B0_tmp)[Ny/2][Nz/2]  = calloc(NX/2, sizeof *B0_tmp);
 
         // B0_x
-        readMyHDF( Nx/2, Ny/2, Nz/2, "input/grid.h5", "B0_x", B0_tmp );
-        for (ii=0 ; ii<Nx ; ii+=2) {
+        readMyHDF( NX/2, Ny/2, Nz/2, "input/grid.h5", "B0_x", B0_tmp );
+        for (ii=0 ; ii<NX ; ii+=2) {
             for (jj=0 ; jj<Ny ; jj+=2) {
                 for (kk=0 ; kk<Nz ; kk+=2) {
                     J_B0[ii  ][jj+1][kk+1] = B0_tmp[ii/2][jj/2][kk/2];
@@ -152,8 +152,8 @@ int make_B0_profile( gridConfiguration *gridCfg,
             }
         }
         // B0_y
-        readMyHDF( Nx/2, Ny/2, Nz/2, "input/grid.h5", "B0_y", B0_tmp );
-        for (ii=0 ; ii<Nx ; ii+=2) {
+        readMyHDF( NX/2, Ny/2, Nz/2, "input/grid.h5", "B0_y", B0_tmp );
+        for (ii=0 ; ii<NX ; ii+=2) {
             for (jj=0 ; jj<Ny ; jj+=2) {
                 for (kk=0 ; kk<Nz ; kk+=2) {
                     J_B0[ii+1][jj  ][kk+1] = B0_tmp[ii/2][jj/2][kk/2];
@@ -162,8 +162,8 @@ int make_B0_profile( gridConfiguration *gridCfg,
             }
         }
         // B0_z
-        readMyHDF( Nx/2, Ny/2, Nz/2, "input/grid.h5", "B0_z", B0_tmp );
-        for (ii=0 ; ii<Nx ; ii+=2) {
+        readMyHDF( NX/2, Ny/2, Nz/2, "input/grid.h5", "B0_z", B0_tmp );
+        for (ii=0 ; ii<NX ; ii+=2) {
             for (jj=0 ; jj<Ny ; jj+=2) {
                 for (kk=0 ; kk<Nz ; kk+=2) {
                     J_B0[ii+1][jj+1][kk  ] = B0_tmp[ii/2][jj/2][kk/2];

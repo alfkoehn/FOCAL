@@ -2,8 +2,8 @@
 
 double calc_poynt_4( gridConfiguration *gridCfg, 
                      int pwr_dect, char absorber[],
-                     double EB_WAVE[Nx][Ny][Nz], 
-                     double EB_WAVE_ref[Nx][Ny][Nz_ref] ) {
+                     double EB_WAVE[NX][Ny][Nz], 
+                     double EB_WAVE_ref[NX][Ny][Nz_ref] ) {
 //{{{
 
     size_t
@@ -26,7 +26,7 @@ double calc_poynt_4( gridConfiguration *gridCfg,
     
     if ( strcmp(absorber,"ref_z1") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii,jj) reduction(+:poynt)
-        for (ii=pwr_dect ; ii<=(Nx-pwr_dect-2) ; ii+=2) {
+        for (ii=pwr_dect ; ii<=(NX-pwr_dect-2) ; ii+=2) {
             for (jj=pwr_dect ; jj<=(Ny-pwr_dect-2) ; jj+=2) {
                 // z1-plane
                 // Pz = Ex*Hy - Ey*Hx
@@ -38,7 +38,7 @@ double calc_poynt_4( gridConfiguration *gridCfg,
         }
     } else if ( strcmp(absorber,"z1") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii,jj) reduction(+:poynt)
-        for (ii=pwr_dect ; ii<=(Nx-pwr_dect-2) ; ii+=2) {
+        for (ii=pwr_dect ; ii<=(NX-pwr_dect-2) ; ii+=2) {
             for (jj=pwr_dect ; jj<=(Ny-pwr_dect-2) ; jj+=2) {
                 // z1-plane
                 // Pz = Ex*Hy - Ey*Hx
@@ -50,7 +50,7 @@ double calc_poynt_4( gridConfiguration *gridCfg,
         }
     } else if ( strcmp(absorber,"z2") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii,jj) reduction(+:poynt)
-        for (ii=pwr_dect ; ii<=(Nx-pwr_dect-2) ; ii+=2) {
+        for (ii=pwr_dect ; ii<=(NX-pwr_dect-2) ; ii+=2) {
             for (jj=pwr_dect ; jj<=(Ny-pwr_dect-2) ; jj+=2) {
                 // z2-plane
                 // Pz = Ex*Hy - Ey*Hx
@@ -78,15 +78,15 @@ double calc_poynt_4( gridConfiguration *gridCfg,
             for (kk=pwr_dect ; kk<=(Nz-pwr_dect-2) ; kk+=2) {
                 // x2-plane
                 // Px = Ey*Hz - Ez*Hy
-                poynt += ( EB_WAVE[Nx-pwr_dect  ][jj+1][kk  ]
-                          *EB_WAVE[Nx-pwr_dect-1][jj+1][kk  ]
-                          -EB_WAVE[Nx-pwr_dect  ][jj  ][kk+1]
-                          *EB_WAVE[Nx-pwr_dect-1][jj  ][kk+1] );
+                poynt += ( EB_WAVE[NX-pwr_dect  ][jj+1][kk  ]
+                          *EB_WAVE[NX-pwr_dect-1][jj+1][kk  ]
+                          -EB_WAVE[NX-pwr_dect  ][jj  ][kk+1]
+                          *EB_WAVE[NX-pwr_dect-1][jj  ][kk+1] );
                 }
             }
     } else if ( strcmp(absorber,"y1") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii,kk) reduction(+:poynt)
-        for (ii=pwr_dect ; ii<=(Nx-pwr_dect-2) ; ii+=2) {
+        for (ii=pwr_dect ; ii<=(NX-pwr_dect-2) ; ii+=2) {
             for (kk=pwr_dect ; kk<=(Nz-pwr_dect-2) ; kk+=2) {
                 // y1-plane
                 // Py = Ez*Hx - Ex*Hz
@@ -98,7 +98,7 @@ double calc_poynt_4( gridConfiguration *gridCfg,
         }
     } else if ( strcmp(absorber,"y2") == 0 ) {
 #pragma omp parallel for collapse(2) default(shared) private(ii,kk) reduction(+:poynt)
-        for (ii=pwr_dect ; ii<=(Nx-pwr_dect-2) ; ii+=2) {
+        for (ii=pwr_dect ; ii<=(NX-pwr_dect-2) ; ii+=2) {
             for (kk=pwr_dect ; kk<=(Nz-pwr_dect-2) ; kk+=2) {
                 // y2-plane
                 // Py = Ez*Hx - Ex*Hz

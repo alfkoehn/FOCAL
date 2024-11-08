@@ -24,8 +24,8 @@ int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], do
 int detAnt1D_storeValues( gridConfiguration *gridCfg,
                           size_t detAnt_ypos, size_t detAnt_zpos,
                           int tt, 
-                          double EB_WAVE[Nx][Ny][Nz], 
-                          double detAnt_fields[Nx/2][5] );
+                          double EB_WAVE[NX][Ny][Nz], 
+                          double detAnt_fields[NX/2][5] );
 //#endif
 
 //#if defined(HDF5) && defined(DETECTOR_ANTENNA_1D)

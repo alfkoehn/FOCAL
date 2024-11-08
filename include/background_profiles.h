@@ -12,10 +12,10 @@
 
 int make_density_profile( gridConfiguration *gridCfg, 
                           double cntrl_para, 
-                          double n_e[Nx/2][Ny/2][Nz/2] );
+                          double n_e[NX/2][Ny/2][Nz/2] );
 
 int make_B0_profile( gridConfiguration *gridCfg,
                      double cntrl_para, 
-                     double J_B0[Nx][Ny][Nz] );
+                     double J_B0[NX][Ny][Nz] );
 
 #endif  // BACKGROUND_PROFILES_H

@@ -308,7 +308,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamAntennaConfiguration *beamC
     dataset_id = H5Dcreate( file_id, "/config/N_x", H5T_NATIVE_LONG,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_long[0]  = (long)Nx;
+    data2write_long[0]  = (long)NX;
     status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_long); 
@@ -465,8 +465,8 @@ int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], do
 int detAnt1D_storeValues( gridConfiguration *gridCfg, 
                           size_t detAnt_ypos, size_t detAnt_zpos,
                           int tt, 
-                          double EB_WAVE[Nx][Ny][Nz], 
-                          double detAnt_fields[Nx/2][5] ) { 
+                          double EB_WAVE[NX][Ny][Nz], 
+                          double detAnt_fields[NX/2][5] ) { 
     //{{{
     size_t
         ii;
@@ -480,7 +480,7 @@ int detAnt1D_storeValues( gridConfiguration *gridCfg,
 
 #pragma omp parallel default(shared) private(ii,foo)
 #pragma omp for
-    for ( ii=2 ; ii <= Nx-2 ; ii+=2 ) {
+    for ( ii=2 ; ii <= NX-2 ; ii+=2 ) {
         // calculate abs(E)
         foo = sqrt(  pow(EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos  ],2)
                     +pow(EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos  ],2)
