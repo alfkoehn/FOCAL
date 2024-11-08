@@ -24,7 +24,7 @@ int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], do
 int detAnt1D_storeValues( gridConfiguration *gridCfg,
                           size_t detAnt_ypos, size_t detAnt_zpos,
                           int tt, 
-                          double EB_WAVE[NX][Ny][Nz], 
+                          double EB_WAVE[NX][NY][Nz], 
                           double detAnt_fields[NX/2][5] );
 //#endif
 

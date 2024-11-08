@@ -11,19 +11,19 @@
 #include "focal.h"
 
 int make_antenna_profile( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg,
-                          double antField_xy[NX/2][Ny/2], double antPhaseTerms[NX/2][Ny/2] );
+                          double antField_xy[NX/2][NY/2], double antPhaseTerms[NX/2][NY/2] );
 
 int add_source( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, 
                 int t_int, double omega_t, 
-                double antField_xy[NX/2][Ny/2], 
-                double antPhaseTerms[NX/2][Ny/2],
-                double EB_WAVE[NX][Ny][Nz] );
+                double antField_xy[NX/2][NY/2], 
+                double antPhaseTerms[NX/2][NY/2],
+                double EB_WAVE[NX][NY][Nz] );
 
 int add_source_ref( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, 
                     int t_int, double omega_t, 
-                    double antField_xy[NX/2][Ny/2], 
-                    double antPhaseTerms[NX/2][Ny/2],
-                    double EB_WAVE[NX][Ny][Nz_ref] );
+                    double antField_xy[NX/2][NY/2], 
+                    double antPhaseTerms[NX/2][NY/2],
+                    double EB_WAVE[NX][NY][Nz_ref] );
 
 double antenna_field_rampup( int RampUpMethod, double Period, int t_int );
 
