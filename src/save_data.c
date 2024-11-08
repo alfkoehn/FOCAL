@@ -1,14 +1,18 @@
 #include "save_data.h"
 
+
 void create_folder(saveData *saveDCfg){
+    //{{{
 
     simulation_folder( projectPath );
     data_folder( projectPath, foldername );
     copyJSON( projectPath, foldername );
 
-}
+}//}}}
+
 
 void simulation_folder(const char *path){
+    //{{{
     
     struct stat st = {0};
 
@@ -22,9 +26,11 @@ void simulation_folder(const char *path){
             return;
         }
     }
-}
+}//}}}
+
 
 void data_folder(const char *path, const char *folder_name){
+    //{{{
     
     char fullPath[PATH_MAX];
 
@@ -48,9 +54,11 @@ void data_folder(const char *path, const char *folder_name){
     }else{
         printf("%s already exists.\n", folder_name);
     }
-}
+}//}}}
+
 
 void copyJSON(const char *path, const char *folder_name){
+    //{{{
     
     char destination[PATH_MAX];
 
@@ -85,5 +93,5 @@ void copyJSON(const char *path, const char *folder_name){
     fclose(destFile);
 
     printf("JSON file saved.\n");
-}
+}//}}}
 
