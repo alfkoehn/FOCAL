@@ -85,7 +85,7 @@ int add_source( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg,
                 int t_int, double omega_t, 
                 double antField_xy[NX/2][NY/2], 
                 double antPhaseTerms[NX/2][NY/2],
-                double EB_WAVE[NX][NY][Nz] ) {
+                double EB_WAVE[NX][NY][NZ] ) {
 //{{{
 
     size_t
@@ -189,7 +189,7 @@ int add_source_ref( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCf
                     int t_int, double omega_t, 
                     double antField_xy[NX/2][NY/2], 
                     double antPhaseTerms[NX/2][NY/2],
-                    double EB_WAVE[NX][NY][Nz_ref] ) {
+                    double EB_WAVE[NX][NY][NZ_ref] ) {
 //{{{
 
     size_t

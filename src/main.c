@@ -132,14 +132,14 @@ int main( int argc, char *argv[] ) {
 
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
-    double (*EB_WAVE)[NY][Nz]           = calloc(NX, sizeof *EB_WAVE);
-    double (*EB_WAVE_ref)[NY][Nz_ref]   = calloc(NX, sizeof *EB_WAVE_ref);
+    double (*EB_WAVE)[NY][NZ]           = calloc(NX, sizeof *EB_WAVE);
+    double (*EB_WAVE_ref)[NY][NZ_ref]   = calloc(NX, sizeof *EB_WAVE_ref);
     // J-wavefield (in plasma) and background magnetic field
-    double (*J_B0)[NY][Nz]              = calloc(NX, sizeof *J_B0);
+    double (*J_B0)[NY][NZ]              = calloc(NX, sizeof *J_B0);
     // background electron plasma density
-    double (*n_e)[NY/2][Nz/2]           = calloc(NX/2, sizeof *n_e);
+    double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);
     // used when writing data into hdf5-files
-    double (*data2save)[NY/2][Nz/2]     = calloc(NX/2, sizeof *data2save);
+    double (*data2save)[NY/2][NZ/2]     = calloc(NX/2, sizeof *data2save);
     // antenna: envelope of injected field
     double (*antField_xy)[NY/2]         = calloc(NX/2, sizeof *antField_xy);
     // antenna: phase terms 
@@ -149,11 +149,11 @@ int main( int argc, char *argv[] ) {
 
     // old E-fields required for Mur's boundary condition
 #if BOUNDARY == 2
-    double (*E_Xdir_OLD)[NY][Nz]            = calloc(8,  sizeof *E_Xdir_OLD);
-    double (*E_Ydir_OLD)[8][Nz]             = calloc(NX, sizeof *E_Ydir_OLD);
+    double (*E_Xdir_OLD)[NY][NZ]            = calloc(8,  sizeof *E_Xdir_OLD);
+    double (*E_Ydir_OLD)[8][NZ]             = calloc(NX, sizeof *E_Ydir_OLD);
     double (*E_Zdir_OLD)[NY][8]             = calloc(NX, sizeof *E_Zdir_OLD);
-    double (*E_Xdir_OLD_ref)[NY][Nz_ref]    = calloc(8,  sizeof *E_Xdir_OLD_ref);
-    double (*E_Ydir_OLD_ref)[8][Nz_ref]     = calloc(NX, sizeof *E_Ydir_OLD_ref);
+    double (*E_Xdir_OLD_ref)[NY][NZ_ref]    = calloc(8,  sizeof *E_Xdir_OLD_ref);
+    double (*E_Ydir_OLD_ref)[8][NZ_ref]     = calloc(NX, sizeof *E_Ydir_OLD_ref);
     double (*E_Zdir_OLD_ref)[NY][8]         = calloc(NX, sizeof *E_Zdir_OLD_ref);
 #endif
 
@@ -207,11 +207,11 @@ int main( int argc, char *argv[] ) {
     if ((detAnt_02_zpos % 2) != 0)  ++detAnt_02_zpos;
     if ((detAnt_03_zpos % 2) != 0)  ++detAnt_03_zpos;
     if ((detAnt_04_zpos % 2) != 0)  ++detAnt_04_zpos;
-    // issue a warning when detector antenna position is beyond Nz
-    if (detAnt_04_zpos > (Nz - d_absorb)) {
+    // issue a warning when detector antenna position is beyond NZ
+    if (detAnt_04_zpos > (NZ - d_absorb)) {
         printf( "ERROR: check the detector antenna positions into z direction\n" );
-        printf( "       Nz-d_absorb = %d, detAnt_04_zpos = %d\n", 
-                Nz - d_absorb, detAnt_04_zpos );
+        printf( "       NZ-d_absorb = %d, detAnt_04_zpos = %d\n", 
+                NZ - d_absorb, detAnt_04_zpos );
     }
 #endif
         
@@ -351,22 +351,22 @@ int main( int argc, char *argv[] ) {
         // oscillation periods, it was found previously that only one period
         // does not result in a too nice average
         if ( t_int >= ( t_end - 10*period ) ) {
-            if (detAnt_01_zpos < ( Nz - d_absorb)) {
+            if (detAnt_01_zpos < ( NZ - d_absorb)) {
                 detAnt1D_storeValues( gridCfg, detAnt_01_ypos, detAnt_01_zpos,
                                       t_int,  
                                       EB_WAVE, detAnt_01_fields );
             }
-            if (detAnt_02_zpos < ( Nz - d_absorb)) {
+            if (detAnt_02_zpos < ( NZ - d_absorb)) {
                 detAnt1D_storeValues( gridCfg, detAnt_01_ypos, detAnt_02_zpos,
                                       t_int, 
                                       EB_WAVE, detAnt_02_fields );
             }
-            if (detAnt_03_zpos < ( Nz - d_absorb)) {
+            if (detAnt_03_zpos < ( NZ - d_absorb)) {
                 detAnt1D_storeValues( gridCfg, detAnt_01_ypos, detAnt_03_zpos,
                                       t_int,
                                       EB_WAVE, detAnt_03_fields );
             }
-            if (detAnt_04_zpos < ( Nz - d_absorb)) {
+            if (detAnt_04_zpos < ( NZ - d_absorb)) {
                 detAnt1D_storeValues( gridCfg, detAnt_01_ypos, detAnt_04_zpos,
                                       t_int,
                                       EB_WAVE, detAnt_04_fields );
@@ -449,7 +449,7 @@ int main( int argc, char *argv[] ) {
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
     for (ii=0 ; ii<NX ; ii+=2) {
         for (jj=0 ; jj<NY ; jj+=2) {
-            for (kk=0 ; kk<Nz ; kk+=2) {
+            for (kk=0 ; kk<NZ ; kk+=2) {
                 data2save[(ii/2)][(jj/2)][(kk/2)] = 
                     sqrt( pow(EB_WAVE[ii+1][jj  ][kk  ],2) 
                          +pow(EB_WAVE[ii  ][jj+1][kk  ],2) 
@@ -462,67 +462,67 @@ int main( int argc, char *argv[] ) {
         printf( "ERROR: could not write filename_hdf5 string\n" );  // use a proper error handler here
     } else {
         sprintf( dSet_name, "E_abs__tint%05d", t_int );
-        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, Nz/2, filename_hdf5, dSet_name, data2save) ) ;
+        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save) ) ;
     }
-    set2zero_3D( NX/2, NY/2, Nz/2, data2save );
+    set2zero_3D( NX/2, NY/2, NZ/2, data2save );
     // density
     sprintf( dSet_name, "n_e" );
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, Nz/2, filename_hdf5, dSet_name, n_e) ) ;
+    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, n_e) ) ;
     // background magnetic field
     // B0x: even-odd-odd
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
     for (ii=0 ; ii<NX ; ii+=2) {
         for (jj=0 ; jj<NY ; jj+=2) {
-            for (kk=0 ; kk<Nz ; kk+=2) {
+            for (kk=0 ; kk<NZ ; kk+=2) {
                 data2save[(ii/2)][(jj/2)][(kk/2)] = J_B0[ii  ][jj+1][kk+1];
             }
         }
     }
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, Nz/2, filename_hdf5, "B0x", data2save) ) ;
-    set2zero_3D( NX/2, NY/2, Nz/2, data2save );
+    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0x", data2save) ) ;
+    set2zero_3D( NX/2, NY/2, NZ/2, data2save );
     // B0y: odd-even-odd
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
     for (ii=0 ; ii<NX ; ii+=2) {
         for (jj=0 ; jj<NY ; jj+=2) {
-            for (kk=0 ; kk<Nz ; kk+=2) {
+            for (kk=0 ; kk<NZ ; kk+=2) {
                 data2save[(ii/2)][(jj/2)][(kk/2)] = J_B0[ii+1][jj  ][kk+1];
             }
         }
     }
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, Nz/2, filename_hdf5, "B0y", data2save) ) ;
-    set2zero_3D( NX/2, NY/2, Nz/2, data2save );
+    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0y", data2save) ) ;
+    set2zero_3D( NX/2, NY/2, NZ/2, data2save );
     // B0z: odd-odd-even
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
     for (ii=0 ; ii<NX ; ii+=2) {
         for (jj=0 ; jj<NY ; jj+=2) {
-            for (kk=0 ; kk<Nz ; kk+=2) {
+            for (kk=0 ; kk<NZ ; kk+=2) {
                 data2save[(ii/2)][(jj/2)][(kk/2)] = J_B0[ii+1][jj+1][kk  ];
             }
         }
     }
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, Nz/2, filename_hdf5, "B0z", data2save) ) ;
-    set2zero_3D( NX/2, NY/2, Nz/2, data2save );
+    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0z", data2save) ) ;
+    set2zero_3D( NX/2, NY/2, NZ/2, data2save );
 
     writeConfig2HDF( gridCfg, beamCfg, filename_hdf5 );
 
 
 #if defined(HDF5) && defined(DETECTOR_ANTENNA_1D)
-    if (detAnt_01_zpos < ( Nz - d_absorb)) {
+    if (detAnt_01_zpos < ( NZ - d_absorb)) {
         detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_01" , 
                              detAnt_01_ypos, detAnt_01_zpos,
                              detAnt_01_fields );
     }
-    if (detAnt_02_zpos < ( Nz - d_absorb)) {
+    if (detAnt_02_zpos < ( NZ - d_absorb)) {
         detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_02" , 
                              detAnt_01_ypos, detAnt_02_zpos,
                              detAnt_02_fields );
     }
-    if (detAnt_03_zpos < ( Nz - d_absorb)) {
+    if (detAnt_03_zpos < ( NZ - d_absorb)) {
         detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_03" , 
                              detAnt_01_ypos, detAnt_03_zpos,
                              detAnt_03_fields );
     }
-    if (detAnt_04_zpos < ( Nz - d_absorb)) {
+    if (detAnt_04_zpos < ( NZ - d_absorb)) {
         detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_04" , 
                              detAnt_01_ypos, detAnt_04_zpos,
                              detAnt_04_fields );
