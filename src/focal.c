@@ -70,17 +70,17 @@ int advance_B( gridConfiguration *gridCfg,
         for (jj=2 ; jj<NY-2 ; jj+=2) {
             for (kk=2 ; kk<NZ-2 ; kk+=2) {
                 // -dBx/DT = dEz/dy - dEy/dz
-                EB_WAVE[ii  ][jj+1][kk+1]   += -1.*DT/dx*(
+                EB_WAVE[ii  ][jj+1][kk+1]   += -1.*DT/DX*(
                         +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                         -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                         );
-                // -dBy/DT = dEx/dz - dEz/dx
-                EB_WAVE[ii+1][jj  ][kk+1] += -1.*DT/dx*(
+                // -dBy/DT = dEx/dz - dEz/DX
+                EB_WAVE[ii+1][jj  ][kk+1] += -1.*DT/DX*(
                         +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                         -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                         );
                 // -dBz/DT = dEy/dx - dEx/dy
-                EB_WAVE[ii+1][jj+1][kk  ] += -1.*DT/dx*(
+                EB_WAVE[ii+1][jj+1][kk  ] += -1.*DT/DX*(
                         +EB_WAVE[ii+2][jj+1][kk  ] - EB_WAVE[ii  ][jj+1][kk  ]
                         -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                         );
@@ -102,17 +102,17 @@ int advance_B_ref( gridConfiguration *gridCfg,
         for (jj=2 ; jj<NY-2 ; jj+=2) {
             for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {
                 // -dBx/DT = dEz/dy - dEy/dz
-                EB_WAVE[ii  ][jj+1][kk+1]   += -1.*DT/dx*(
+                EB_WAVE[ii  ][jj+1][kk+1]   += -1.*DT/DX*(
                         +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                         -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                         );
                 // -dBy/DT = dEx/dz - dEz/dx
-                EB_WAVE[ii+1][jj  ][kk+1] += -1.*DT/dx*(
+                EB_WAVE[ii+1][jj  ][kk+1] += -1.*DT/DX*(
                         +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                         -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                         );
                 // -dBz/DT = dEy/dx - dEx/dy
-                EB_WAVE[ii+1][jj+1][kk  ] += -1.*DT/dx*(
+                EB_WAVE[ii+1][jj+1][kk  ] += -1.*DT/DX*(
                         +EB_WAVE[ii+2][jj+1][kk  ] - EB_WAVE[ii  ][jj+1][kk  ]
                         -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                         );
@@ -137,17 +137,17 @@ int advance_E( gridConfiguration *gridCfg,
         for (jj=2 ; jj<NY-2 ; jj+=2) {
             for (kk=2 ; kk<NZ-2 ; kk+=2) {
                 // dEx/DT = (dBz/dy - dBy/dz)
-                EB_WAVE[ii+1][jj  ][kk  ] += DT/dx*(
+                EB_WAVE[ii+1][jj  ][kk  ] += DT/DX*(
                         +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                         -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                         ) - DT*J_B0[ii+1][jj  ][kk  ];
                 // dEy/DT = (dBx/dz - dBz/dx)
-                EB_WAVE[ii  ][jj+1][kk  ] += DT/dx*(
+                EB_WAVE[ii  ][jj+1][kk  ] += DT/DX*(
                         +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                         -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                         ) - DT*J_B0[ii  ][jj+1][kk  ];
                 // dEz/dt = (dBy/dx - dBx/dy)
-                EB_WAVE[ii  ][jj  ][kk+1] += DT/dx*(
+                EB_WAVE[ii  ][jj  ][kk+1] += DT/DX*(
                         +EB_WAVE[ii+1][jj  ][kk+1] - EB_WAVE[ii-1][jj  ][kk+1]
                         -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                         ) - DT*J_B0[ii  ][jj  ][kk+1];
@@ -170,17 +170,17 @@ int advance_E_ref( gridConfiguration *gridCfg,
         for (jj=2 ; jj<NY-2 ; jj+=2) {
             for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {
                 // dEx/dt = (dBz/dy - dBy/dz)
-                EB_WAVE[ii+1][jj  ][kk  ] += DT/dx*(
+                EB_WAVE[ii+1][jj  ][kk  ] += DT/DX*(
                         +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                         -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                         );
                 // dEy/dt = (dBx/dz - dBz/dx)
-                EB_WAVE[ii  ][jj+1][kk  ] += DT/dx*(
+                EB_WAVE[ii  ][jj+1][kk  ] += DT/DX*(
                         +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                         -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                         );
                 // dEz/dt = (dBy/dx - dBx/dy)
-                EB_WAVE[ii  ][jj  ][kk+1] += DT/dx*(
+                EB_WAVE[ii  ][jj  ][kk+1] += DT/DX*(
                         +EB_WAVE[ii+1][jj  ][kk+1] - EB_WAVE[ii-1][jj  ][kk+1]
                         -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                         );
@@ -956,7 +956,7 @@ int abc_Mur_1st( gridConfiguration *gridCfg,
     double
         cnst;
 
-    cnst    = (DT-dx)/(DT+dx);
+    cnst    = (DT-DX)/(DT+DX);
     offset  = 2;
 
     // the string "absorber" is used to set which absorber is treated
@@ -1119,7 +1119,7 @@ int abc_Mur_1st_ref( gridConfiguration *gridCfg,
     double
         cnst;
 
-    cnst    = (DT-dx)/(DT+dx);
+    cnst    = (DT-DX)/(DT+DX);
     offset  = 2;
 
     // absorber into x-direction

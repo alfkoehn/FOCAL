@@ -26,7 +26,7 @@
 #define d_absorb                d_absorbG(gridCfg)
 #define t_end                   t_endG(gridCfg)
 #define period                  periodG(gridCfg)
-#define dx                      dxG(gridCfg)
+#define DX                      dxG(gridCfg)
 #define DT                      dtG(gridCfg)
 #define ne_profile              ne_profileG(gridCfg)
 #define ne_0                    ne_0G(gridCfg)
