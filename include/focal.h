@@ -25,14 +25,14 @@ int advance_B( gridConfiguration *gridCfg,
                double EB_WAVE[NX][NY][NZ] );
 
 int advance_B_ref( gridConfiguration *gridCfg, 
-                   double EB_WAVE[NX][NY][NZ_ref] );
+                   double EB_WAVE[NX][NY][NZ_REF] );
 
 int advance_E( gridConfiguration *gridCfg, 
                double EB_WAVE[NX][NY][NZ], 
                double J_B0[NX][NY][NZ] );
 
 int advance_E_ref( gridConfiguration *gridCfg, 
-                   double EB_WAVE[NX][NY][NZ_ref] ); 
+                   double EB_WAVE[NX][NY][NZ_REF] ); 
 
 int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
                               char absorber[], 
@@ -44,7 +44,7 @@ int apply_absorber( gridConfiguration *gridCfg,
 
 int apply_absorber_ref( gridConfiguration *gridCfg, 
                         double eco, 
-                        double EB_WAVE[NX][NY][NZ_ref] );
+                        double EB_WAVE[NX][NY][NZ_REF] );
 
 int apply_absorber_v2( size_t N_x, size_t N_y, size_t N_z, int D_absorb, double eco, 
                        char absorber[],
@@ -64,13 +64,13 @@ int abc_Mur_saveOldE_zdir( gridConfiguration *gridCfg,
                            double E_old[NX][NY][8] );
 
 int abc_Mur_saveOldEref_xdir( gridConfiguration *gridCfg, 
-                              double EB_WAVE_ref[NX][NY][NZ_ref], 
+                              double EB_WAVE_ref[NX][NY][NZ_REF], 
                               double E_old[8][NY][NZ] );
 int abc_Mur_saveOldEref_ydir( gridConfiguration *gridCfg, 
-                              double EB_WAVE_ref[NX][NY][NZ_ref], 
+                              double EB_WAVE_ref[NX][NY][NZ_REF], 
                               double E_old[NX][8][NZ] );
 int abc_Mur_saveOldEref_zdir( gridConfiguration *gridCfg, 
-                              double EB_WAVE_ref[NX][NY][NZ_ref], 
+                              double EB_WAVE_ref[NX][NY][NZ_REF], 
                               double E_old[NX][NY][8] );
 
 int abc_Mur_1st( gridConfiguration *gridCfg, 
@@ -81,9 +81,9 @@ int abc_Mur_1st( gridConfiguration *gridCfg,
                  double E_old_zdir[NX][NY][8] );
 
 int abc_Mur_1st_ref( gridConfiguration *gridCfg, 
-                     double EB_WAVE[NX][NY][NZ_ref], 
-                     double E_old_xdir[8][NY][NZ_ref], 
-                     double E_old_ydir[NX][8][NZ_ref], 
+                     double EB_WAVE[NX][NY][NZ_REF], 
+                     double E_old_xdir[8][NY][NZ_REF], 
+                     double E_old_ydir[NX][8][NZ_REF], 
                      double E_old_zdir[NX][NY][8] );
 
 int set2zero_1D( size_t N_x, double arr_1D[N_x] );

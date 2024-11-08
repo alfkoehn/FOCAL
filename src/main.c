@@ -133,7 +133,7 @@ int main( int argc, char *argv[] ) {
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
     double (*EB_WAVE)[NY][NZ]           = calloc(NX, sizeof *EB_WAVE);
-    double (*EB_WAVE_ref)[NY][NZ_ref]   = calloc(NX, sizeof *EB_WAVE_ref);
+    double (*EB_WAVE_ref)[NY][NZ_REF]   = calloc(NX, sizeof *EB_WAVE_ref);
     // J-wavefield (in plasma) and background magnetic field
     double (*J_B0)[NY][NZ]              = calloc(NX, sizeof *J_B0);
     // background electron plasma density
@@ -152,8 +152,8 @@ int main( int argc, char *argv[] ) {
     double (*E_Xdir_OLD)[NY][NZ]            = calloc(8,  sizeof *E_Xdir_OLD);
     double (*E_Ydir_OLD)[8][NZ]             = calloc(NX, sizeof *E_Ydir_OLD);
     double (*E_Zdir_OLD)[NY][8]             = calloc(NX, sizeof *E_Zdir_OLD);
-    double (*E_Xdir_OLD_ref)[NY][NZ_ref]    = calloc(8,  sizeof *E_Xdir_OLD_ref);
-    double (*E_Ydir_OLD_ref)[8][NZ_ref]     = calloc(NX, sizeof *E_Ydir_OLD_ref);
+    double (*E_Xdir_OLD_ref)[NY][NZ_REF]    = calloc(8,  sizeof *E_Xdir_OLD_ref);
+    double (*E_Ydir_OLD_ref)[8][NZ_REF]     = calloc(NX, sizeof *E_Ydir_OLD_ref);
     double (*E_Zdir_OLD_ref)[NY][8]         = calloc(NX, sizeof *E_Zdir_OLD_ref);
 #endif
 

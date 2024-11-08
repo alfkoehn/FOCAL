@@ -23,7 +23,7 @@ int add_source_ref( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCf
                     int t_int, double omega_t, 
                     double antField_xy[NX/2][NY/2], 
                     double antPhaseTerms[NX/2][NY/2],
-                    double EB_WAVE[NX][NY][NZ_ref] );
+                    double EB_WAVE[NX][NY][NZ_REF] );
 
 double antenna_field_rampup( int RampUpMethod, double Period, int t_int );
 

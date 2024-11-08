@@ -3,7 +3,7 @@
 double calc_poynt_4( gridConfiguration *gridCfg, 
                      int pwr_dect, char absorber[],
                      double EB_WAVE[NX][NY][NZ], 
-                     double EB_WAVE_ref[NX][NY][NZ_ref] ) {
+                     double EB_WAVE_ref[NX][NY][NZ_REF] ) {
 //{{{
 
     size_t

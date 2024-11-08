@@ -92,7 +92,7 @@ int advance_B( gridConfiguration *gridCfg,
 
 
 int advance_B_ref( gridConfiguration *gridCfg, 
-                   double EB_WAVE[NX][NY][NZ_ref] ) {
+                   double EB_WAVE[NX][NY][NZ_REF] ) {
 //{{{
     size_t
         ii, jj, kk;
@@ -100,7 +100,7 @@ int advance_B_ref( gridConfiguration *gridCfg,
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk) 
     for (ii=2 ; ii<NX-2 ; ii+=2) {
         for (jj=2 ; jj<NY-2 ; jj+=2) {
-            for (kk=2 ; kk<NZ_ref-2 ; kk+=2) {
+            for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {
                 // -dBx/dt = dEz/dy - dEy/dz
                 EB_WAVE[ii  ][jj+1][kk+1]   += -1.*dt/dx*(
                         +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
@@ -159,7 +159,7 @@ int advance_E( gridConfiguration *gridCfg,
 
 
 int advance_E_ref( gridConfiguration *gridCfg, 
-                   double EB_WAVE[NX][NY][NZ_ref] ) { 
+                   double EB_WAVE[NX][NY][NZ_REF] ) { 
 //{{{
     // same as advance_E but for reference fields (directional coupler)
     size_t
@@ -168,7 +168,7 @@ int advance_E_ref( gridConfiguration *gridCfg,
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
     for (ii=2 ; ii<NX-2 ; ii+=2) {
         for (jj=2 ; jj<NY-2 ; jj+=2) {
-            for (kk=2 ; kk<NZ_ref-2 ; kk+=2) {
+            for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {
                 // dEx/dt = (dBz/dy - dBy/dz)
                 EB_WAVE[ii+1][jj  ][kk  ] += dt/dx*(
                         +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
@@ -412,7 +412,7 @@ int apply_absorber( gridConfiguration *gridCfg,
 
 int apply_absorber_ref( gridConfiguration *gridCfg, 
                         double eco, 
-                        double EB_WAVE[NX][NY][NZ_ref] ) {
+                        double EB_WAVE[NX][NY][NZ_REF] ) {
 //{{{
     size_t
         ii, jj, kk;
@@ -441,8 +441,8 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<NX-2 ; ii+=2) {
         for (jj=2 ; jj<NY-2 ; jj+=2) {
-            for (kk=(NZ_ref-d_absorb) ; kk<NZ_ref-2 ; kk+=2) {      //NZ-d_absorb-2 ???
-                damp = ((double)kk-((double)NZ_ref-(double)d_absorb))/(double)d_absorb;
+            for (kk=(NZ_REF-d_absorb) ; kk<NZ_REF-2 ; kk+=2) {      //NZ-d_absorb-2 ???
+                damp = ((double)kk-((double)NZ_REF-(double)d_absorb))/(double)d_absorb;
                 damp = ABSORBER_DAMPING(eco,damp);
 
                 EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -454,7 +454,7 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
     // x1 absorber: x=0...d_absorb
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (jj=2 ; jj<NY-2 ; jj+=2) {
-        for (kk=2 ; kk<NZ_ref-2 ; kk+=2) {
+        for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {
             for (ii=2 ; ii<d_absorb-2 ; ii+=2) {
                 damp = ((double)ii-(double)d_absorb)/(double)d_absorb;
                 damp = ABSORBER_DAMPING(eco,damp);
@@ -468,7 +468,7 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
     // x2 absorber: x=d_absorb...NX
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (jj=2 ; jj<NY-2 ; jj+=2) {
-        for (kk=2 ; kk<NZ_ref-2 ; kk+=2) {  
+        for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {  
             for (ii=(NX-d_absorb) ; ii<NX-2 ; ii+=2) {    //NX-d_absorb-2 ???
                 damp = ((double)ii-((double)NX-(double)d_absorb))/(double)d_absorb;
                 damp = ABSORBER_DAMPING(eco,damp);
@@ -482,7 +482,7 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
     // y1 absorber: y=0...d_absorb
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<NX-2 ; ii+=2) {
-        for (kk=2 ; kk<NZ_ref-2 ; kk+=2) {
+        for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {
             for (jj=2 ; jj<d_absorb-2 ; jj+=2) {
                 damp = ((double)jj-(double)d_absorb)/(double)d_absorb;
                 damp = ABSORBER_DAMPING(eco,damp);
@@ -496,7 +496,7 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
     // y2 absorber: y=d_absorb...NY
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<NX-2 ; ii+=2) {
-        for (kk=2 ; kk<NZ_ref-2 ; kk+=2) {
+        for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {
             for (jj=(NY-d_absorb) ; jj<NY-2 ; jj+=2) {  //NY-d_absorb-2 ???
                 damp = ((double)jj-((double)NY-(double)d_absorb))/(double)d_absorb;
                 damp = ABSORBER_DAMPING(eco,damp);
@@ -798,8 +798,8 @@ int abc_Mur_saveOldE_zdir( gridConfiguration *gridCfg,
 
 
 int abc_Mur_saveOldEref_xdir( gridConfiguration *gridCfg, 
-                              double EB_WAVE_ref[NX][NY][NZ_ref], 
-                              double E_old[8][NY][NZ_ref] ) {
+                              double EB_WAVE_ref[NX][NY][NZ_REF], 
+                              double E_old[8][NY][NZ_REF] ) {
 //{{{
 
     // Ex: odd-even-even
@@ -814,7 +814,7 @@ int abc_Mur_saveOldEref_xdir( gridConfiguration *gridCfg,
 
 #pragma omp parallel for collapse(2) default(shared) private(jj,kk)
     for (jj=2 ; jj<NY-2 ; jj+=2) {
-        for (kk=2 ; kk<NZ_ref-2 ; kk+=2) {
+        for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {
             // store values at x=0 and x=1
             // Ex: odd-even-even
             E_old[0+1][jj  ][kk  ]  = EB_WAVE_ref[0+offset+1][jj  ][kk  ];
@@ -845,8 +845,8 @@ int abc_Mur_saveOldEref_xdir( gridConfiguration *gridCfg,
 
 
 int abc_Mur_saveOldEref_ydir( gridConfiguration *gridCfg, 
-                              double EB_WAVE_ref[NX][NY][NZ_ref], 
-                              double E_old[NX][8][NZ_ref] ) {
+                              double EB_WAVE_ref[NX][NY][NZ_REF], 
+                              double E_old[NX][8][NZ_REF] ) {
 //{{{
 
     // Ex: odd-even-even
@@ -861,7 +861,7 @@ int abc_Mur_saveOldEref_ydir( gridConfiguration *gridCfg,
 
 #pragma omp parallel for collapse(2) default(shared) private(ii,kk)
     for (ii=2 ; ii<NX-2 ; ii+=2) {
-        for (kk=2 ; kk<NZ_ref-2 ; kk+=2) {
+        for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {
             // store values at y=0 and y=1
             // Ex: odd-even-even
             E_old[ii+1][0  ][kk  ]  = EB_WAVE_ref[ii+1][0+offset  ][kk  ];
@@ -892,7 +892,7 @@ int abc_Mur_saveOldEref_ydir( gridConfiguration *gridCfg,
 
 
 int abc_Mur_saveOldEref_zdir( gridConfiguration *gridCfg, 
-                              double EB_WAVE_ref[NX][NY][NZ_ref], 
+                              double EB_WAVE_ref[NX][NY][NZ_REF], 
                               double E_old[NX][NY][8] ) {
 //{{{
 
@@ -922,14 +922,14 @@ int abc_Mur_saveOldEref_zdir( gridConfiguration *gridCfg,
 
             // store values at z=NZ-1 and z=NZ-2
             // Ex: odd-even-even
-            E_old[ii+1][jj  ][4  ]  = EB_WAVE_ref[ii+1][jj  ][NZ_ref-4-offset  ];
-            E_old[ii+1][jj  ][6  ]  = EB_WAVE_ref[ii+1][jj  ][NZ_ref-2-offset  ];
+            E_old[ii+1][jj  ][4  ]  = EB_WAVE_ref[ii+1][jj  ][NZ_REF-4-offset  ];
+            E_old[ii+1][jj  ][6  ]  = EB_WAVE_ref[ii+1][jj  ][NZ_REF-2-offset  ];
             // Ey: even-odd-even
-            E_old[ii  ][jj+1][4  ]  = EB_WAVE_ref[ii  ][jj+1][NZ_ref-4-offset  ];
-            E_old[ii  ][jj+1][6  ]  = EB_WAVE_ref[ii  ][jj+1][NZ_ref-2-offset  ];
+            E_old[ii  ][jj+1][4  ]  = EB_WAVE_ref[ii  ][jj+1][NZ_REF-4-offset  ];
+            E_old[ii  ][jj+1][6  ]  = EB_WAVE_ref[ii  ][jj+1][NZ_REF-2-offset  ];
             // Ez: even-even-odd
-            E_old[ii  ][jj  ][4+1]  = EB_WAVE_ref[ii  ][jj  ][NZ_ref-4-offset+1];
-            E_old[ii  ][jj  ][6+1]  = EB_WAVE_ref[ii  ][jj  ][NZ_ref-2-offset+1];
+            E_old[ii  ][jj  ][4+1]  = EB_WAVE_ref[ii  ][jj  ][NZ_REF-4-offset+1];
+            E_old[ii  ][jj  ][6+1]  = EB_WAVE_ref[ii  ][jj  ][NZ_REF-2-offset+1];
         }
     }
  
@@ -1103,9 +1103,9 @@ int abc_Mur_1st( gridConfiguration *gridCfg,
 
 
 int abc_Mur_1st_ref( gridConfiguration *gridCfg,
-                     double EB_WAVE[NX][NY][NZ_ref], 
-                     double E_old_xdir[8][NY][NZ_ref], 
-                     double E_old_ydir[NX][8][NZ_ref], 
+                     double EB_WAVE[NX][NY][NZ_REF], 
+                     double E_old_xdir[8][NY][NZ_REF], 
+                     double E_old_ydir[NX][8][NZ_REF], 
                      double E_old_zdir[NX][NY][8] ) {
 //{{{
     // Ex: odd-even-even
@@ -1125,7 +1125,7 @@ int abc_Mur_1st_ref( gridConfiguration *gridCfg,
     // absorber into x-direction
 #pragma omp parallel for collapse(2) default(shared) private(jj,kk)
     for (jj=2 ; jj<NY-2 ; jj+=2) {
-        for (kk=2 ; kk<NZ_ref-2 ; kk+=2) {
+        for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {
             // absorber at x=0 grid boundary
             // Ex: odd-even-even
             EB_WAVE[offset+0+1][jj  ][kk  ] = E_old_xdir[2+1][jj  ][kk  ]
@@ -1158,7 +1158,7 @@ int abc_Mur_1st_ref( gridConfiguration *gridCfg,
     // absorber into y-direction
 #pragma omp parallel for collapse(2) default(shared) private(ii,kk)
     for (ii=2 ; ii<NX-2 ; ii+=2) {
-        for (kk=2 ; kk<NZ_ref-2 ; kk+=2) {
+        for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {
             // absorber at y=0 grid boundary
             // Ex: odd-even-even
             EB_WAVE[ii+1][offset+0  ][kk  ] = E_old_ydir[ii+1][2  ][kk  ]
@@ -1207,16 +1207,16 @@ int abc_Mur_1st_ref( gridConfiguration *gridCfg,
                           -E_old_zdir[ii  ][jj  ][0+1]        );
             // absorber at z=NZ grid boundary
             // Ex: odd-even-even
-            EB_WAVE[ii+1][jj  ][NZ_ref-2-offset  ]    = E_old_zdir[ii+1][jj  ][4  ]
-                + cnst * (    EB_WAVE[ii+1][jj  ][NZ_ref-4-offset  ]
+            EB_WAVE[ii+1][jj  ][NZ_REF-2-offset  ]    = E_old_zdir[ii+1][jj  ][4  ]
+                + cnst * (    EB_WAVE[ii+1][jj  ][NZ_REF-4-offset  ]
                           -E_old_zdir[ii+1][jj  ][6  ]     );
             // Ey: even-odd-even
-            EB_WAVE[ii  ][jj+1][NZ_ref-2-offset  ]    = E_old_zdir[ii  ][jj+1][4  ]
-                + cnst * (    EB_WAVE[ii  ][jj+1][NZ_ref-4-offset  ]
+            EB_WAVE[ii  ][jj+1][NZ_REF-2-offset  ]    = E_old_zdir[ii  ][jj+1][4  ]
+                + cnst * (    EB_WAVE[ii  ][jj+1][NZ_REF-4-offset  ]
                           -E_old_zdir[ii  ][jj+1][6  ]     );
             // Ez: even-even-odd
-            EB_WAVE[ii  ][jj  ][NZ_ref-2-offset+1]    = E_old_zdir[ii  ][jj  ][4+1]
-                + cnst * (    EB_WAVE[ii  ][jj  ][NZ_ref-4-offset+1]
+            EB_WAVE[ii  ][jj  ][NZ_REF-2-offset+1]    = E_old_zdir[ii  ][jj  ][4+1]
+                + cnst * (    EB_WAVE[ii  ][jj  ][NZ_REF-4-offset+1]
                           -E_old_zdir[ii  ][jj  ][6+1]     );
         }
     }

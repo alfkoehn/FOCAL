@@ -22,7 +22,7 @@
 #define NX                      NxG(gridCfg)            
 #define NY                      NyG(gridCfg)          
 #define NZ                      NzG(gridCfg)
-#define NZ_ref                  Nz_refG(gridCfg)  
+#define NZ_REF                  Nz_refG(gridCfg)  
 #define d_absorb                d_absorbG(gridCfg)
 #define t_end                   t_endG(gridCfg)
 #define period                  periodG(gridCfg)
@@ -97,8 +97,8 @@
 /*#define E_Xdir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Xdir_OLD[((i) * (NY) + j) * (NZ) + k]
 #define E_Ydir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Ydir_OLD[((i) * (d_absorb) + j) * (NZ) + k]
 #define E_Zdir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Zdir_OLD[((i) * (NY) + j) * (d_absorb) + k]
-#define E_Xdir_OLD_ref_G(boundaryG,i,j,k)       boundaryG->E_Xdir_OLD_ref[((i) * (NY) + j) * (NZ_ref) + k]
-#define E_Ydir_OLD_ref_G(boundaryG,i,j,k)       boundaryG->E_Ydir_OLD_ref[((i) * (d_absorb) + j) * (NZ_ref) + k]
+#define E_Xdir_OLD_ref_G(boundaryG,i,j,k)       boundaryG->E_Xdir_OLD_ref[((i) * (NY) + j) * (NZ_REF) + k]
+#define E_Ydir_OLD_ref_G(boundaryG,i,j,k)       boundaryG->E_Ydir_OLD_ref[((i) * (d_absorb) + j) * (NZ_REF) + k]
 #define E_Zdir_OLD_ref_G(boundaryG,i,j,k)       boundaryG->E_Zdir_OLD_ref[((i) * (NY) + j) * (d_absorb) + k]
 
 #define E_Xdir_OLD(i,j,k)                       E_Xdir_OLD_G(boundaryG,i,j,k)
@@ -110,7 +110,7 @@
 
 /*Macros for UPML boundary layer*/
 /*#define DH_WAVEstr(PMLG,i,j,k)                  boundaryG->DH_WAVE[((i) * (NY) + j) * (NZ) + k]
-#define DH_WAVE_refStr(PMLG,i,j,k)              boundaryG->DH_WAVE_ref[((i) * (NY) + j) * (NZ_ref) + k]
+#define DH_WAVE_refStr(PMLG,i,j,k)              boundaryG->DH_WAVE_ref[((i) * (NY) + j) * (NZ_REF) + k]
 #define F1xStr(PMLG,i)                          boundaryG->F1x[i]
 #define F1yStr(PMLG,j)                          boundaryG->F1y[j]
 #define F1zStr(PMLG,k)                          boundaryG->F1z[k]
