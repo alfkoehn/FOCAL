@@ -19,8 +19,8 @@
 #define B0_valueG(gridCfg)      gridCfg->B0_value
 #define boundaryG(gridCfg)      gridCfg->sel_boundary
 
-#define Nx                      NxG(gridCfg)            
-#define Ny                      NyG(gridCfg)          
+#define NX                      NxG(gridCfg)            
+#define NY                      NyG(gridCfg)          
 #define Nz                      NzG(gridCfg)
 #define Nz_ref                  Nz_refG(gridCfg)  
 #define d_absorb                d_absorbG(gridCfg)
@@ -35,7 +35,7 @@
 #define sel_boundary            boundaryG(gridCfg)
 
 /*Macros for save data*/
-/*#define data2saveSt(saveDCfg,i,j,k)     saveDCfg->data2save[((i) * (Ny/2) + j) * (Nz/2) + k]
+/*#define data2saveSt(saveDCfg,i,j,k)     saveDCfg->data2save[((i) * (NY/2) + j) * (Nz/2) + k]
 #define timetracesSt(saveDCfg,i,j)      saveDCfg->timetraces[((i) * (8) ) + j]*/
 #define projectPathSt(saveDCfg)         saveDCfg->projectPath
 #define foldernameSt(saveDCfg)          saveDCfg->foldername
@@ -52,8 +52,8 @@
 #define t_save                          t_saveSt(saveDCfg)
 
 /*Macros for antenna injection*/
-/*#define antFieldBG(beamCfg,i,j)         beamCfg->antField_xy[( (i) * (Ny/2) ) + j ]
-#define antPhaseBG(beamCfg,i,j)         beamCfg->antPhaseTerms[( (i) * (Ny/2) ) + j ]
+/*#define antFieldBG(beamCfg,i,j)         beamCfg->antField_xy[( (i) * (NY/2) ) + j ]
+#define antPhaseBG(beamCfg,i,j)         beamCfg->antPhaseTerms[( (i) * (NY/2) ) + j ]
 #define T_waveBG(beamCfg)               beamCfg->T_wave*/
 #define exc_signalBG(beamCfg)           beamCfg->exc_signal
 #define ant_xBG(beamCfg)                beamCfg->ant_x
@@ -94,12 +94,12 @@
 #define eco                                     ecoBG(boundaryG)*/
 
 /*Macros for Mur boundary*/
-/*#define E_Xdir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Xdir_OLD[((i) * (Ny) + j) * (Nz) + k]
+/*#define E_Xdir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Xdir_OLD[((i) * (NY) + j) * (Nz) + k]
 #define E_Ydir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Ydir_OLD[((i) * (d_absorb) + j) * (Nz) + k]
-#define E_Zdir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Zdir_OLD[((i) * (Ny) + j) * (d_absorb) + k]
-#define E_Xdir_OLD_ref_G(boundaryG,i,j,k)       boundaryG->E_Xdir_OLD_ref[((i) * (Ny) + j) * (Nz_ref) + k]
+#define E_Zdir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Zdir_OLD[((i) * (NY) + j) * (d_absorb) + k]
+#define E_Xdir_OLD_ref_G(boundaryG,i,j,k)       boundaryG->E_Xdir_OLD_ref[((i) * (NY) + j) * (Nz_ref) + k]
 #define E_Ydir_OLD_ref_G(boundaryG,i,j,k)       boundaryG->E_Ydir_OLD_ref[((i) * (d_absorb) + j) * (Nz_ref) + k]
-#define E_Zdir_OLD_ref_G(boundaryG,i,j,k)       boundaryG->E_Zdir_OLD_ref[((i) * (Ny) + j) * (d_absorb) + k]
+#define E_Zdir_OLD_ref_G(boundaryG,i,j,k)       boundaryG->E_Zdir_OLD_ref[((i) * (NY) + j) * (d_absorb) + k]
 
 #define E_Xdir_OLD(i,j,k)                       E_Xdir_OLD_G(boundaryG,i,j,k)
 #define E_Ydir_OLD(i,j,k)                       E_Ydir_OLD_G(boundaryG,i,j,k)
@@ -109,8 +109,8 @@
 #define E_Zdir_OLD_ref(i,j,k)                   E_Zdir_OLD_ref_G(boundaryG,i,j,k)*/
 
 /*Macros for UPML boundary layer*/
-/*#define DH_WAVEstr(PMLG,i,j,k)                  boundaryG->DH_WAVE[((i) * (Ny) + j) * (Nz) + k]
-#define DH_WAVE_refStr(PMLG,i,j,k)              boundaryG->DH_WAVE_ref[((i) * (Ny) + j) * (Nz_ref) + k]
+/*#define DH_WAVEstr(PMLG,i,j,k)                  boundaryG->DH_WAVE[((i) * (NY) + j) * (Nz) + k]
+#define DH_WAVE_refStr(PMLG,i,j,k)              boundaryG->DH_WAVE_ref[((i) * (NY) + j) * (Nz_ref) + k]
 #define F1xStr(PMLG,i)                          boundaryG->F1x[i]
 #define F1yStr(PMLG,j)                          boundaryG->F1y[j]
 #define F1zStr(PMLG,k)                          boundaryG->F1z[k]
