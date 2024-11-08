@@ -24,7 +24,7 @@
 #define NZ                      NzG(gridCfg)
 #define NZ_REF                  Nz_refG(gridCfg)  
 #define d_absorb                d_absorbG(gridCfg)
-#define t_end                   t_endG(gridCfg)
+#define T_END                   t_endG(gridCfg)
 #define period                  periodG(gridCfg)
 #define DX                      dxG(gridCfg)
 #define DT                      dtG(gridCfg)

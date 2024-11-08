@@ -34,15 +34,15 @@ void grid_init( gridConfiguration *gridCfg,
         d_absorb = 8;
     }
 
-    Nz_ref  = 2*d_absorb + (int)period;
+    NZ_REF  = 2*d_absorb + (int)period;
 
     // dt/dx = 0.5 is commenly used in 2D FDTD codes
     // Note that period refers to the wavelength in the numerical grid and not
     // in the "physical" grid (where one grid cell is equal to one Yee cell).
     // This means that in the physical grid, the wavelength is period/2, thus
     // in the equations we have to use period/2 for the wavelength.
-    dx  = 1./(period/2);
-    dt  = 1./(2.*(period/2));
+    DX  = 1./(period/2);
+    DT  = 1./(2.*(period/2));
 
     // positions have to be even numbers, to ensure fields are accessed correctly
     if ((ant_x % 2) != 0)  ++ant_x;
@@ -117,26 +117,26 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
 
     cJSON *item_Nx = cJSON_GetObjectItemCaseSensitive(json, "Grid_size_Nx");   //grid size in x
     if( cJSON_IsNumber(item_Nx) ){
-        Nx = item_Nx->valueint;
-        Nx = Nx * scale;
+        NX = item_Nx->valueint;
+        NX = NX * scale;
     }
 
     cJSON *item_Ny = cJSON_GetObjectItemCaseSensitive(json, "Grid_size_Ny");   //grid size in y 
     if( cJSON_IsNumber(item_Ny) ){
-        Ny = item_Ny->valueint;
-        Ny = Ny * scale;
+        NY = item_Ny->valueint;
+        NY = NY * scale;
     }
 
     cJSON *item_Nz = cJSON_GetObjectItemCaseSensitive(json, "Grid_size_Nz");   //grid size in z
     if( cJSON_IsNumber(item_Nz) ){
-        Nz = item_Nz->valueint;
-        Nz = Nz * scale;
+        NZ = item_Nz->valueint;
+        NZ = NZ * scale;
     }
 
     cJSON *item_tend = cJSON_GetObjectItemCaseSensitive(json, "t_end");   //plasma density option
     if( cJSON_IsNumber(item_tend) ){
-        t_end = item_tend->valueint;
-        t_end = t_end * period;
+        T_END = item_tend->valueint;
+        T_END = T_END * period;
     }
 
     cJSON *item_B0 = cJSON_GetObjectItemCaseSensitive(json, "B0_profile");   //external magnetic field option
@@ -263,15 +263,15 @@ void print_systemConfiguration(gridConfiguration *gridCfg, beamAntennaConfigurat
 
     // print some info to console
     printf("------System Configuration Parameters------\n");
-    printf( "Nx = %d, Ny = %d, Nz = %d\n", Nx, Ny, Nz );
+    printf( "Nx = %d, Ny = %d, Nz = %d\n", NX, NY, NZ );
     printf( "period = %d\n", (int)(period) );
     printf( "d_absorb = %d\n", d_absorb );
-    printf( "t_end = %d\n", (int)(t_end) );
+    printf( "t_end = %d\n", (int)(T_END) );
     printf( "antAngle_zx = %.2f, antAngle_zy = %.2f\n", antAngle_zx, antAngle_zy );
     printf( "ant_w0x = %.2f, ant_w0y = %.2f\n", ant_w0x, ant_w0y ); 
     printf( "ant_x = %d, ant_y = %d, ant_z = %d\n", ant_x, ant_y, ant_z );
     printf( "Boundary condition set to '%d'\n", sel_boundary );
-    printf( "Courant number = %.2f. \n", dt/dx);
+    printf( "Courant number = %.2f. \n", DT/DX);
 
 }//}}}
 

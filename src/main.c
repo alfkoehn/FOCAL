@@ -145,7 +145,7 @@ int main( int argc, char *argv[] ) {
     // antenna: phase terms 
     double (*antPhaseTerms)[NY/2]       = calloc(NX/2, sizeof *antPhaseTerms);
     // time traces
-    double (*timetraces)[8]             = calloc((t_end/(int)period), sizeof *timetraces);
+    double (*timetraces)[8]             = calloc((T_END/(int)period), sizeof *timetraces);
 
     // old E-fields required for Mur's boundary condition
 #if BOUNDARY == 2
@@ -287,7 +287,7 @@ int main( int argc, char *argv[] ) {
 
     print_systemConfiguration( gridCfg, beamCfg );
 
-    for (t_int=0 ; t_int <= t_end ; ++t_int) {
+    for (t_int=0 ; t_int <= T_END ; ++t_int) {
         
         omega_t += 2.*M_PI/period;
 
@@ -350,7 +350,7 @@ int main( int argc, char *argv[] ) {
         // store wavefields for detector antennas over the final 10 
         // oscillation periods, it was found previously that only one period
         // does not result in a too nice average
-        if ( t_int >= ( t_end - 10*period ) ) {
+        if ( t_int >= ( T_END - 10*period ) ) {
             if (detAnt_01_zpos < ( NZ - d_absorb)) {
                 detAnt1D_storeValues( gridCfg, detAnt_01_ypos, detAnt_01_zpos,
                                       t_int,  
@@ -428,7 +428,7 @@ int main( int argc, char *argv[] ) {
     printf( "-------------------------------------------------------------------------------------------------------------\n" );
     printf( "  T   |   poynt_z1   |   poynt_z2   |   poynt_x1   |   poynt_x2   |   poynt_y1   |   poynt_y2   |  P_out     \n" );
     printf( "------+--------------+--------------+--------------+--------------+--------------+--------------+------------\n" );
-    for ( ii=0 ; ii<(t_end/(int)period) ; ++ii )
+    for ( ii=0 ; ii<(T_END/(int)period) ; ++ii )
         printf( " %4d |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e\n",
                 (int)timetraces[ii][1], //timetraces[ii][1],
                 timetraces[ii][2], timetraces[ii][3],
@@ -440,7 +440,7 @@ int main( int argc, char *argv[] ) {
 
     // write timetrace data into file
     // open file in w(rite) mode; might consider using a+ instead
-    writeTimetraces2ascii( (t_end/(int)period), 8, t_end, period, 
+    writeTimetraces2ascii( (T_END/(int)period), 8, T_END, period, 
                            "timetraces2.dat", timetraces );
 
     // save into hdf5
