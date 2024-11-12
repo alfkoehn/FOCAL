@@ -3,21 +3,23 @@
 
 void control_init(  gridConfiguration *gridCfg, 
                     beamAntennaConfiguration *beamCfg,
-                    saveData *saveDCfg ){
+                    saveData *saveDCfg,
+                    antennaDetector *antDetect ){
 //{{{
         
     /*Initialize System*/
-    grid_init( gridCfg, beamCfg, saveDCfg );
+    grid_init( gridCfg, beamCfg, saveDCfg, antDetect );
 
 }//}}}
 
 
 void grid_init( gridConfiguration *gridCfg, 
                 beamAntennaConfiguration *beamCfg,
-                saveData *saveDCfg ){
+                saveData *saveDCfg,
+                antennaDetector *antDetect ){
     //{{{
 
-    write_JSON_toGrid( gridCfg, beamCfg, saveDCfg );
+    write_JSON_toGrid( gridCfg, beamCfg, saveDCfg, antDetect );
 
     //Checks that maximum density value is respected
     // if density is larger than this value, FDTD code becomes unstable
@@ -49,13 +51,16 @@ void grid_init( gridConfiguration *gridCfg,
     if ((ant_y % 2) != 0)  ++ant_y;
     if ((ant_z % 2) != 0)  ++ant_z;
 
+    col_for_timetraces = 8;
+
 }//}}}
 
 
 /*Functions in charge of JSON reading*/
 void write_JSON_toGrid( gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg,
-                        saveData *saveDCfg ){
+                        saveData *saveDCfg,
+                        antennaDetector *antDetect ){
     //{{{
 
     /*Read JSON and extract data*/
@@ -219,6 +224,12 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
     if( cJSON_IsNumber(item_z2waist) ){
         z2waist = item_z2waist->valuedouble;
         z2waist = z2waist * .0;            // .2/l_0*period = -298.87
+    }
+
+    /*Antenna Detector Input values*/
+    cJSON *item_antDetect = cJSON_GetObjectItemCaseSensitive(json, "Detector_Antenna");   //Activate Antenna
+    if( cJSON_IsNumber(item_antDetect) ){
+        antDetect_1D = item_antDetect->valueint;
     }
 
     //clean up
