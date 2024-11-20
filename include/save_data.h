@@ -47,4 +47,8 @@ int save_antennaDetect( gridConfiguration *gridCfg,
                         double detAnt_03_fields[NX/2][5], double detAnt_04_fields[NX/2][5],
                         char filename_hdf5[]);
 
+void writeUPMLdata( gridConfiguration *gridCfg, 
+                    saveData *saveDCfg, 
+                    double EB_WAVE[NX][NY][NZ], int t_int );
+
 #endif

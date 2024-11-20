@@ -20,7 +20,7 @@
 # start with defining some variables to make life a bit easier
 
 # filebase of all files that are going to be compiled
-PROG_FILE_BASE_NAME = main focal antenna grid_io background_profiles power_calc cJSON init_module save_data
+PROG_FILE_BASE_NAME = main focal antenna grid_io background_profiles power_calc cJSON init_module save_data boundary_module UPML_module
 
 # name of output (executable) file
 EXE_NAME = exe
