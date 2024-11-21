@@ -8,9 +8,10 @@
 
 #include "focal-struct.h"
 #include "macros-grid.h"
+#include "auxiliar_module.h"
 
 void init_UPML_fields( gridConfiguration *gridCfg );
-double ***allocatePMLArray(int N_x, int N_y, int N_z);
+int free_PML_memory( gridConfiguration *gridCfg );
 
 /*Magnetic field UPML*/
 void UPML_B_faces(  gridConfiguration *gridCfg, 
@@ -61,6 +62,5 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
 void UPML_Eref_edges(   gridConfiguration *gridCfg, 
                         boundaryVariables *boundaryV,
                         double EB_WAVE[NX][NY][NZ_REF] );
-
 
 #endif

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "auxiliar_module.h"
 #include "focal-struct.h"
 #include "macros-grid.h"
 #include "alloc-memory.h"
@@ -14,7 +15,8 @@
 
 void init_boundary(gridConfiguration *gridCfg, boundaryVariables *boundaryV);
 
-double ***allocateBoundaryArray(int N_x, int N_y, int N_z);
+/*Free mmemory allocated arrays*/
+int free_boundary(gridConfiguration *gridCfg);
 
 void advance_boundary(  gridConfiguration *gridCfg, boundaryVariables *boundaryV, 
                         double EB_WAVE[NX][NY][NZ], double EB_WAVE_ref[NX][NY][NZ_REF]);
@@ -63,8 +65,5 @@ int abc_Mur_1st_ref( gridConfiguration *gridCfg,
 double sigma(int pml_size, double nn, int m, double ds);
 
 void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boundaryV);
-
-/*Free mmemory allocated arrays*/
-int free_boundary(gridConfiguration *gridCfg);
 
 #endif

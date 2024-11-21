@@ -16,13 +16,13 @@ void init_boundary(gridConfiguration *gridCfg, boundaryVariables *boundaryV){
     }
     else if (sel_boundary == 2){
         
-        E_Xdir_OLD = allocateBoundaryArray(8, NY, NZ);
-        E_Ydir_OLD = allocateBoundaryArray(NX, 8, NZ);
-        E_Zdir_OLD = allocateBoundaryArray(NX, NY, 8);
+        E_Xdir_OLD = allocate3DArray(8, NY, NZ);
+        E_Ydir_OLD = allocate3DArray(NX, 8, NZ);
+        E_Zdir_OLD = allocate3DArray(NX, NY, 8);
 
-        E_Xdir_OLD_ref = allocateBoundaryArray(8, NY, NZ_REF);
-        E_Ydir_OLD_ref = allocateBoundaryArray(NX, 8, NZ_REF);
-        E_Zdir_OLD_ref = allocateBoundaryArray(NX, NY, 8);
+        E_Xdir_OLD_ref = allocate3DArray(8, NY, NZ_REF);
+        E_Ydir_OLD_ref = allocate3DArray(NX, 8, NZ_REF);
+        E_Zdir_OLD_ref = allocate3DArray(NX, NY, 8);
 
     }
     else if(sel_boundary == 3){
@@ -50,16 +50,27 @@ void init_boundary(gridConfiguration *gridCfg, boundaryVariables *boundaryV){
    
 }
 
-// Function to allocate memory for a 3D array with given dimensions
-double ***allocateBoundaryArray(int N_x, int N_y, int N_z) {
-    double ***array = (double ***)calloc( N_x, sizeof(double **));
-    for (int i = 0; i < N_x; i++) {
-        array[i] = (double **)calloc( N_y, sizeof(double *));
-        for (int j = 0; j < N_y; j++) {
-            array[i][j] = (double *)calloc( N_z, sizeof(double));
-        }
+/*Free allocated memmory for boundary*/
+int free_boundary(gridConfiguration *gridCfg){
+
+    if(sel_boundary == 2){
+
+        free3DArray(E_Xdir_OLD, 8, NY);
+        free3DArray(E_Ydir_OLD, NX,8);
+        free3DArray(E_Zdir_OLD, NX, NY);
+        free3DArray(E_Xdir_OLD_ref, 8, NY);
+        free3DArray(E_Ydir_OLD_ref, NX, 8);
+        free3DArray(E_Zdir_OLD_ref, NX, NY);
+
+        printf("Free Mur boundary memory allocated. \n");
+    } else if (sel_boundary == 3){
+
+        free_PML_memory(gridCfg);
+        printf("Free PML boundary memory allocated. \n");
+
     }
-    return array;
+    
+    return EXIT_SUCCESS;
 }
 
 /*Apply boundary on time evolution*/
@@ -102,7 +113,6 @@ void advance_boundary(  gridConfiguration *gridCfg, boundaryVariables *boundaryV
         UPML_Eref_edges(    gridCfg, boundaryV, EB_WAVE_ref );
 
     }
-
 }
 
 
@@ -1114,18 +1124,4 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
     }
 
     //exit(-1);
-}
-
-
-int free_boundary(gridConfiguration *gridCfg){
-
-    if(sel_boundary == 2){
-
-        free(E_Xdir_OLD);
-
-        printf("Mur boundary memory allocated free. \n");
-    }
-    
-
-    return EXIT_SUCCESS;
 }

@@ -6,21 +6,17 @@ static double ***DH_WAVE_ref = NULL;
 /*Initialize PML arrays functions*/
 void init_UPML_fields( gridConfiguration *gridCfg ){
 
-    DH_WAVE = allocatePMLArray(NX, NY, NZ);
-    DH_WAVE_ref = allocatePMLArray(NX, NY, NZ_REF);
+    DH_WAVE = allocate3DArray(NX, NY, NZ);
+    DH_WAVE_ref = allocate3DArray(NX, NY, NZ_REF);
 
 }
 
-// Function to allocate memory for a 3D array with given dimensions
-double ***allocatePMLArray(int N_x, int N_y, int N_z) {
-    double ***array = (double ***)calloc( N_x, sizeof(double **));
-    for (int i = 0; i < N_x; i++) {
-        array[i] = (double **)calloc( N_y, sizeof(double *));
-        for (int j = 0; j < N_y; j++) {
-            array[i][j] = (double *)calloc( N_z, sizeof(double));
-        }
-    }
-    return array;
+int free_PML_memory( gridConfiguration *gridCfg ){
+
+    free3DArray(DH_WAVE, NX, NY);
+    free3DArray(DH_WAVE_ref, NX, NY);
+
+    return EXIT_SUCCESS;
 }
 
 /*Magnetic field UPML*/
