@@ -89,13 +89,17 @@ void advance_boundary(  gridConfiguration *gridCfg, boundaryVariables *boundaryV
         UPML_B_corners( gridCfg, boundaryV, EB_WAVE );
         UPML_B_edges(   gridCfg, boundaryV, EB_WAVE );
 
-        //UPML_Bref_faces(    gridCfg, boundaryV, EB_WAVE_ref );
+        UPML_Bref_faces(    gridCfg, boundaryV, EB_WAVE_ref );
+        UPML_Bref_corners(  gridCfg, boundaryV, EB_WAVE_ref );
+        UPML_Bref_edges(    gridCfg, boundaryV, EB_WAVE_ref );
 
         UPML_E_faces(   gridCfg, boundaryV, EB_WAVE );
         UPML_E_corners( gridCfg, boundaryV, EB_WAVE );
         UPML_E_edges(   gridCfg, boundaryV, EB_WAVE );
 
-        //UPML_Eref_faces(    gridCfg, boundaryV, EB_WAVE_ref );
+        UPML_Eref_faces(    gridCfg, boundaryV, EB_WAVE_ref );
+        UPML_Eref_corners(  gridCfg, boundaryV, EB_WAVE_ref );
+        UPML_Eref_edges(    gridCfg, boundaryV, EB_WAVE_ref );
 
     }
 
@@ -981,6 +985,7 @@ double sigma(int pml_size, double nn, int m, double ds){
     
     if( pml_size == 20 ) R_0 = pow(10,-12);
     if( pml_size == 10 ) R_0 = pow(10,-6);
+    if( pml_size == 5 ) R_0 = pow(10,-3);
 
     sig_max = -(m+1)*log( R_0 )/(2*ds*pml_size);
     sig = pow( (nn) /(pml_size), m) * sig_max;
@@ -990,7 +995,7 @@ double sigma(int pml_size, double nn, int m, double ds){
 
 void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boundaryV){
 
-    int ii, jj, kk, count;
+    int ii, jj, kk, kkr, count;
     double sig, kx, ky, kz;
     
     kx = 1;
@@ -1005,8 +1010,8 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
             F1x(ii/2) = (2*kx) - (sig*DT);
             F2x(ii/2) = (2*kx) + (sig*DT);
             Cx(ii/2) = F1x(ii/2)/F2x(ii/2);
-
             count -= 1;
+
         }else if( ii > NX - d_absorb - 2 ){
 
             count += 1;
@@ -1014,8 +1019,6 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
             F1x(ii/2) = (2*kx) - (sig*DT);
             F2x(ii/2) = (2*kx) + (sig*DT);
             Cx(ii/2) = F1x(ii/2)/F2x(ii/2);  
-
-            
 
         }else{
 
@@ -1026,7 +1029,7 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
         }
         //printf("Cx(%d) = %.5f, count = %d \n", ii, Cx(ii/2), count );
     }
-
+    
     count = (d_absorb-2)/2;
     for ( jj=2 ; jj < NY-2 ; jj+=2 ) {
         if(jj < d_absorb ){
@@ -1035,8 +1038,8 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
             F1y(jj/2) = (2*ky) - (sig*DT);
             F2y(jj/2) = (2*ky) + (sig*DT);
             Cy(jj/2) = F1y(jj/2)/F2y(jj/2);
-
             count -= 1;
+
         }else if( jj > NY - d_absorb - 2){
 
             count += 1;
@@ -1054,7 +1057,7 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
         }
         //printf("Cy(%d) = %.5f, count = %d \n", jj, Cy(jj/2), count );
     }
-
+    
     count = (d_absorb-2)/2;
     for ( kk=2 ; kk < NZ-2 ; kk+=2 ) {
         if(kk < d_absorb){
@@ -1063,8 +1066,8 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
             F1z(kk/2) = (2*kz) - (sig*DT);
             F2z(kk/2) = (2*kz) + (sig*DT);
             Cz(kk/2) = F1z(kk/2)/F2z(kk/2);
-
             count -= 1;
+
         }else if( kk > NZ - d_absorb - 2){ 
 
             count += 1;
@@ -1084,31 +1087,45 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
     }
 
     count = (d_absorb-2)/2;
-    for ( kk=2 ; kk < NZ_REF-2 ; kk+=2 ) {
-        if(kk < d_absorb){
+    for ( kkr=2 ; kkr < NZ_REF-2 ; kkr+=2 ) {
+        if(kkr < d_absorb){
 
             sig = sigma( (d_absorb-2)/2, count, 4, DX );
-            F1zr(kk) = (2*kz) - (sig*DT);
-            F2zr(kk) = (2*kz) + (sig*DT);
-            Czr(kk) = F1zr(kk)/F2zr(kk);
-
+            F1zr(kkr) = (2*kz) - (sig*DT);
+            F2zr(kkr) = (2*kz) + (sig*DT);
+            Czr(kkr) = F1zr(kkr)/F2zr(kkr);
             count -= 1;
-        }else if( kk > NZ_REF - d_absorb - 2 ){ 
-            
+
+        }else if( kkr > NZ_REF - d_absorb - 2 ){ 
+                    
             count += 1;
             sig = sigma( (d_absorb-2)/2, count, 4, DX);
-            F1zr(kk) = (2*kz) - (sig*DT);
-            F2zr(kk) = (2*kz) + (sig*DT);
-            Czr(kk) = F1zr(kk)/F2zr(kk); 
+            F1zr(kkr) = (2*kz) - (sig*DT);
+            F2zr(kkr) = (2*kz) + (sig*DT);
+            Czr(kkr) = F1zr(kkr)/F2zr(kkr); 
 
         }else{
             sig = 0;
-            F1zr(kk) = (2*kz) - (sig*DT);
-            F2zr(kk) = (2*kz) + (sig*DT);
-            Czr(kk) = F1zr(kk)/F2zr(kk);
+            F1zr(kkr) = (2*kz) - (sig*DT);
+            F2zr(kkr) = (2*kz) + (sig*DT);
+            Czr(kkr) = F1zr(kkr)/F2zr(kkr);
         }
-        //printf("C(%d) = %.5f \n", kk, Czr(kk) );
+        //printf("C(%d) = %.5f \n", kkr, Czr(kkr) );
     }
-    //exit(-1);
 
+    //exit(-1);
+}
+
+
+int free_boundary(gridConfiguration *gridCfg){
+
+    if(sel_boundary == 2){
+
+        free(E_Xdir_OLD);
+
+        printf("Mur boundary memory allocated free. \n");
+    }
+    
+
+    return EXIT_SUCCESS;
 }

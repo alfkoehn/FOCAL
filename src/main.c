@@ -406,6 +406,8 @@ int main( int argc, char *argv[] ) {
     printf( "freed J_B0\n" );
     free( n_e );
     printf( "freed n_e\n" );
+
+    free_boundary( gridCfg );
     
     return EXIT_SUCCESS;
 }//}}}

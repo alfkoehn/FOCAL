@@ -64,4 +64,7 @@ double sigma(int pml_size, double nn, int m, double ds);
 
 void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boundaryV);
 
+/*Free mmemory allocated arrays*/
+int free_boundary(gridConfiguration *gridCfg);
+
 #endif

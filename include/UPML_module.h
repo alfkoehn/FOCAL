@@ -29,13 +29,13 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
                         boundaryVariables *boundaryV,
                         double EB_WAVE[NX][NY][NZ_REF] );
 
-/*void UPML_Bref_corners( gridConfiguration *gridCfg, 
-                        systemGrid *G,
-                        boundaryGrid *boundaryG );
+void UPML_Bref_corners( gridConfiguration *gridCfg, 
+                        boundaryVariables *boundaryV,
+                        double EB_WAVE[NX][NY][NZ_REF] );
 
 void UPML_Bref_edges(   gridConfiguration *gridCfg, 
-                        systemGrid *G,
-                        boundaryGrid *boundaryG );*/
+                        boundaryVariables *boundaryV,
+                        double EB_WAVE[NX][NY][NZ_REF] );
 
 /*Electric field UPML*/
 void UPML_E_faces(  gridConfiguration *gridCfg, 
@@ -54,13 +54,13 @@ void UPML_Eref_faces(   gridConfiguration *gridCfg,
                         boundaryVariables *boundaryV,
                         double EB_WAVE[NX][NY][NZ_REF] );
 
-/*void UPML_Eref_corners( gridConfiguration *gridCfg, 
-                        systemGrid *G,
-                        boundaryGrid *boundaryG);
+void UPML_Eref_corners( gridConfiguration *gridCfg, 
+                        boundaryVariables *boundaryV,
+                        double EB_WAVE[NX][NY][NZ_REF] );
 
-void UPML_Eref_edges(  gridConfiguration *gridCfg, 
-                    systemGrid *G,
-                    boundaryGrid *boundaryG );*/
+void UPML_Eref_edges(   gridConfiguration *gridCfg, 
+                        boundaryVariables *boundaryV,
+                        double EB_WAVE[NX][NY][NZ_REF] );
 
 
 #endif

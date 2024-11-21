@@ -1,6 +1,6 @@
 {	
     "Main_Project": 		"Boundary_test",
-    "Case_foldername": 		"Boundary_UPML",
+    "Case_foldername": 		"Boundary_OpenMP",
     "filename_hdf5": 		"fileout.h5",
     "filename_timetraces": 	"timetraces2.dat",
     
@@ -17,7 +17,7 @@
     "ne_0":		0.0,
     
     "Boundary_Method": 	3,
-    "PML_size":		22,
+    "PML_size":		20,
     
     "Antenna_Pos_x": 	200,
     "Antenna_Pos_y": 	150,

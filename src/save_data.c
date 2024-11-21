@@ -228,7 +228,6 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
     }
 
     return EXIT_SUCCESS;
-
 }
 
 int save_antennaDetect( gridConfiguration *gridCfg,
