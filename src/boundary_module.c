@@ -47,7 +47,6 @@ void init_boundary(gridConfiguration *gridCfg, boundaryVariables *boundaryV){
         init_UPML_fields( gridCfg );
 
     }
-   
 }
 
 /*Free allocated memmory for boundary*/
@@ -62,11 +61,11 @@ int free_boundary(gridConfiguration *gridCfg){
         free3DArray(E_Ydir_OLD_ref, NX, 8);
         free3DArray(E_Zdir_OLD_ref, NX, NY);
 
-        printf("Free Mur boundary memory allocated. \n");
+        printf("Freed Mur boundary memory allocated. \n");
     } else if (sel_boundary == 3){
 
         free_PML_memory(gridCfg);
-        printf("Free PML boundary memory allocated. \n");
+        printf("Freed PML boundary memory allocated. \n");
 
     }
     
@@ -111,7 +110,6 @@ void advance_boundary(  gridConfiguration *gridCfg, boundaryVariables *boundaryV
         UPML_Eref_faces(    gridCfg, boundaryV, EB_WAVE_ref );
         UPML_Eref_corners(  gridCfg, boundaryV, EB_WAVE_ref );
         UPML_Eref_edges(    gridCfg, boundaryV, EB_WAVE_ref );
-
     }
 }
 
@@ -1003,7 +1001,7 @@ double sigma(int pml_size, double nn, int m, double ds){
     return sig;  
 }
 
-void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boundaryV){
+/*void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boundaryV){
 
     int ii, jj, kk, kkr, count;
     double sig, kx, ky, kz;
@@ -1101,27 +1099,167 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
         if(kkr < d_absorb){
 
             sig = sigma( (d_absorb-2)/2, count, 4, DX );
-            F1zr(kkr) = (2*kz) - (sig*DT);
-            F2zr(kkr) = (2*kz) + (sig*DT);
-            Czr(kkr) = F1zr(kkr)/F2zr(kkr);
+            F1zr(kkr/2) = (2*kz) - (sig*DT);
+            F2zr(kkr/2) = (2*kz) + (sig*DT);
+            Czr(kkr/2) = F1zr(kkr/2)/F2zr(kkr/2);
             count -= 1;
 
         }else if( kkr > NZ_REF - d_absorb - 2 ){ 
                     
             count += 1;
             sig = sigma( (d_absorb-2)/2, count, 4, DX);
-            F1zr(kkr) = (2*kz) - (sig*DT);
-            F2zr(kkr) = (2*kz) + (sig*DT);
-            Czr(kkr) = F1zr(kkr)/F2zr(kkr); 
+            F1zr(kkr/2) = (2*kz) - (sig*DT);
+            F2zr(kkr/2) = (2*kz) + (sig*DT);
+            Czr(kkr/2) = F1zr(kkr/2)/F2zr(kkr/2); 
 
-        }else{
+        } else {
+
             sig = 0;
-            F1zr(kkr) = (2*kz) - (sig*DT);
-            F2zr(kkr) = (2*kz) + (sig*DT);
-            Czr(kkr) = F1zr(kkr)/F2zr(kkr);
-        }
-        //printf("C(%d) = %.5f \n", kkr, Czr(kkr) );
-    }
+            F1zr(kkr/2) = (2*kz) - (sig*DT);
+            F2zr(kkr/2) = (2*kz) + (sig*DT);
+            Czr(kkr/2) = F1zr(kkr/2)/F2zr(kkr/2);
 
-    //exit(-1);
+        }
+        printf("C(%d) = %.5f \n", kkr, Czr(kkr/2) );
+    }
+}*/
+
+void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boundaryV){
+
+    int ii, jj, kk, kkr, count;
+    double sig, kx, ky, kz;
+    
+    kx = 1;
+    ky = 1;
+    kz = 1;
+
+    count = (d_absorb-2)/2;
+#pragma omp parallel firstprivate(count) shared(gridCfg, boundaryV)
+{
+    #pragma omp sections
+    {
+        #pragma omp section
+        {
+        for ( ii=2 ; ii < NX-2 ; ii+=2 ) {
+            if(ii < d_absorb ){
+
+                sig = sigma( (d_absorb-2)/2, count, 4, DX );
+                F1x(ii/2) = (2*kx) - (sig*DT);
+                F2x(ii/2) = (2*kx) + (sig*DT);
+                Cx(ii/2) = F1x(ii/2)/F2x(ii/2);
+                count -= 1;
+
+            }else if( ii > NX - d_absorb - 2 ){
+
+                count += 1;
+                sig = sigma( (d_absorb-2)/2, count, 4, DX);
+                F1x(ii/2) = (2*kx) - (sig*DT);
+                F2x(ii/2) = (2*kx) + (sig*DT);
+                Cx(ii/2) = F1x(ii/2)/F2x(ii/2);  
+
+            }else{
+
+                sig = 0;
+                F1x(ii/2) = (2*kx) - (sig*DT);
+                F2x(ii/2) = (2*kx) + (sig*DT);
+                Cx(ii/2) = F1x(ii/2)/F2x(ii/2);
+            }
+
+        }
+        }
+    
+        #pragma omp section
+        {
+        for ( jj=2 ; jj < NY-2 ; jj+=2 ) {
+            if(jj < d_absorb ){
+
+                sig = sigma( (d_absorb-2)/2, count, 4, DX );
+                F1y(jj/2) = (2*ky) - (sig*DT);
+                F2y(jj/2) = (2*ky) + (sig*DT);
+                Cy(jj/2) = F1y(jj/2)/F2y(jj/2);
+                count -= 1;
+
+            }else if( jj > NY - d_absorb - 2){
+
+                count += 1;
+                sig = sigma( (d_absorb-2)/2, count, 4, DX );
+                F1y(jj/2) = (2*ky) - (sig*DT);
+                F2y(jj/2) = (2*ky) + (sig*DT);
+                Cy(jj/2) = F1y(jj/2)/F2y(jj/2); 
+
+            }else{
+
+                sig = 0;
+                F1y(jj/2) = (2*ky) - (sig*DT);
+                F2y(jj/2) = (2*ky) + (sig*DT);
+                Cy(jj/2) = F1y(jj/2)/F2y(jj/2);
+            }
+            
+        }
+        }
+    
+        #pragma omp section
+        {
+        for ( kk=2 ; kk < NZ-2 ; kk+=2 ) {
+            if(kk < d_absorb){
+
+                sig = sigma( (d_absorb-2)/2, count, 4, DX );
+                F1z(kk/2) = (2*kz) - (sig*DT);
+                F2z(kk/2) = (2*kz) + (sig*DT);
+                Cz(kk/2) = F1z(kk/2)/F2z(kk/2);
+                count -= 1;
+
+            }else if( kk > NZ - d_absorb - 2){ 
+
+                count += 1;
+                sig = sigma( (d_absorb-2)/2 , count, 4, DX);
+                F1z(kk/2) = (2*kz) - (sig*DT);
+                F2z(kk/2) = (2*kz) + (sig*DT);
+                Cz(kk/2) = F1z(kk/2)/F2z(kk/2); 
+
+            }else{
+
+                sig = 0;
+                F1z(kk/2) = (2*kz) - (sig*DT);
+                F2z(kk/2) = (2*kz) + (sig*DT);
+                Cz(kk/2) = F1z(kk/2)/F2z(kk/2);
+            }
+            
+        }
+        }
+
+        #pragma omp section
+        {
+        for ( kkr=2 ; kkr < NZ_REF-2 ; kkr+=2 ) {
+            if(kkr < d_absorb){
+
+                sig = sigma( (d_absorb-2)/2, count, 4, DX );
+                F1zr(kkr/2) = (2*kz) - (sig*DT);
+                F2zr(kkr/2) = (2*kz) + (sig*DT);
+                Czr(kkr/2) = F1zr(kkr/2)/F2zr(kkr/2);
+                count -= 1;
+
+            }else if( kkr > NZ_REF - d_absorb - 2 ){ 
+                        
+                count += 1;
+                sig = sigma( (d_absorb-2)/2, count, 4, DX);
+                F1zr(kkr/2) = (2*kz) - (sig*DT);
+                F2zr(kkr/2) = (2*kz) + (sig*DT);
+                Czr(kkr/2) = F1zr(kkr/2)/F2zr(kkr/2); 
+
+            } else {
+
+                sig = 0;
+                F1zr(kkr/2) = (2*kz) - (sig*DT);
+                F2zr(kkr/2) = (2*kz) + (sig*DT);
+                Czr(kkr/2) = F1zr(kkr/2)/F2zr(kkr/2);
+
+            }
+            
+        }
+        }
+    }//End parallel omp sections
+
+}//End omp parallel
 }
+

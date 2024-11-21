@@ -1017,12 +1017,12 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) ) * (
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1031,12 +1031,12 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
 
                 // -dBz/DT = dEy/dx - dEx/dy
                 dzstore = DH_WAVE_ref[ii+1][jj+1][kk  ];
-                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) ) * (
+                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) )*(
                                             +EB_WAVE[ii+2][jj+1][kk  ] - EB_WAVE[ii  ][jj+1][kk  ]
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1052,12 +1052,12 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1071,7 +1071,7 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1087,12 +1087,12 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1106,7 +1106,7 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1122,12 +1122,12 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1141,7 +1141,7 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1157,12 +1157,12 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1176,7 +1176,7 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1192,12 +1192,12 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1211,7 +1211,7 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1246,12 +1246,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1265,7 +1265,7 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1281,12 +1281,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) ) * (
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1295,12 +1295,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
 
                 // -dBz/DT = dEy/dx - dEx/dy
                 dzstore = DH_WAVE_ref[ii+1][jj+1][kk  ];
-                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) ) * (
+                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) )*(
                                             +EB_WAVE[ii+2][jj+1][kk  ] - EB_WAVE[ii  ][jj+1][kk  ]
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1316,12 +1316,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) ) * (
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1330,12 +1330,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
 
                 // -dBz/DT = dEy/dx - dEx/dy
                 dzstore = DH_WAVE_ref[ii+1][jj+1][kk  ];
-                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) ) * (
+                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) )*(
                                             +EB_WAVE[ii+2][jj+1][kk  ] - EB_WAVE[ii  ][jj+1][kk  ]
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1351,12 +1351,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) ) * (
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1365,12 +1365,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
 
                 // -dBz/DT = dEy/dx - dEx/dy
                 dzstore = DH_WAVE_ref[ii+1][jj+1][kk  ];
-                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) ) * (
+                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) )*(
                                             +EB_WAVE[ii+2][jj+1][kk  ] - EB_WAVE[ii  ][jj+1][kk  ]
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1386,12 +1386,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) ) * (
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1400,12 +1400,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
 
                 // -dBz/DT = dEy/dx - dEx/dy
                 dzstore = DH_WAVE_ref[ii+1][jj+1][kk  ];
-                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) ) * (
+                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) )*(
                                             +EB_WAVE[ii+2][jj+1][kk  ] - EB_WAVE[ii  ][jj+1][kk  ]
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1421,12 +1421,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) ) * (
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1435,12 +1435,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
 
                 // -dBz/DT = dEy/dx - dEx/dy
                 dzstore = DH_WAVE_ref[ii+1][jj+1][kk  ];
-                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) ) * (
+                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) )*(
                                             +EB_WAVE[ii+2][jj+1][kk  ] - EB_WAVE[ii  ][jj+1][kk  ]
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1456,12 +1456,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) ) * (
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1470,12 +1470,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
 
                 // -dBz/DT = dEy/dx - dEx/dy
                 dzstore = DH_WAVE_ref[ii+1][jj+1][kk  ];
-                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) ) * (
+                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) )*(
                                             +EB_WAVE[ii+2][jj+1][kk  ] - EB_WAVE[ii  ][jj+1][kk  ]
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1491,12 +1491,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) ) * (
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1505,12 +1505,12 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
 
                 // -dBz/DT = dEy/dx - dEx/dy
                 dzstore = DH_WAVE_ref[ii+1][jj+1][kk  ];
-                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) ) * (
+                DH_WAVE_ref[ii+1][jj+1][kk  ] = Cx(ii/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - 1.*( 2*DT/DX/F2x(ii/2) )*(
                                             +EB_WAVE[ii+2][jj+1][kk  ] - EB_WAVE[ii  ][jj+1][kk  ]
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1545,12 +1545,12 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1564,7 +1564,7 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1580,12 +1580,12 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1599,7 +1599,7 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1615,12 +1615,12 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1634,7 +1634,7 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1650,12 +1650,12 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1669,7 +1669,7 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1685,12 +1685,12 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1704,7 +1704,7 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
                 
             }
         }
@@ -1721,12 +1721,12 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1740,7 +1740,7 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
                 
             }
         }
@@ -1757,12 +1757,12 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1776,7 +1776,7 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1792,12 +1792,12 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1811,7 +1811,7 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -1827,12 +1827,12 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1846,7 +1846,7 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );   
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );   
             }
         }
     }
@@ -1862,12 +1862,12 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1881,7 +1881,7 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );  
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );  
             }
         }
     }
@@ -1897,12 +1897,12 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1916,7 +1916,7 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );    
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );   
             }
         }
     }
@@ -1932,12 +1932,12 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
                                             -EB_WAVE[ii  ][jj+1][kk+2] + EB_WAVE[ii  ][jj+1][kk  ]
                                             );
-                EB_WAVE[ii  ][jj+1][kk+1] = Cz(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii  ][jj+1][kk+1] = Czr(kk/2)*EB_WAVE[ii  ][jj+1][kk+1] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii  ][jj+1][kk+1] - F1x(ii/2)*dxstore );
 
                 // -dBy/DT = dEx/dz - dEz/DX
                 dystore = DH_WAVE_ref[ii+1][jj  ][kk+1];
-                DH_WAVE_ref[ii+1][jj  ][kk+1] = Cz(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii+1][jj  ][kk+1] = Czr(kk/2)*DH_WAVE_ref[ii+1][jj  ][kk+1] - 1.*( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii+1][jj  ][kk+2] - EB_WAVE[ii+1][jj  ][kk  ]
                                             -EB_WAVE[ii+2][jj  ][kk+1] + EB_WAVE[ii  ][jj  ][kk+1]
                                             );
@@ -1951,7 +1951,7 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii+1][jj+2][kk  ] + EB_WAVE[ii+1][jj  ][kk  ]
                                             );
                 EB_WAVE[ii+1][jj+1][kk  ] = Cy(jj/2)*EB_WAVE[ii+1][jj+1][kk  ] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1z(kk/2)*dzstore );   
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii+1][jj+1][kk  ] - F1zr(kk/2)*dzstore );   
             }
         }
     }
@@ -2955,12 +2955,12 @@ void UPML_Eref_faces(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -2974,7 +2974,7 @@ void UPML_Eref_faces(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -2990,12 +2990,12 @@ void UPML_Eref_faces(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3009,7 +3009,7 @@ void UPML_Eref_faces(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3025,12 +3025,12 @@ void UPML_Eref_faces(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3044,7 +3044,7 @@ void UPML_Eref_faces(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3060,12 +3060,12 @@ void UPML_Eref_faces(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3079,7 +3079,7 @@ void UPML_Eref_faces(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3095,12 +3095,12 @@ void UPML_Eref_faces(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3114,7 +3114,7 @@ void UPML_Eref_faces(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3130,12 +3130,12 @@ void UPML_Eref_faces(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3149,7 +3149,7 @@ void UPML_Eref_faces(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3184,12 +3184,12 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3203,7 +3203,7 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3219,12 +3219,12 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3238,7 +3238,7 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3254,12 +3254,12 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3273,7 +3273,7 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3289,12 +3289,12 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3308,7 +3308,7 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3324,12 +3324,12 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3343,7 +3343,7 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3359,12 +3359,12 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3378,7 +3378,7 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3394,12 +3394,12 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3413,7 +3413,7 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3429,12 +3429,12 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3448,7 +3448,7 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3483,12 +3483,12 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3502,7 +3502,7 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3518,12 +3518,12 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3537,7 +3537,7 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3553,12 +3553,12 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3572,7 +3572,7 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3588,12 +3588,12 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3607,7 +3607,7 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3623,12 +3623,12 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3642,7 +3642,7 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
                 
             }
         }
@@ -3659,12 +3659,12 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3678,7 +3678,7 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
                 
             }
         }
@@ -3695,12 +3695,12 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3714,7 +3714,7 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3730,12 +3730,12 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3749,7 +3749,7 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );
             }
         }
     }
@@ -3765,12 +3765,12 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3784,7 +3784,7 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );  
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );  
             }
         }
     }
@@ -3800,12 +3800,12 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3819,7 +3819,7 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );  
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );  
             }
         }
     }
@@ -3835,12 +3835,12 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3854,7 +3854,7 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );   
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );   
             }
         }
     }
@@ -3870,12 +3870,12 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
                                             -EB_WAVE[ii+1][jj  ][kk+1] + EB_WAVE[ii+1][jj  ][kk-1]
                                             );
-                EB_WAVE[ii+1][jj  ][kk  ] = Cz(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2z(kk/2) )*(
+                EB_WAVE[ii+1][jj  ][kk  ] = Czr(kk/2)*EB_WAVE[ii+1][jj  ][kk  ] + ( 1/F2zr(kk/2) )*(
                                             + F2x(ii/2)*DH_WAVE_ref[ii+1][jj  ][kk  ] - F1x(ii/2)*dxstore );
 
                 // dEy/dt = (dBx/dz - dBz/dx)
                 dystore = DH_WAVE_ref[ii  ][jj+1][kk  ];
-                DH_WAVE_ref[ii  ][jj+1][kk  ] = Cz(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2z(kk/2) )*(
+                DH_WAVE_ref[ii  ][jj+1][kk  ] = Czr(kk/2)*DH_WAVE_ref[ii  ][jj+1][kk  ] + ( 2*DT/DX/F2zr(kk/2) )*(
                                             +EB_WAVE[ii  ][jj+1][kk+1] - EB_WAVE[ii  ][jj+1][kk-1]
                                             -EB_WAVE[ii+1][jj+1][kk  ] + EB_WAVE[ii-1][jj+1][kk  ]
                                             );
@@ -3889,7 +3889,7 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
                                             -EB_WAVE[ii  ][jj+1][kk+1] + EB_WAVE[ii  ][jj-1][kk+1]
                                             );
                 EB_WAVE[ii  ][jj  ][kk+1] = Cy(jj/2)*EB_WAVE[ii  ][jj  ][kk+1] + ( 1/F2y(jj/2) )*(
-                                            + F2z(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1z(kk/2)*dzstore );    
+                                            + F2zr(kk/2)*DH_WAVE_ref[ii  ][jj  ][kk+1] - F1zr(kk/2)*dzstore );    
             }
         }
     }

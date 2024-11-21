@@ -67,7 +67,6 @@ int main( int argc, char *argv[] ) {
     saveData                     *saveDCfg;  
     antennaDetector              *antDetect; 
     boundaryVariables            *boundaryV;
-    /*struct codeDiagnostics              *diagnostic;*/
 
     /*Alloc structs in memory*/
     ALLOC_1D( gridCfg, 1, gridConfiguration);
@@ -75,7 +74,6 @@ int main( int argc, char *argv[] ) {
     ALLOC_1D( saveDCfg, 1, saveData);
     ALLOC_1D( antDetect, 1, antennaDetector );
     ALLOC_1D( boundaryV, 1, boundaryVariables);
-    /*ALLOC_1D( diagnostic, 1, codeDiagnostics );*/
 
     int
         t_int, T_wave, 

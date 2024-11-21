@@ -12,13 +12,14 @@ double ***allocate3DArray(int N_x, int N_y, int N_z) {
             array[i][j] = (double *)calloc( N_z, sizeof(double));
         }
     }
+    
     return array;
-
 }
 
 void free3DArray(double ***array, int N_x, int N_y){
 
     int i, j;
+#pragma omp parallel for private(j)
     for( i = 0 ; i<N_x ; i+=1 ){
         for( j = 0 ; j<N_y ; j+=1 ){
             free(array[i][j]);
