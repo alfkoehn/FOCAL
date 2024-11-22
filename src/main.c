@@ -39,12 +39,6 @@
   #define M_PI 3.14159265358979323846
 #endif
 
-
-// setting boundary conditions, possible choices are
-// 1: simple_abc
-// 2: Mur
-//#define BOUNDARY 2
-
 #define DETECTOR_ANTENNA_1D
 
 #include "focal-struct.h"
@@ -129,16 +123,6 @@ int main( int argc, char *argv[] ) {
     double (*antPhaseTerms)[NY/2]       = calloc(NX/2, sizeof *antPhaseTerms);
     // time traces
     double (*timetraces)[8]             = calloc((T_END/(int)period), sizeof *timetraces);
-
-    // old E-fields required for Mur's boundary condition
-/*#if BOUNDARY == 2
-    double (*E_Xdir_OLD)[NY][NZ]            = calloc(8,  sizeof *E_Xdir_OLD);
-    double (*E_Ydir_OLD)[8][NZ]             = calloc(NX, sizeof *E_Ydir_OLD);
-    double (*E_Zdir_OLD)[NY][8]             = calloc(NX, sizeof *E_Zdir_OLD);
-    double (*E_Xdir_OLD_ref)[NY][NZ_REF]    = calloc(8,  sizeof *E_Xdir_OLD_ref);
-    double (*E_Ydir_OLD_ref)[8][NZ_REF]     = calloc(NX, sizeof *E_Ydir_OLD_ref);
-    double (*E_Zdir_OLD_ref)[NY][8]         = calloc(NX, sizeof *E_Zdir_OLD_ref);
-#endif*/
 
     // array for detector antennas
     // sum_t(Ex*Ex) | sum_t(Ey*Ey) | sum_t(Ez*Ez) | sum_t(E*E) | rms(E)
@@ -291,20 +275,6 @@ int main( int argc, char *argv[] ) {
         // optionally, apply numerical viscosity
         //apply_numerical_viscosity( &gridCfg, EB_WAVE );
 
-        // apply Mur's boundary conditions
-/*#if BOUNDARY == 2
-        abc_Mur_1st( gridCfg, "x1x2y1y2z1z2",  
-                     EB_WAVE, E_Xdir_OLD, E_Ydir_OLD, E_Zdir_OLD );
-        abc_Mur_1st_ref( gridCfg, 
-                         EB_WAVE_ref, E_Xdir_OLD_ref, E_Ydir_OLD_ref, E_Zdir_OLD_ref );
-        abc_Mur_saveOldE_xdir(    gridCfg, EB_WAVE, E_Xdir_OLD );
-        abc_Mur_saveOldE_ydir(    gridCfg, EB_WAVE, E_Ydir_OLD );
-        abc_Mur_saveOldE_zdir(    gridCfg, EB_WAVE, E_Zdir_OLD );
-        abc_Mur_saveOldEref_xdir( gridCfg, EB_WAVE_ref, E_Xdir_OLD_ref );
-        abc_Mur_saveOldEref_ydir( gridCfg, EB_WAVE_ref, E_Ydir_OLD_ref );
-        abc_Mur_saveOldEref_zdir( gridCfg, EB_WAVE_ref, E_Zdir_OLD_ref );
-#endif*/
-
         // apply absorbers
         advance_boundary(  gridCfg, boundaryV, EB_WAVE, EB_WAVE_ref );
 
@@ -387,11 +357,9 @@ int main( int argc, char *argv[] ) {
         }
 
         save_field_toHDF5( gridCfg, saveDCfg, t_int, EB_WAVE );
-        //writeUPMLdata( gridCfg, saveDCfg, EB_WAVE, t_int );
 
     } // end of time loop
-
-    
+  
     // write timetrace data into file
     writeConsole_timetraces( (T_END/(int)period), col_for_timetraces, T_END, period, timetraces );
     control_save( gridCfg, beamCfg ,saveDCfg, antDetect, timetraces, n_e, J_B0,

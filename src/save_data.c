@@ -262,36 +262,3 @@ int save_antennaDetect( gridConfiguration *gridCfg,
     return EXIT_SUCCESS;
 
 }
-
-/*This function is for diagnostics*/
-void writeUPMLdata( gridConfiguration *gridCfg, 
-                    saveData *saveDCfg, 
-                    double EB_WAVE[NX][NY][NZ], int t_int ){
-    
-    char filename[2048];
-    if (snprintf(filename, sizeof(filename),"%s/%s/UPML_%d.txt", projectPath, foldername, t_int) >= sizeof(filename)) {
-            fprintf(stderr, "Error: Directory path is too long.\n");
-        }
-
-    FILE *fptr = fopen(filename, "w");
-
-    if(fptr == NULL){
-        printf("Error opening the file. \n");
-    }
-
-    fprintf(fptr, "Pos,ValueZ\n");
-
-    for(int ii=2 ; ii < NX-2 ; ii+=2 ){
-        for(int jj=2 ; jj < NY-2 ; jj+=2 ){
-            for(int kk=2 ; kk < NZ-2 ; kk+=2 ){
-
-                if( jj==NY/4 + 1 && ii == NX/4 ){
-                    fprintf(fptr, "%d,%.10f \n", kk/2, fabs( EB_WAVE[ii  ][jj  ][kk+1] ) );
-                }
-
-            }
-        }
-    }
-    
-    fclose(fptr);
-}
