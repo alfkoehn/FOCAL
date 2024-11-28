@@ -13,16 +13,19 @@
 
 void control_init(  gridConfiguration *gridCfg, 
                     beamAntennaConfiguration *beamCfg,
-                    saveData *saveDCfg );
+                    saveData *saveDCfg,
+                    antennaDetector *antDetect );
 
 void grid_init( gridConfiguration *gridCfg, 
                 beamAntennaConfiguration *beamCfg,
-                saveData *saveDCfg );
+                saveData *saveDCfg,
+                antennaDetector *antDetect );
 
 /*Functions in charge of JSON reading*/
 void write_JSON_toGrid( gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg,
-                        saveData *saveDCfg );
+                        saveData *saveDCfg,
+                        antennaDetector *antDetect );
 
 char *read_json();
 

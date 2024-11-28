@@ -1,5 +1,6 @@
 #include "grid_io.h"
 
+/*Timetraces functions*/
 int writeTimetraces2ascii( int dim0, int dim1, int T_end, double Period, 
                            char filename[], double timetraces[dim0][dim1] ) {
 //{{{
@@ -37,6 +38,25 @@ int writeTimetraces2ascii( int dim0, int dim1, int T_end, double Period,
 
 }//}}}
 
+int writeConsole_timetraces( int dim0, int dim1, int T_end, double Period, 
+                             double timetraces[dim0][dim1] ){
+
+    printf( "-------------------------------------------------------------------------------------------------------------\n" );
+    printf( "  T   |   poynt_z1   |   poynt_z2   |   poynt_x1   |   poynt_x2   |   poynt_y1   |   poynt_y2   |  P_out     \n" );
+    printf( "------+--------------+--------------+--------------+--------------+--------------+--------------+------------\n" );
+    for ( int ii=0 ; ii<(T_end/(int)Period) ; ++ii )
+        printf( " %4d |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e\n",
+                (int)timetraces[ii][1], //timetraces[ii][1],
+                timetraces[ii][2], timetraces[ii][3],
+                timetraces[ii][4], timetraces[ii][5],
+                timetraces[ii][6], timetraces[ii][7],
+                (timetraces[ii][2]+timetraces[ii][3] + timetraces[ii][4]+timetraces[ii][5] + timetraces[ii][6]+timetraces[ii][7])
+              );
+    printf( "-------------------------------------------------------------------------------------------------------------\n" );
+
+    return EXIT_SUCCESS;
+}
+
 
 //#ifdef HDF5
 int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[], double array_3D[dim0][dim1][dim2] ) {
@@ -59,7 +79,7 @@ int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[]
     // assume as default setting, that filters are available
     filter_avail = 1;
 
-    // check if specified hdf5 file already exists
+    // check if specified hdf5 file already exists 
     // if not, create new one; if yes, open and add dataset to it
     if ( stat( filename, &st )==0 ) {
         // open file for read + write access

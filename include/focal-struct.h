@@ -21,7 +21,7 @@ typedef struct saveData{                /*Variables related to simulation data s
     const char 	*foldername, *projectPath,
     		    *file_hdf5, *file_trace;
 
-    int     t_save;
+    int     t_save, col_for_timetraces;
 } saveData;
 
 /*typedef struct boundaryGrid{*/            /*Store grid value for the boundary variables*/
@@ -57,18 +57,18 @@ struct beamAntennaConfiguration {   /*Antenna configuration variables*/
         Y_at_X1, k0Ln_at_X1, theta_at_X1;
 };
 
-/*typedef struct antennaDetector{
+typedef struct antennaDetector{
     int 
         antDetect_1D, 
         detAnt_01_zpos, detAnt_02_zpos,
         detAnt_03_zpos, detAnt_04_zpos,
         detAnt_01_ypos;
-    double
+    /*double
         *detAnt_01_fields,
         *detAnt_02_fields,
         *detAnt_03_fields,
-        *detAnt_04_fields;
-} antennaDetector;*/
+        *detAnt_04_fields;*/
+} antennaDetector;
 
 /*typedef struct powerCalcValues{
     int 

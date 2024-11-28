@@ -56,28 +56,27 @@
 #include "grid_io.h"
 #include "background_profiles.h"
 #include "power_calc.h"
-
+#include "save_data.h"
 
 int main( int argc, char *argv[] ) {
 //{{{
 
     gridConfiguration            *gridCfg;
     beamAntennaConfiguration     *beamCfg;
-    saveData                     *saveDCfg;   
+    saveData                     *saveDCfg;  
+    antennaDetector              *antDetect; 
     /*struct boundaryGrid                 *boundaryG;
-    struct antennaDetector              *antDetect;
     struct codeDiagnostics              *diagnostic;*/
 
     /*Alloc structs in memory*/
     ALLOC_1D( gridCfg, 1, gridConfiguration);
     ALLOC_1D( beamCfg, 1, beamAntennaConfiguration);
     ALLOC_1D( saveDCfg, 1, saveData);
-    /*ALLOC_1D( boundaryG, 1, boundaryGrid);
     ALLOC_1D( antDetect, 1, antennaDetector );
+    /*ALLOC_1D( boundaryG, 1, boundaryGrid);
     ALLOC_1D( diagnostic, 1, codeDiagnostics );*/
 
     int
-        ii,jj,kk,
         t_int, T_wave, 
 
 #ifdef _OPENMP
@@ -85,15 +84,6 @@ int main( int argc, char *argv[] ) {
 #endif
         pwr_dect,
 
-#ifdef DETECTOR_ANTENNA_1D
-        detAnt_01_zpos,
-        detAnt_02_zpos,
-        detAnt_03_zpos,
-        detAnt_04_zpos,
-        detAnt_01_ypos,
-#endif
-
-        len_str,                            // return value of snprintf
         opt_ret;                            // return value of getopt (reading input parameter)
 
     double
@@ -113,22 +103,18 @@ int main( int argc, char *argv[] ) {
 
         omega_t;
 
-    char
-        dSet_name[PATH_MAX],
-        filename_hdf5[PATH_MAX];            // filename of hdf5 file for output
-
     bool
         angle_zx_set,                       // is antAngle_zx set during call ?
         angle_zy_set;                       // is antAngle_zy set during call ?
 
     // set-up grid
-    control_init(  gridCfg, beamCfg, saveDCfg );
+    control_init(  gridCfg, beamCfg, saveDCfg, antDetect );
 
     Y_at_X1     = .41;
     k0Ln_at_X1  = 6.;
     theta_at_X1 = 78.;
 
-    create_folder( saveDCfg );
+    create_folder( gridCfg, saveDCfg );
 
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
@@ -139,7 +125,7 @@ int main( int argc, char *argv[] ) {
     // background electron plasma density
     double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);
     // used when writing data into hdf5-files
-    double (*data2save)[NY/2][NZ/2]     = calloc(NX/2, sizeof *data2save);
+    //double (*data2save)[NY/2][NZ/2]     = calloc(NX/2, sizeof *data2save);
     // antenna: envelope of injected field
     double (*antField_xy)[NY/2]         = calloc(NX/2, sizeof *antField_xy);
     // antenna: phase terms 
@@ -423,111 +409,18 @@ int main( int argc, char *argv[] ) {
             timetraces[T_wave][7]   = power_abs_y2/power_abs_ref;
 
         }
+
+        save_field_toHDF5( gridCfg, saveDCfg, t_int, EB_WAVE );
+
     } // end of time loop
 
-    printf( "-------------------------------------------------------------------------------------------------------------\n" );
-    printf( "  T   |   poynt_z1   |   poynt_z2   |   poynt_x1   |   poynt_x2   |   poynt_y1   |   poynt_y2   |  P_out     \n" );
-    printf( "------+--------------+--------------+--------------+--------------+--------------+--------------+------------\n" );
-    for ( ii=0 ; ii<(T_END/(int)period) ; ++ii )
-        printf( " %4d |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e\n",
-                (int)timetraces[ii][1], //timetraces[ii][1],
-                timetraces[ii][2], timetraces[ii][3],
-                timetraces[ii][4], timetraces[ii][5],
-                timetraces[ii][6], timetraces[ii][7],
-                (timetraces[ii][2]+timetraces[ii][3] + timetraces[ii][4]+timetraces[ii][5] + timetraces[ii][6]+timetraces[ii][7])
-              );
-    printf( "-------------------------------------------------------------------------------------------------------------\n" );
-
+    
     // write timetrace data into file
     // open file in w(rite) mode; might consider using a+ instead
-    writeTimetraces2ascii( (T_END/(int)period), 8, T_END, period, 
-                           "timetraces2.dat", timetraces );
-
-    // save into hdf5
-    // abs(E)
-    // prepare array for that
-#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
-    for (ii=0 ; ii<NX ; ii+=2) {
-        for (jj=0 ; jj<NY ; jj+=2) {
-            for (kk=0 ; kk<NZ ; kk+=2) {
-                data2save[(ii/2)][(jj/2)][(kk/2)] = 
-                    sqrt( pow(EB_WAVE[ii+1][jj  ][kk  ],2) 
-                         +pow(EB_WAVE[ii  ][jj+1][kk  ],2) 
-                         +pow(EB_WAVE[ii  ][jj  ][kk+1],2) );
-            }
-        }
-    }
-    len_str = snprintf( filename_hdf5, sizeof(filename_hdf5), "fileout.h5");
-    if ( (len_str < 0) || (len_str >= sizeof(filename_hdf5)) ) {
-        printf( "ERROR: could not write filename_hdf5 string\n" );  // use a proper error handler here
-    } else {
-        sprintf( dSet_name, "E_abs__tint%05d", t_int );
-        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save) ) ;
-    }
-    set2zero_3D( NX/2, NY/2, NZ/2, data2save );
-    // density
-    sprintf( dSet_name, "n_e" );
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, n_e) ) ;
-    // background magnetic field
-    // B0x: even-odd-odd
-#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
-    for (ii=0 ; ii<NX ; ii+=2) {
-        for (jj=0 ; jj<NY ; jj+=2) {
-            for (kk=0 ; kk<NZ ; kk+=2) {
-                data2save[(ii/2)][(jj/2)][(kk/2)] = J_B0[ii  ][jj+1][kk+1];
-            }
-        }
-    }
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0x", data2save) ) ;
-    set2zero_3D( NX/2, NY/2, NZ/2, data2save );
-    // B0y: odd-even-odd
-#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
-    for (ii=0 ; ii<NX ; ii+=2) {
-        for (jj=0 ; jj<NY ; jj+=2) {
-            for (kk=0 ; kk<NZ ; kk+=2) {
-                data2save[(ii/2)][(jj/2)][(kk/2)] = J_B0[ii+1][jj  ][kk+1];
-            }
-        }
-    }
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0y", data2save) ) ;
-    set2zero_3D( NX/2, NY/2, NZ/2, data2save );
-    // B0z: odd-odd-even
-#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
-    for (ii=0 ; ii<NX ; ii+=2) {
-        for (jj=0 ; jj<NY ; jj+=2) {
-            for (kk=0 ; kk<NZ ; kk+=2) {
-                data2save[(ii/2)][(jj/2)][(kk/2)] = J_B0[ii+1][jj+1][kk  ];
-            }
-        }
-    }
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0z", data2save) ) ;
-    set2zero_3D( NX/2, NY/2, NZ/2, data2save );
-
-    writeConfig2HDF( gridCfg, beamCfg, filename_hdf5 );
-
-
-#if defined(HDF5) && defined(DETECTOR_ANTENNA_1D)
-    if (detAnt_01_zpos < ( NZ - d_absorb)) {
-        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_01" , 
-                             detAnt_01_ypos, detAnt_01_zpos,
-                             detAnt_01_fields );
-    }
-    if (detAnt_02_zpos < ( NZ - d_absorb)) {
-        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_02" , 
-                             detAnt_01_ypos, detAnt_02_zpos,
-                             detAnt_02_fields );
-    }
-    if (detAnt_03_zpos < ( NZ - d_absorb)) {
-        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_03" , 
-                             detAnt_01_ypos, detAnt_03_zpos,
-                             detAnt_03_fields );
-    }
-    if (detAnt_04_zpos < ( NZ - d_absorb)) {
-        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_04" , 
-                             detAnt_01_ypos, detAnt_04_zpos,
-                             detAnt_04_fields );
-    }
-#endif
+    writeConsole_timetraces( (T_END/(int)period), col_for_timetraces, T_END, period, timetraces );
+    control_save( gridCfg, beamCfg ,saveDCfg, antDetect, timetraces, n_e, J_B0,
+                  detAnt_01_fields, detAnt_02_fields, detAnt_03_fields, detAnt_04_fields );
+                  
 
     free( EB_WAVE );
     printf( "freed EB_WAVE\n" );
@@ -535,8 +428,7 @@ int main( int argc, char *argv[] ) {
     printf( "freed J_B0\n" );
     free( n_e );
     printf( "freed n_e\n" );
-    free( data2save );
-    printf( "freed data2save\n" );
+    
     return EXIT_SUCCESS;
 }//}}}
 

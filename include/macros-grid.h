@@ -35,21 +35,19 @@
 #define sel_boundary            boundaryG(gridCfg)
 
 /*Macros for save data*/
-/*#define data2saveSt(saveDCfg,i,j,k)     saveDCfg->data2save[((i) * (NY/2) + j) * (NZ/2) + k]
-#define timetracesSt(saveDCfg,i,j)      saveDCfg->timetraces[((i) * (8) ) + j]*/
 #define projectPathSt(saveDCfg)         saveDCfg->projectPath
 #define foldernameSt(saveDCfg)          saveDCfg->foldername
 #define file_hdf5St(saveDCfg)           saveDCfg->file_hdf5
 #define file_traceSt(saveDCfg)          saveDCfg->file_trace
 #define t_saveSt(saveDCfg)              saveDCfg->t_save
+#define col_for_timetracesSt(saveDCfg)  saveDCfg->col_for_timetraces
 
-/*#define data2save(i,j,k)                data2saveSt(saveDCfg,i,j,k)
-#define timetraces(i,j)                 timetracesSt(saveDCfg,i,j)*/
 #define projectPath                     projectPathSt(saveDCfg)
 #define foldername                      foldernameSt(saveDCfg)
 #define file_hdf5                       file_hdf5St(saveDCfg)
 #define file_trace                      file_traceSt(saveDCfg)
 #define t_save                          t_saveSt(saveDCfg)
+#define col_for_timetraces              col_for_timetracesSt(saveDCfg)
 
 /*Macros for antenna injection*/
 /*#define antFieldBG(beamCfg,i,j)         beamCfg->antField_xy[( (i) * (NY/2) ) + j ]
@@ -144,15 +142,15 @@
 
 /*Macros for Antenna detector*/
 /*#define DET_ANT_ACCES(antDetect, id, i, j)  \
-    ((id == FIELD_01) ? ( antDetect->detAnt_01_fields[ ((i) * 5) + j ] ) : \
-     (id == FIELD_02) ? ( antDetect->detAnt_01_fields[ ((i) * 5) + j ] ) : \
-     (id == FIELD_03) ? ( antDetect->detAnt_03_fields[ ((i) * 5) + j ] ) : \
-     (id == FIELD_04) ? ( antDetect->detAnt_03_fields[ ((i) * 5) + j ] ) : 0 )
+    ((id == FIELD_01) ? ( detAnt_01_fields ) : \
+     (id == FIELD_02) ? ( detAnt_01_fields ) : \
+     (id == FIELD_03) ? ( detAnt_03_fields ) : \
+     (id == FIELD_04) ? ( detAnt_03_fields ) : 0 )*/
 
-#define antDetect01EBG(antDetect,i,j)           antDetect->detAnt_01_fields[ ((i) * 5) + j ]
+/*#define antDetect01EBG(antDetect,i,j)           antDetect->detAnt_01_fields[ ((i) * 5) + j ]
 #define antDetect02EBG(antDetect,i,j)           antDetect->detAnt_02_fields[ ((i) * 5) + j ]
 #define antDetect03EBG(antDetect,i,j)           antDetect->detAnt_03_fields[ ((i) * 5) + j ]
-#define antDetect04EBG(antDetect,i,j)           antDetect->detAnt_04_fields[ ((i) * 5) + j ]
+#define antDetect04EBG(antDetect,i,j)           antDetect->detAnt_04_fields[ ((i) * 5) + j ]*/
 #define antDetect_1DG(antDetect)                antDetect->antDetect_1D
 #define detAnt01zG(antDetect)                   antDetect->detAnt_01_zpos
 #define detAnt02zG(antDetect)                   antDetect->detAnt_02_zpos
@@ -160,16 +158,16 @@
 #define detAnt04zG(antDetect)                   antDetect->detAnt_04_zpos
 #define detAnt01yG(antDetect)                   antDetect->detAnt_01_ypos
 
-#define detAnt_01_Fields(i,j)                   antDetect01EBG(antDetect,i,j)
+/*#define detAnt_01_Fields(i,j)                   antDetect01EBG(antDetect,i,j)
 #define detAnt_02_Fields(i,j)                   antDetect02EBG(antDetect,i,j)
 #define detAnt_03_Fields(i,j)                   antDetect03EBG(antDetect,i,j)           
-#define detAnt_04_Fields(i,j)                   antDetect04EBG(antDetect,i,j)
+#define detAnt_04_Fields(i,j)                   antDetect04EBG(antDetect,i,j)*/
 #define antDetect_1D                            antDetect_1DG(antDetect)
-#define detAnt_01_z                             detAnt01zG(antDetect)
-#define detAnt_02_z                             detAnt02zG(antDetect)
-#define detAnt_03_z                             detAnt03zG(antDetect)
-#define detAnt_04_z                             detAnt04zG(antDetect)
-#define detAnt_01_y                             detAnt01yG(antDetect)*/
+#define detAnt_01_zpos                          detAnt01zG(antDetect)
+#define detAnt_02_zpos                          detAnt02zG(antDetect)
+#define detAnt_03_zpos                          detAnt03zG(antDetect)
+#define detAnt_04_zpos                          detAnt04zG(antDetect)
+#define detAnt_01_ypos                          detAnt01yG(antDetect)
 
 
 /*Macros for power struct*/
