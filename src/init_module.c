@@ -172,6 +172,7 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
     cJSON *item_dBoundary = cJSON_GetObjectItemCaseSensitive(json, "PML_size");   //size absorb boundary
     if( cJSON_IsNumber(item_dBoundary) ){
         d_absorb = item_dBoundary->valueint;
+        d_absorb = d_absorb + 2;
     }  
 
     /*Antenna injector configuration values*/

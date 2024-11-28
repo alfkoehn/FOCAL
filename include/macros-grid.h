@@ -87,9 +87,9 @@
 #define theta_at_X1                     theta_at_X1BG(beamCfg)                     
 
 /*Macros for ABC*/
-/*#define ecoBG(boundaryG)                        boundaryG->eco
+#define ecoBV(boundaryV)                        boundaryV->eco
 
-#define eco                                     ecoBG(boundaryG)*/
+#define eco                                     ecoBV(boundaryV)
 
 /*Macros for Mur boundary*/
 /*#define E_Xdir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Xdir_OLD[((i) * (NY) + j) * (NZ) + k]
@@ -108,36 +108,36 @@
 
 /*Macros for UPML boundary layer*/
 /*#define DH_WAVEstr(PMLG,i,j,k)                  boundaryG->DH_WAVE[((i) * (NY) + j) * (NZ) + k]
-#define DH_WAVE_refStr(PMLG,i,j,k)              boundaryG->DH_WAVE_ref[((i) * (NY) + j) * (NZ_REF) + k]
-#define F1xStr(PMLG,i)                          boundaryG->F1x[i]
-#define F1yStr(PMLG,j)                          boundaryG->F1y[j]
-#define F1zStr(PMLG,k)                          boundaryG->F1z[k]
-#define F2xStr(PMLG,i)                          boundaryG->F2x[i]
-#define F2yStr(PMLG,j)                          boundaryG->F2y[j]
-#define F2zStr(PMLG,k)                          boundaryG->F2z[k]
-#define CxStr(PMLG,i)                           boundaryG->Cx[i]
-#define CyStr(PMLG,j)                           boundaryG->Cy[j]
-#define CzStr(PMLG,k)                           boundaryG->Cz[k]
+#define DH_WAVE_refStr(PMLG,i,j,k)              boundaryG->DH_WAVE_ref[((i) * (NY) + j) * (NZ_REF) + k]*/
+#define F1xStr(boundaryV,i)                     boundaryV->F1x[i]
+#define F1yStr(boundaryV,j)                     boundaryV->F1y[j]
+#define F1zStr(boundaryV,k)                     boundaryV->F1z[k]
+#define F2xStr(boundaryV,i)                     boundaryV->F2x[i]
+#define F2yStr(boundaryV,j)                     boundaryV->F2y[j]
+#define F2zStr(boundaryV,k)                     boundaryV->F2z[k]
+#define CxStr(boundaryV,i)                      boundaryV->Cx[i]
+#define CyStr(boundaryV,j)                      boundaryV->Cy[j]
+#define CzStr(boundaryV,k)                      boundaryV->Cz[k]
 
-#define F1zrStr(PMLG,k)                         boundaryG->F1zr[k]
-#define F2zrStr(PMLG,k)                         boundaryG->F2zr[k]
-#define CzrStr(PMLG,k)                          boundaryG->Czr[k]
+#define F1zrStr(boundaryV,k)                    boundaryV->F1zr[k]
+#define F2zrStr(boundaryV,k)                    boundaryV->F2zr[k]
+#define CzrStr(boundaryV,k)                     boundaryV->Czr[k]
 
-#define DH_WAVE(i,j,k)                          DH_WAVEstr(PMLG,i,j,k)
-#define DH_WAVE_ref(i,j,k)                      DH_WAVE_refStr(PMLG,i,j,k)              
-#define F1x(i)                                  F1xStr(PMLG,i) 
-#define F1y(j)                                  F1yStr(PMLG,j)
-#define F1z(k)                                  F1zStr(PMLG,k)
-#define F2x(i)                                  F2xStr(PMLG,i)
-#define F2y(j)                                  F2yStr(PMLG,j) 
-#define F2z(k)                                  F2zStr(PMLG,k)
-#define Cx(i)                                   CxStr(PMLG,i)
-#define Cy(j)                                   CyStr(PMLG,j)
-#define Cz(k)                                   CzStr(PMLG,k)
+/*#define DH_WAVE(i,j,k)                          DH_WAVEstr(PMLG,i,j,k)
+#define DH_WAVE_ref(i,j,k)                      DH_WAVE_refStr(PMLG,i,j,k)  */            
+#define F1x(i)                                  F1xStr(boundaryV,i) 
+#define F1y(j)                                  F1yStr(boundaryV,j)
+#define F1z(k)                                  F1zStr(boundaryV,k)
+#define F2x(i)                                  F2xStr(boundaryV,i)
+#define F2y(j)                                  F2yStr(boundaryV,j) 
+#define F2z(k)                                  F2zStr(boundaryV,k)
+#define Cx(i)                                   CxStr(boundaryV,i)
+#define Cy(j)                                   CyStr(boundaryV,j)
+#define Cz(k)                                   CzStr(boundaryV,k)
 
-#define F1zr(k)                                 F1zrStr(PMLG,k)
-#define F2zr(k)                                 F2zrStr(PMLG,k)
-#define Czr(k)                                  CzrStr(PMLG,k)*/
+#define F1zr(k)                                 F1zrStr(boundaryV,k)
+#define F2zr(k)                                 F2zrStr(boundaryV,k)
+#define Czr(k)                                  CzrStr(boundaryV,k)
 
 
 /*Macros for Antenna detector*/

@@ -186,7 +186,7 @@ int save_data_toHDF5(   gridConfiguration *gridCfg,
     printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0z", data2save) ) ;
 
     free( data2save );
-    printf( "freed data2save\n" );
+    printf( "Free data2save allocated memory.\n" );
 
     return EXIT_SUCCESS;
 
@@ -228,7 +228,6 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
     }
 
     return EXIT_SUCCESS;
-
 }
 
 int save_antennaDetect( gridConfiguration *gridCfg,

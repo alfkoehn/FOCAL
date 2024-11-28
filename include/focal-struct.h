@@ -24,23 +24,23 @@ typedef struct saveData{                /*Variables related to simulation data s
     int     t_save, col_for_timetraces;
 } saveData;
 
-/*typedef struct boundaryGrid{*/            /*Store grid value for the boundary variables*/
+typedef struct boundaryVariables{            /*Store grid value for the boundary variables*/
 
     /*ABC boundary*/
-    /*double eco,*/
+    double eco,
     
     /*Mur boundary*/
     /**E_Xdir_OLD, *E_Ydir_OLD, *E_Zdir_OLD,
     *E_Xdir_OLD_ref, *E_Ydir_OLD_ref, *E_Zdir_OLD_ref,*/
 
     /*UPML boundary*/
-    /**DH_WAVE, *DH_WAVE_ref,
+    /**DH_WAVE, *DH_WAVE_ref,*/
     *F1x, *F1y, *F1z,
     *F2x, *F2y, *F2z,
     *Cx, *Cy, *Cz,
     *F1zr, *F2zr,
     *Czr;
-} boundaryGrid;*/
+} boundaryVariables;
 
 struct beamAntennaConfiguration {   /*Antenna configuration variables*/
     int

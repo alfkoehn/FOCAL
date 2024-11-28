@@ -1,6 +1,6 @@
 {	
-    "Main_Project": 		"PML_test",
-    "Case_foldername": 		"FOCAL_test",
+    "Main_Project": 		"Boundary_test",
+    "Case_foldername": 		"Boundary_PML_example",
     "filename_hdf5": 		"fileout.h5",
     "filename_timetraces": 	"timetraces2.dat",
     
@@ -16,12 +16,12 @@
     "ne_profile":	3,
     "ne_0":		0.0,
     
-    "Boundary_Method": 	1,
-    "PML_size":		22,
+    "Boundary_Method": 	3,
+    "PML_size":		20,
     
     "Antenna_Pos_x": 	200,
     "Antenna_Pos_y": 	150,
-    "Antenna_Pos_z": 	52,
+    "Antenna_Pos_z": 	26,
     "Antenna_Angle_zx": 0,
     "Antenna_Angle_zy": 0,
     "Wave_source_type": 5,
@@ -32,6 +32,6 @@
     
     "Detector_Antenna": 1,
     
-    "data_save_frequency": 5
+    "data_save_frequency": 1
     
 }

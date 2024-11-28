@@ -39,12 +39,6 @@
   #define M_PI 3.14159265358979323846
 #endif
 
-
-// setting boundary conditions, possible choices are
-// 1: simple_abc
-// 2: Mur
-#define BOUNDARY 1
-
 #define DETECTOR_ANTENNA_1D
 
 #include "focal-struct.h"
@@ -57,6 +51,7 @@
 #include "background_profiles.h"
 #include "power_calc.h"
 #include "save_data.h"
+#include "boundary_module.h"
 
 int main( int argc, char *argv[] ) {
 //{{{
@@ -65,16 +60,14 @@ int main( int argc, char *argv[] ) {
     beamAntennaConfiguration     *beamCfg;
     saveData                     *saveDCfg;  
     antennaDetector              *antDetect; 
-    /*struct boundaryGrid                 *boundaryG;
-    struct codeDiagnostics              *diagnostic;*/
+    boundaryVariables            *boundaryV;
 
     /*Alloc structs in memory*/
     ALLOC_1D( gridCfg, 1, gridConfiguration);
     ALLOC_1D( beamCfg, 1, beamAntennaConfiguration);
     ALLOC_1D( saveDCfg, 1, saveData);
     ALLOC_1D( antDetect, 1, antennaDetector );
-    /*ALLOC_1D( boundaryG, 1, boundaryGrid);
-    ALLOC_1D( diagnostic, 1, codeDiagnostics );*/
+    ALLOC_1D( boundaryV, 1, boundaryVariables);
 
     int
         t_int, T_wave, 
@@ -87,9 +80,6 @@ int main( int argc, char *argv[] ) {
         opt_ret;                            // return value of getopt (reading input parameter)
 
     double
-#if BOUNDARY == 1
-        eco,
-#endif
 
         poynt_x1, poynt_x2,
         poynt_y1, poynt_y2,
@@ -115,6 +105,7 @@ int main( int argc, char *argv[] ) {
     theta_at_X1 = 78.;
 
     create_folder( gridCfg, saveDCfg );
+    init_boundary( gridCfg, boundaryV);
 
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
@@ -132,16 +123,6 @@ int main( int argc, char *argv[] ) {
     double (*antPhaseTerms)[NY/2]       = calloc(NX/2, sizeof *antPhaseTerms);
     // time traces
     double (*timetraces)[8]             = calloc((T_END/(int)period), sizeof *timetraces);
-
-    // old E-fields required for Mur's boundary condition
-#if BOUNDARY == 2
-    double (*E_Xdir_OLD)[NY][NZ]            = calloc(8,  sizeof *E_Xdir_OLD);
-    double (*E_Ydir_OLD)[8][NZ]             = calloc(NX, sizeof *E_Ydir_OLD);
-    double (*E_Zdir_OLD)[NY][8]             = calloc(NX, sizeof *E_Zdir_OLD);
-    double (*E_Xdir_OLD_ref)[NY][NZ_REF]    = calloc(8,  sizeof *E_Xdir_OLD_ref);
-    double (*E_Ydir_OLD_ref)[8][NZ_REF]     = calloc(NX, sizeof *E_Ydir_OLD_ref);
-    double (*E_Zdir_OLD_ref)[NY][8]         = calloc(NX, sizeof *E_Zdir_OLD_ref);
-#endif
 
     // array for detector antennas
     // sum_t(Ex*Ex) | sum_t(Ey*Ey) | sum_t(Ez*Ez) | sum_t(E*E) | rms(E)
@@ -199,10 +180,6 @@ int main( int argc, char *argv[] ) {
         printf( "       NZ-d_absorb = %d, detAnt_04_zpos = %d\n", 
                 NZ - d_absorb, detAnt_04_zpos );
     }
-#endif
-        
-#if BOUNDARY == 1
-    eco         = 10./(double)(period);
 #endif
 
     T_wave      = 0;
@@ -292,45 +269,14 @@ int main( int argc, char *argv[] ) {
                         t_int, omega_t, 
                         antField_xy, antPhaseTerms, EB_WAVE_ref );
 
-        // apply absorbers
-#if BOUNDARY == 1
-        apply_absorber(     gridCfg, eco, EB_WAVE );
-        apply_absorber_ref( gridCfg, eco, EB_WAVE_ref );
-#endif
 
-        // advance J
-        // Jx: odd-even-even
-        // Jy: even-odd-even
-        // Jz: even-even-odd
-        // B0x: even-odd-odd
-        // B0y: odd-even-odd
-        // B0z: odd-odd-even
-        advance_J( gridCfg, EB_WAVE, J_B0, n_e );
-
-        // advance B
-        advance_B(     gridCfg, EB_WAVE );
-        advance_B_ref( gridCfg, EB_WAVE_ref );
-        
-        // advance E
-        advance_E(     gridCfg, EB_WAVE,     J_B0 );
-        advance_E_ref( gridCfg, EB_WAVE_ref       );
+        advance_fields( gridCfg, EB_WAVE, EB_WAVE_ref, J_B0, n_e );
 
         // optionally, apply numerical viscosity
         //apply_numerical_viscosity( &gridCfg, EB_WAVE );
 
-        // apply Mur's boundary conditions
-#if BOUNDARY == 2
-        abc_Mur_1st( gridCfg, "x1x2y1y2z1z2",  
-                     EB_WAVE, E_Xdir_OLD, E_Ydir_OLD, E_Zdir_OLD );
-        abc_Mur_1st_ref( gridCfg, 
-                         EB_WAVE_ref, E_Xdir_OLD_ref, E_Ydir_OLD_ref, E_Zdir_OLD_ref );
-        abc_Mur_saveOldE_xdir(    gridCfg, EB_WAVE, E_Xdir_OLD );
-        abc_Mur_saveOldE_ydir(    gridCfg, EB_WAVE, E_Ydir_OLD );
-        abc_Mur_saveOldE_zdir(    gridCfg, EB_WAVE, E_Zdir_OLD );
-        abc_Mur_saveOldEref_xdir( gridCfg, EB_WAVE_ref, E_Xdir_OLD_ref );
-        abc_Mur_saveOldEref_ydir( gridCfg, EB_WAVE_ref, E_Ydir_OLD_ref );
-        abc_Mur_saveOldEref_zdir( gridCfg, EB_WAVE_ref, E_Zdir_OLD_ref );
-#endif
+        // apply absorbers
+        advance_boundary(  gridCfg, boundaryV, EB_WAVE, EB_WAVE_ref );
 
 #ifdef DETECTOR_ANTENNA_1D
         // store wavefields for detector antennas over the final 10 
@@ -413,14 +359,12 @@ int main( int argc, char *argv[] ) {
         save_field_toHDF5( gridCfg, saveDCfg, t_int, EB_WAVE );
 
     } // end of time loop
-
-    
+  
     // write timetrace data into file
-    // open file in w(rite) mode; might consider using a+ instead
     writeConsole_timetraces( (T_END/(int)period), col_for_timetraces, T_END, period, timetraces );
     control_save( gridCfg, beamCfg ,saveDCfg, antDetect, timetraces, n_e, J_B0,
                   detAnt_01_fields, detAnt_02_fields, detAnt_03_fields, detAnt_04_fields );
-                  
+
 
     free( EB_WAVE );
     printf( "freed EB_WAVE\n" );
@@ -428,6 +372,8 @@ int main( int argc, char *argv[] ) {
     printf( "freed J_B0\n" );
     free( n_e );
     printf( "freed n_e\n" );
+
+    free_boundary( gridCfg );
     
     return EXIT_SUCCESS;
 }//}}}
