@@ -5,6 +5,7 @@ static double **detAnt_02_fields = NULL;
 static double **detAnt_03_fields = NULL;
 static double **detAnt_04_fields = NULL;
 
+/*Initialize the arrays and values for detector antenna*/
 int init_antennaDetect( gridConfiguration *gridCfg,
                         beamAntennaConfiguration *beamCfg,
                         antennaDetector *antDetect ){
@@ -54,6 +55,7 @@ int init_antennaDetect( gridConfiguration *gridCfg,
     return EXIT_SUCCESS;
 }
 
+/*Liberates the allocated memory for the antenna*/
 int free_antDetect( gridConfiguration *gridCfg,
                     antennaDetector *antDetect ){
 
@@ -75,6 +77,7 @@ int free_antDetect( gridConfiguration *gridCfg,
     return EXIT_SUCCESS;
 }
 
+/*Print in console the antennad detect information*/
 int print_antennaDetec( antennaDetector *antDetect ){
 
     if( antDetect_1D == 1 ){
@@ -96,6 +99,7 @@ int print_antennaDetec( antennaDetector *antDetect ){
     return EXIT_SUCCESS;
 }
 
+/*During time evolution, control the storing of values in the arrays*/
 int control_antennaDetect(  gridConfiguration *gridCfg,
                             antennaDetector *antDetect,
                             int t_int,
@@ -132,51 +136,6 @@ int control_antennaDetect(  gridConfiguration *gridCfg,
 
     return EXIT_SUCCESS;
 }
-
-/*int detAnt1D_storeValues( gridConfiguration *gridCfg, 
-                          size_t detAnt_ypos, size_t detAnt_zpos,
-                          int tt, 
-                          double EB_WAVE[NX][NY][NZ], 
-                          double detAnt_fields[NX/2][5] ) { 
-    //{{{
-    size_t
-        ii;
-
-    double
-        foo;
-
-    // Ex: odd-even-even
-    // Ey: even-odd-even
-    // Ez: even-even-odd
-
-#pragma omp parallel default(shared) private(ii,foo)
-#pragma omp for
-    for ( ii=2 ; ii <= NX-2 ; ii+=2 ) {
-        // calculate abs(E)
-        foo = sqrt(  pow(EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos  ],2)
-                    +pow(EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos  ],2)
-                    +pow(EB_WAVE[ii  ][detAnt_ypos  ][detAnt_zpos+1],2) );
-
-        // sum of E over time
-        // Ex*Ex
-        detAnt_fields[ii/2][0]  += pow( EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos  ], 2 );
-        // Ey*Ey
-        detAnt_fields[ii/2][1]  += pow( EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos  ], 2 );
-        // Ez*Ez
-        detAnt_fields[ii/2][2]  += pow( EB_WAVE[ii  ][detAnt_ypos  ][detAnt_zpos+1], 2 );
-        // E*E
-        detAnt_fields[ii/2][3]  += foo*foo;
-
-        // corresponding to an rms(E)-like quantity
-        detAnt_fields[ii/2][4]  += ( foo * sqrt(1./( (double)(tt)/(double)(period) + 1e-6 )) );
-
-        //printf( "tt = %d, ii = %d, sum_t(E*E) = %13.5e\n",
-        //        tt, ii, detAnt_fields[ii/2][3] );
-    }
-
-    return EXIT_SUCCESS;
-
-}//}}}*/
 
 int detAnt1D_storeValues(   gridConfiguration *gridCfg, 
                             size_t detAnt_ypos, size_t detAnt_zpos,

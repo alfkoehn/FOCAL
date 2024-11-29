@@ -212,7 +212,6 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
         printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
 
         free( data2save );
-
     }
 
     return EXIT_SUCCESS;

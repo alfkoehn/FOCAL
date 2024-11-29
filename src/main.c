@@ -176,7 +176,7 @@ int main( int argc, char *argv[] ) {
                           antField_xy, antPhaseTerms );
     printf( "...done defining antenna field\n" );
 
-    printf( "starting defining background plasma density\n" );
+    /*printf( "starting defining background plasma density\n" );
             // ne_profile: 1 = plasma mirror
             //             2 = linearly increasing profile
     make_density_profile( gridCfg,  
@@ -199,7 +199,9 @@ int main( int argc, char *argv[] ) {
             // cntrl_para: B0_profile=1 --> value of Y
             Y_at_X1, 
             J_B0 );
-    printf( "...done defining background magnetic field\n" );
+    printf( "...done defining background magnetic field\n" );*/
+
+    init_background_profiles(  gridCfg, beamCfg, n_e, J_B0 );
 
 #ifdef _OPENMP
 #pragma omp parallel private(n_threads)
