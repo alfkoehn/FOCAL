@@ -34,12 +34,12 @@
 #ifdef HDF5
     #include "hdf5.h"
 #endif
-
-#ifndef M_PI
-  #define M_PI 3.14159265358979323846
+//PI values is defined in the math.h
+#ifndef M_PI    
+  #define M_PI 3.14159265358979323846   
 #endif
 
-#define DETECTOR_ANTENNA_1D
+//#define DETECTOR_ANTENNA_1D
 
 #include "focal-struct.h"
 #include "macros-grid.h"
@@ -52,6 +52,7 @@
 #include "power_calc.h"
 #include "save_data.h"
 #include "boundary_module.h"
+#include "antenna_detector.h"
 
 int main( int argc, char *argv[] ) {
 //{{{
@@ -106,6 +107,7 @@ int main( int argc, char *argv[] ) {
 
     create_folder( gridCfg, saveDCfg );
     init_boundary( gridCfg, boundaryV);
+    init_antennaDetect( gridCfg, beamCfg, antDetect );
 
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
@@ -126,7 +128,7 @@ int main( int argc, char *argv[] ) {
 
     // array for detector antennas
     // sum_t(Ex*Ex) | sum_t(Ey*Ey) | sum_t(Ez*Ez) | sum_t(E*E) | rms(E)
-#ifdef DETECTOR_ANTENNA_1D
+/*#ifdef DETECTOR_ANTENNA_1D
     // TODO: change into 3D array, such that each detector antenna corresponds
     //       to one 2D array; that way it can be written much more failsafe...
     //       requires some changes in procedures for storing and saving
@@ -134,7 +136,7 @@ int main( int argc, char *argv[] ) {
     double (*detAnt_02_fields)[5]       = calloc(NX, sizeof *detAnt_02_fields);
     double (*detAnt_03_fields)[5]       = calloc(NX, sizeof *detAnt_03_fields);
     double (*detAnt_04_fields)[5]       = calloc(NX, sizeof *detAnt_04_fields);
-#endif
+#endif*/
 
     // reading input parameter
     // used for checking if input parameter was provided
@@ -161,26 +163,6 @@ int main( int argc, char *argv[] ) {
     }
 
     pwr_dect    = d_absorb;
-
-#ifdef DETECTOR_ANTENNA_1D
-    detAnt_01_ypos  = ant_y;
-    detAnt_01_zpos  = ant_z+2;
-    detAnt_02_zpos  = round(ant_z+2 + 1*5*period); // steps of 5 cm for 28 GHz = 4.67*period
-    detAnt_03_zpos  = round(ant_z+2 + 2*5*period);
-    detAnt_04_zpos  = round(ant_z+2 + 3*5*period);
-    // positions have to be even numbers, to ensure fields are accessed correctly
-    if ((detAnt_01_ypos % 2) != 0)  ++detAnt_01_ypos;
-    if ((detAnt_01_zpos % 2) != 0)  ++detAnt_01_zpos;
-    if ((detAnt_02_zpos % 2) != 0)  ++detAnt_02_zpos;
-    if ((detAnt_03_zpos % 2) != 0)  ++detAnt_03_zpos;
-    if ((detAnt_04_zpos % 2) != 0)  ++detAnt_04_zpos;
-    // issue a warning when detector antenna position is beyond NZ
-    if (detAnt_04_zpos > (NZ - d_absorb)) {
-        printf( "ERROR: check the detector antenna positions into z direction\n" );
-        printf( "       NZ-d_absorb = %d, detAnt_04_zpos = %d\n", 
-                NZ - d_absorb, detAnt_04_zpos );
-    }
-#endif
 
     T_wave      = 0;
     omega_t     = .0;
@@ -233,22 +215,17 @@ int main( int argc, char *argv[] ) {
             J_B0 );
     printf( "...done defining background magnetic field\n" );
 
-#ifdef DETECTOR_ANTENNA_1D
-    printf( "detector antenna positions: z1 = %d, y1 = %d\n", detAnt_01_zpos, detAnt_01_ypos );
-    printf( "detector antenna positions: z2 = %d, y1 = %d\n", detAnt_02_zpos, detAnt_01_ypos );
-    printf( "detector antenna positions: z3 = %d, y1 = %d\n", detAnt_03_zpos, detAnt_01_ypos );
-    printf( "detector antenna positions: z4 = %d, y1 = %d\n", detAnt_04_zpos, detAnt_01_ypos );
-#endif
-
 #ifdef _OPENMP
 #pragma omp parallel private(n_threads)
     {
     n_threads = omp_get_num_threads();
+    #pragma omp single
     printf( "number of threads that will be used (OpenMP) = %d\n", n_threads );
     }
 #endif
 
     print_systemConfiguration( gridCfg, beamCfg );
+    print_antennaDetec( antDetect );
 
     for (t_int=0 ; t_int <= T_END ; ++t_int) {
         
@@ -278,7 +255,10 @@ int main( int argc, char *argv[] ) {
         // apply absorbers
         advance_boundary(  gridCfg, boundaryV, EB_WAVE, EB_WAVE_ref );
 
-#ifdef DETECTOR_ANTENNA_1D
+        control_antennaDetect(  gridCfg, antDetect, t_int, EB_WAVE /*,
+                                detAnt_01_fields, detAnt_02_fields, detAnt_03_fields, detAnt_04_fields*/ );
+
+/*#ifdef DETECTOR_ANTENNA_1D
         // store wavefields for detector antennas over the final 10 
         // oscillation periods, it was found previously that only one period
         // does not result in a too nice average
@@ -304,7 +284,7 @@ int main( int argc, char *argv[] ) {
                                       EB_WAVE, detAnt_04_fields );
             }
         }
-#endif
+#endif*/
 
         // IQ detector for power detection
         if ( t_int >= 20*period ) {
@@ -362,20 +342,19 @@ int main( int argc, char *argv[] ) {
   
     // write timetrace data into file
     writeConsole_timetraces( (T_END/(int)period), col_for_timetraces, T_END, period, timetraces );
-    control_save( gridCfg, beamCfg ,saveDCfg, antDetect, timetraces, n_e, J_B0,
-                  detAnt_01_fields, detAnt_02_fields, detAnt_03_fields, detAnt_04_fields );
+    control_save( gridCfg, beamCfg ,saveDCfg, /*antDetect,*/ timetraces, n_e, J_B0 /*,
+                  detAnt_01_fields, detAnt_02_fields, detAnt_03_fields, detAnt_04_fields*/ );
 
+    save_AntDetect( gridCfg, saveDCfg, antDetect );
 
+    free_boundary( gridCfg );
+    free_antDetect( gridCfg, antDetect );
     free( EB_WAVE );
     printf( "freed EB_WAVE\n" );
     free( J_B0 );
     printf( "freed J_B0\n" );
     free( n_e );
     printf( "freed n_e\n" );
-
-    free_boundary( gridCfg );
     
     return EXIT_SUCCESS;
 }//}}}
-
-

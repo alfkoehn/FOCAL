@@ -141,16 +141,6 @@
 
 
 /*Macros for Antenna detector*/
-/*#define DET_ANT_ACCES(antDetect, id, i, j)  \
-    ((id == FIELD_01) ? ( detAnt_01_fields ) : \
-     (id == FIELD_02) ? ( detAnt_01_fields ) : \
-     (id == FIELD_03) ? ( detAnt_03_fields ) : \
-     (id == FIELD_04) ? ( detAnt_03_fields ) : 0 )*/
-
-/*#define antDetect01EBG(antDetect,i,j)           antDetect->detAnt_01_fields[ ((i) * 5) + j ]
-#define antDetect02EBG(antDetect,i,j)           antDetect->detAnt_02_fields[ ((i) * 5) + j ]
-#define antDetect03EBG(antDetect,i,j)           antDetect->detAnt_03_fields[ ((i) * 5) + j ]
-#define antDetect04EBG(antDetect,i,j)           antDetect->detAnt_04_fields[ ((i) * 5) + j ]*/
 #define antDetect_1DG(antDetect)                antDetect->antDetect_1D
 #define detAnt01zG(antDetect)                   antDetect->detAnt_01_zpos
 #define detAnt02zG(antDetect)                   antDetect->detAnt_02_zpos
@@ -158,10 +148,6 @@
 #define detAnt04zG(antDetect)                   antDetect->detAnt_04_zpos
 #define detAnt01yG(antDetect)                   antDetect->detAnt_01_ypos
 
-/*#define detAnt_01_Fields(i,j)                   antDetect01EBG(antDetect,i,j)
-#define detAnt_02_Fields(i,j)                   antDetect02EBG(antDetect,i,j)
-#define detAnt_03_Fields(i,j)                   antDetect03EBG(antDetect,i,j)           
-#define detAnt_04_Fields(i,j)                   antDetect04EBG(antDetect,i,j)*/
 #define antDetect_1D                            antDetect_1DG(antDetect)
 #define detAnt_01_zpos                          detAnt01zG(antDetect)
 #define detAnt_02_zpos                          detAnt02zG(antDetect)
@@ -202,10 +188,5 @@
 #define poynt_z1                                powerPoyZ1S(powerValStr)   
 #define poynt_z1_ref                            powerPoyZRS(powerValStr) 
 #define poynt_z2                                powerPoyZ2S(powerValStr) */ 
-
-/*Diagnostics Structure*/
-/*#define TotalEstr(diagnostic, i)                diagnostic->E[i]
-
-#define E(i)                                    TotalEstr(diagnostic, i)*/
 
 #endif

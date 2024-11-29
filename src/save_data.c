@@ -1,6 +1,6 @@
 #include "save_data.h"
 
-void create_folder( gridConfiguration *gridCfg, saveData *saveDCfg){
+void create_folder( gridConfiguration *gridCfg, saveData *saveDCfg ){
     //{{{
 
     simulation_folder( projectPath );
@@ -98,12 +98,12 @@ void copyJSON(const char *path, const char *folder_name){
 void control_save(  gridConfiguration *gridCfg,
                     beamAntennaConfiguration *beamCfg, 
                     saveData *saveDCfg,
-                    antennaDetector *antDetect,
+                    //antennaDetector *antDetect,
                     double timetraces[col_for_timetraces][T_END/(int)period],
                     double n_e[NX/2][NY/2][NZ/2],
-                    double J_B0[NX][NY][NZ],
+                    double J_B0[NX][NY][NZ]/*,
                     double detAnt_01_fields[NX/2][5], double detAnt_02_fields[NX/2][5],
-                    double detAnt_03_fields[NX/2][5], double detAnt_04_fields[NX/2][5] ){
+                    double detAnt_03_fields[NX/2][5], double detAnt_04_fields[NX/2][5]*/ ){
 
     /*Char values as directions to the correct folder*/
     char fullDir[PATH_MAX], filename_hdf5[PATH_MAX], filename_trace[PATH_MAX];
@@ -121,15 +121,14 @@ void control_save(  gridConfiguration *gridCfg,
 
     save_data_toHDF5( gridCfg, beamCfg, filename_hdf5 , n_e, J_B0 );
 
-    if( antDetect_1D == 1){
+    /*if( antDetect_1D == 1){
 
         save_antennaDetect( gridCfg, antDetect,
                         detAnt_01_fields, detAnt_02_fields,
                         detAnt_03_fields, detAnt_04_fields, filename_hdf5);
 
-    }
+    }*/
     
-
 }
 
 int save_data_toHDF5(   gridConfiguration *gridCfg,
@@ -230,7 +229,7 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
     return EXIT_SUCCESS;
 }
 
-int save_antennaDetect( gridConfiguration *gridCfg,
+/*int save_antennaDetect( gridConfiguration *gridCfg,
                         antennaDetector *antDetect,
                         double detAnt_01_fields[NX/2][5],
                         double detAnt_02_fields[NX/2][5],
@@ -261,4 +260,4 @@ int save_antennaDetect( gridConfiguration *gridCfg,
 
     return EXIT_SUCCESS;
 
-}
+}*/

@@ -27,6 +27,26 @@ void free3DArray(double ***array, int N_x, int N_y){
         free(array[i]);
     }
     free(array);
-
 }
 
+// Function to allocate memory for a 2D array with given dimensions
+double **allocate2DArray(int N_x, int N_y) {
+
+    double **array = (double **)calloc( N_x, sizeof(double *));
+
+#pragma omp parallel for
+    for (int i = 0; i < N_x; i++) {
+        array[i] = (double *)calloc( N_y, sizeof(double ));
+    }
+    
+    return array;
+}
+
+void free2DArray(double **array, int N_x){
+
+#pragma omp parallel for
+    for(int i = 0 ; i<N_x ; i+=1 ){
+        free(array[i]);
+    }
+    free(array);
+}
