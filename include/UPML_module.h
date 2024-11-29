@@ -11,7 +11,7 @@
 #include "auxiliar_module.h"
 
 void init_UPML_fields( gridConfiguration *gridCfg );
-int free_PML_memory( gridConfiguration *gridCfg );
+int free_UPML_memory( gridConfiguration *gridCfg );
 
 /*Magnetic field UPML*/
 void UPML_B_faces(  gridConfiguration *gridCfg, 

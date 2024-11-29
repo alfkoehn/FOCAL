@@ -23,12 +23,6 @@ int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], do
 //#endif
 
 //#if defined(HDF5) && defined(DETECTOR_ANTENNA_1D)
-/*int detAnt1D_write2hdf5( int N_x, 
-                         char filename[], char detAnt_groupName[], 
-                         size_t detAnt_ypos, size_t detAnt_zpos,
-                         double detAnt_fields[N_x/2][5] );*/
-//#endif
-
 int detAnt1D_write2hdf5(    int N_x, 
                             char filename[], char detAnt_groupName[], 
                             size_t detAnt_ypos, size_t detAnt_zpos,

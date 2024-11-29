@@ -117,26 +117,12 @@ int main( int argc, char *argv[] ) {
     double (*J_B0)[NY][NZ]              = calloc(NX, sizeof *J_B0);
     // background electron plasma density
     double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);
-    // used when writing data into hdf5-files
-    //double (*data2save)[NY/2][NZ/2]     = calloc(NX/2, sizeof *data2save);
     // antenna: envelope of injected field
     double (*antField_xy)[NY/2]         = calloc(NX/2, sizeof *antField_xy);
     // antenna: phase terms 
     double (*antPhaseTerms)[NY/2]       = calloc(NX/2, sizeof *antPhaseTerms);
     // time traces
     double (*timetraces)[8]             = calloc((T_END/(int)period), sizeof *timetraces);
-
-    // array for detector antennas
-    // sum_t(Ex*Ex) | sum_t(Ey*Ey) | sum_t(Ez*Ez) | sum_t(E*E) | rms(E)
-/*#ifdef DETECTOR_ANTENNA_1D
-    // TODO: change into 3D array, such that each detector antenna corresponds
-    //       to one 2D array; that way it can be written much more failsafe...
-    //       requires some changes in procedures for storing and saving
-    double (*detAnt_01_fields)[5]       = calloc(NX, sizeof *detAnt_01_fields);
-    double (*detAnt_02_fields)[5]       = calloc(NX, sizeof *detAnt_02_fields);
-    double (*detAnt_03_fields)[5]       = calloc(NX, sizeof *detAnt_03_fields);
-    double (*detAnt_04_fields)[5]       = calloc(NX, sizeof *detAnt_04_fields);
-#endif*/
 
     // reading input parameter
     // used for checking if input parameter was provided
@@ -258,34 +244,6 @@ int main( int argc, char *argv[] ) {
         control_antennaDetect(  gridCfg, antDetect, t_int, EB_WAVE /*,
                                 detAnt_01_fields, detAnt_02_fields, detAnt_03_fields, detAnt_04_fields*/ );
 
-/*#ifdef DETECTOR_ANTENNA_1D
-        // store wavefields for detector antennas over the final 10 
-        // oscillation periods, it was found previously that only one period
-        // does not result in a too nice average
-        if ( t_int >= ( T_END - 10*period ) ) {
-            if (detAnt_01_zpos < ( NZ - d_absorb)) {
-                detAnt1D_storeValues( gridCfg, detAnt_01_ypos, detAnt_01_zpos,
-                                      t_int,  
-                                      EB_WAVE, detAnt_01_fields );
-            }
-            if (detAnt_02_zpos < ( NZ - d_absorb)) {
-                detAnt1D_storeValues( gridCfg, detAnt_01_ypos, detAnt_02_zpos,
-                                      t_int, 
-                                      EB_WAVE, detAnt_02_fields );
-            }
-            if (detAnt_03_zpos < ( NZ - d_absorb)) {
-                detAnt1D_storeValues( gridCfg, detAnt_01_ypos, detAnt_03_zpos,
-                                      t_int,
-                                      EB_WAVE, detAnt_03_fields );
-            }
-            if (detAnt_04_zpos < ( NZ - d_absorb)) {
-                detAnt1D_storeValues( gridCfg, detAnt_01_ypos, detAnt_04_zpos,
-                                      t_int,
-                                      EB_WAVE, detAnt_04_fields );
-            }
-        }
-#endif*/
-
         // IQ detector for power detection
         if ( t_int >= 20*period ) {
             // z1-plane and z2-plane
@@ -342,8 +300,7 @@ int main( int argc, char *argv[] ) {
   
     // write timetrace data into file
     writeConsole_timetraces( (T_END/(int)period), col_for_timetraces, T_END, period, timetraces );
-    control_save( gridCfg, beamCfg ,saveDCfg, /*antDetect,*/ timetraces, n_e, J_B0 /*,
-                  detAnt_01_fields, detAnt_02_fields, detAnt_03_fields, detAnt_04_fields*/ );
+    control_save( gridCfg, beamCfg ,saveDCfg, timetraces, n_e, J_B0 );
 
     save_AntDetect( gridCfg, saveDCfg, antDetect );
 

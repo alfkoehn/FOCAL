@@ -12,4 +12,6 @@ void free3DArray(double ***array, int N_x, int N_y);
 double **allocate2DArray(int N_x, int N_y);
 void free2DArray(double **array, int N_x);
 
+int set2zero3DArray( double ***arr_3D, size_t N_x, size_t N_y, size_t N_z  );
+
 #endif

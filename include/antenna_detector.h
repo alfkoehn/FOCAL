@@ -23,21 +23,13 @@ int print_antennaDetec( antennaDetector *antDetect );
 int control_antennaDetect(  gridConfiguration *gridCfg,
                             antennaDetector *antDetect,
                             int t_int,
-                            double EB_WAVE[NX][NY][NZ] /*,
-                            double detAnt_01_fields[NX/2][5], double detAnt_02_fields[NX/2][5],
-                            double detAnt_03_fields[NX/2][5], double detAnt_04_fields[NX/2][5]*/ );
+                            double EB_WAVE[NX][NY][NZ] );
 
-/*int detAnt1D_storeValues( gridConfiguration *gridCfg, 
-                          size_t detAnt_ypos, size_t detAnt_zpos,
-                          int tt, 
-                          double EB_WAVE[NX][NY][NZ], 
-                          double detAnt_fields[NX/2][5] );*/
-
-int detAnt1D_storeValues(  gridConfiguration *gridCfg, 
-                                size_t detAnt_ypos, size_t detAnt_zpos,
-                                int tt, 
-                                double EB_WAVE[NX][NY][NZ], 
-                                double **detAnt_fields );
+int detAnt1D_storeValues(   gridConfiguration *gridCfg, 
+                            size_t detAnt_ypos, size_t detAnt_zpos,
+                            int tt, 
+                            double EB_WAVE[NX][NY][NZ], 
+                            double **detAnt_fields );
 
 void save_AntDetect( gridConfiguration *gridCfg, saveData *saveDCfg,
                             antennaDetector *antDetect );

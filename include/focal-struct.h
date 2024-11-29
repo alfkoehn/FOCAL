@@ -28,13 +28,8 @@ typedef struct boundaryVariables{            /*Store grid value for the boundary
 
     /*ABC boundary*/
     double eco,
-    
-    /*Mur boundary*/
-    /**E_Xdir_OLD, *E_Ydir_OLD, *E_Zdir_OLD,
-    *E_Xdir_OLD_ref, *E_Ydir_OLD_ref, *E_Zdir_OLD_ref,*/
 
     /*UPML boundary*/
-    /**DH_WAVE, *DH_WAVE_ref,*/
     *F1x, *F1y, *F1z,
     *F2x, *F2y, *F2z,
     *Cx, *Cy, *Cz,
@@ -50,7 +45,6 @@ typedef struct beamAntennaConfiguration {   /*Antenna configuration variables*/
         rampUpMethod;
     double
         omega_t,
-        /**antField_xy, *antPhaseTerms,*/
         antAngle_zy, antAngle_zx,
         ant_w0x, ant_w0y,
         z2waist,
@@ -63,11 +57,6 @@ typedef struct antennaDetector{
         detAnt_01_zpos, detAnt_02_zpos,
         detAnt_03_zpos, detAnt_04_zpos,
         detAnt_01_ypos;
-    /*double
-        *detAnt_01_fields,
-        *detAnt_02_fields,
-        *detAnt_03_fields,
-        *detAnt_04_fields;*/
 } antennaDetector;
 
 /*typedef struct powerCalcValues{
@@ -85,12 +74,5 @@ typedef struct antennaDetector{
         poynt_z1, poynt_z2,
         poynt_z1_ref;    
 } powerCalcValues;*/
-
-/*enum FieldID {
-    FIELD_01,
-    FIELD_02,
-    FIELD_03,
-    FIELD_04
-};*/
 
 #endif

@@ -99,9 +99,7 @@ int print_antennaDetec( antennaDetector *antDetect ){
 int control_antennaDetect(  gridConfiguration *gridCfg,
                             antennaDetector *antDetect,
                             int t_int,
-                            double EB_WAVE[NX][NY][NZ] /*,
-                            double detAnt_01_fields[NX/2][5], double detAnt_02_fields[NX/2][5],
-                            double detAnt_03_fields[NX/2][5], double detAnt_04_fields[NX/2][5]*/ ){
+                            double EB_WAVE[NX][NY][NZ] ){
 
     if( antDetect_1D == 1 ){ 
         // store wavefields for detector antennas over the final 10 

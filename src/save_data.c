@@ -98,12 +98,9 @@ void copyJSON(const char *path, const char *folder_name){
 void control_save(  gridConfiguration *gridCfg,
                     beamAntennaConfiguration *beamCfg, 
                     saveData *saveDCfg,
-                    //antennaDetector *antDetect,
                     double timetraces[col_for_timetraces][T_END/(int)period],
                     double n_e[NX/2][NY/2][NZ/2],
-                    double J_B0[NX][NY][NZ]/*,
-                    double detAnt_01_fields[NX/2][5], double detAnt_02_fields[NX/2][5],
-                    double detAnt_03_fields[NX/2][5], double detAnt_04_fields[NX/2][5]*/ ){
+                    double J_B0[NX][NY][NZ] ){
 
     /*Char values as directions to the correct folder*/
     char fullDir[PATH_MAX], filename_hdf5[PATH_MAX], filename_trace[PATH_MAX];
@@ -120,14 +117,6 @@ void control_save(  gridConfiguration *gridCfg,
                            filename_trace , timetraces );
 
     save_data_toHDF5( gridCfg, beamCfg, filename_hdf5 , n_e, J_B0 );
-
-    /*if( antDetect_1D == 1){
-
-        save_antennaDetect( gridCfg, antDetect,
-                        detAnt_01_fields, detAnt_02_fields,
-                        detAnt_03_fields, detAnt_04_fields, filename_hdf5);
-
-    }*/
     
 }
 
@@ -229,35 +218,3 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
     return EXIT_SUCCESS;
 }
 
-/*int save_antennaDetect( gridConfiguration *gridCfg,
-                        antennaDetector *antDetect,
-                        double detAnt_01_fields[NX/2][5],
-                        double detAnt_02_fields[NX/2][5],
-                        double detAnt_03_fields[NX/2][5],
-                        double detAnt_04_fields[NX/2][5],
-                        char filename_hdf5[]){
-
-    if (detAnt_01_zpos < ( NZ - d_absorb)) {
-        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_01" , 
-                             detAnt_01_ypos, detAnt_01_zpos,
-                             detAnt_01_fields );
-    }
-    if (detAnt_02_zpos < ( NZ - d_absorb)) {
-        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_02" , 
-                             detAnt_01_ypos, detAnt_02_zpos,
-                             detAnt_02_fields );
-    }
-    if (detAnt_03_zpos < ( NZ - d_absorb)) {
-        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_03" , 
-                             detAnt_01_ypos, detAnt_03_zpos,
-                             detAnt_03_fields );
-    }
-    if (detAnt_04_zpos < ( NZ - d_absorb)) {
-        detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_04" , 
-                             detAnt_01_ypos, detAnt_04_zpos,
-                             detAnt_04_fields );
-    }
-
-    return EXIT_SUCCESS;
-
-}*/

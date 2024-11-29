@@ -50,3 +50,21 @@ void free2DArray(double **array, int N_x){
     }
     free(array);
 }
+
+int set2zero3DArray( double ***arr_3D, size_t N_x, size_t N_y, size_t N_z  ){
+//{{{
+
+    size_t
+        ii, jj, kk;
+
+#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
+    for (ii=0 ; ii<N_x ; ++ii) {
+        for (jj=0 ; jj<N_y ; ++jj) {
+            for (kk=0 ; kk<N_z ; ++kk) {
+                arr_3D[ii][jj][kk]  = .0;
+            }
+        }
+    }
+
+    return EXIT_SUCCESS;
+} //}}}
