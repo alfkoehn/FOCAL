@@ -169,7 +169,7 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
         sel_boundary = item_boundary->valueint;
     }
 
-    cJSON *item_dBoundary = cJSON_GetObjectItemCaseSensitive(json, "PML_size");   //size absorb boundary
+    cJSON *item_dBoundary = cJSON_GetObjectItemCaseSensitive(json, "UPML_size");   //size absorb boundary
     if( cJSON_IsNumber(item_dBoundary) ){
         d_absorb = item_dBoundary->valueint;
         d_absorb = d_absorb + 2;

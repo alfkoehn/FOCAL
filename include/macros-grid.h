@@ -50,9 +50,7 @@
 #define col_for_timetraces              col_for_timetracesSt(saveDCfg)
 
 /*Macros for antenna injection*/
-/*#define antFieldBG(beamCfg,i,j)         beamCfg->antField_xy[( (i) * (NY/2) ) + j ]
-#define antPhaseBG(beamCfg,i,j)         beamCfg->antPhaseTerms[( (i) * (NY/2) ) + j ]
-#define T_waveBG(beamCfg)               beamCfg->T_wave*/
+/*#define T_waveBG(beamCfg)               beamCfg->T_wave*/
 #define exc_signalBG(beamCfg)           beamCfg->exc_signal
 #define ant_xBG(beamCfg)                beamCfg->ant_x
 #define ant_yBG(beamCfg)                beamCfg->ant_y
@@ -68,8 +66,7 @@
 #define k0Ln_at_X1BG(beamCfg)           beamCfg->k0Ln_at_X1
 #define theta_at_X1BG(beamCfg)          beamCfg->theta_at_X1
 
-/*#define antField_xy(i,j)                antFieldBG(beamCfg,i,j)         
-#define antPhaseTerms(i,j)              antPhaseBG(beamCfg,i,j)         
+/*      
 #define T_wave                          T_waveBG(beamCfg)*/               
 #define exc_signal                      exc_signalBG(beamCfg)           
 #define ant_x                           ant_xBG(beamCfg)               
@@ -91,24 +88,7 @@
 
 #define eco                                     ecoBV(boundaryV)
 
-/*Macros for Mur boundary*/
-/*#define E_Xdir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Xdir_OLD[((i) * (NY) + j) * (NZ) + k]
-#define E_Ydir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Ydir_OLD[((i) * (d_absorb) + j) * (NZ) + k]
-#define E_Zdir_OLD_G(boundaryG,i,j,k)           boundaryG->E_Zdir_OLD[((i) * (NY) + j) * (d_absorb) + k]
-#define E_Xdir_OLD_ref_G(boundaryG,i,j,k)       boundaryG->E_Xdir_OLD_ref[((i) * (NY) + j) * (NZ_REF) + k]
-#define E_Ydir_OLD_ref_G(boundaryG,i,j,k)       boundaryG->E_Ydir_OLD_ref[((i) * (d_absorb) + j) * (NZ_REF) + k]
-#define E_Zdir_OLD_ref_G(boundaryG,i,j,k)       boundaryG->E_Zdir_OLD_ref[((i) * (NY) + j) * (d_absorb) + k]
-
-#define E_Xdir_OLD(i,j,k)                       E_Xdir_OLD_G(boundaryG,i,j,k)
-#define E_Ydir_OLD(i,j,k)                       E_Ydir_OLD_G(boundaryG,i,j,k)
-#define E_Zdir_OLD(i,j,k)                       E_Zdir_OLD_G(boundaryG,i,j,k)
-#define E_Xdir_OLD_ref(i,j,k)                   E_Xdir_OLD_ref_G(boundaryG,i,j,k)
-#define E_Ydir_OLD_ref(i,j,k)                   E_Ydir_OLD_ref_G(boundaryG,i,j,k)
-#define E_Zdir_OLD_ref(i,j,k)                   E_Zdir_OLD_ref_G(boundaryG,i,j,k)*/
-
 /*Macros for UPML boundary layer*/
-/*#define DH_WAVEstr(PMLG,i,j,k)                  boundaryG->DH_WAVE[((i) * (NY) + j) * (NZ) + k]
-#define DH_WAVE_refStr(PMLG,i,j,k)              boundaryG->DH_WAVE_ref[((i) * (NY) + j) * (NZ_REF) + k]*/
 #define F1xStr(boundaryV,i)                     boundaryV->F1x[i]
 #define F1yStr(boundaryV,j)                     boundaryV->F1y[j]
 #define F1zStr(boundaryV,k)                     boundaryV->F1z[k]
@@ -122,9 +102,7 @@
 #define F1zrStr(boundaryV,k)                    boundaryV->F1zr[k]
 #define F2zrStr(boundaryV,k)                    boundaryV->F2zr[k]
 #define CzrStr(boundaryV,k)                     boundaryV->Czr[k]
-
-/*#define DH_WAVE(i,j,k)                          DH_WAVEstr(PMLG,i,j,k)
-#define DH_WAVE_ref(i,j,k)                      DH_WAVE_refStr(PMLG,i,j,k)  */            
+            
 #define F1x(i)                                  F1xStr(boundaryV,i) 
 #define F1y(j)                                  F1yStr(boundaryV,j)
 #define F1z(k)                                  F1zStr(boundaryV,k)
@@ -141,16 +119,6 @@
 
 
 /*Macros for Antenna detector*/
-/*#define DET_ANT_ACCES(antDetect, id, i, j)  \
-    ((id == FIELD_01) ? ( detAnt_01_fields ) : \
-     (id == FIELD_02) ? ( detAnt_01_fields ) : \
-     (id == FIELD_03) ? ( detAnt_03_fields ) : \
-     (id == FIELD_04) ? ( detAnt_03_fields ) : 0 )*/
-
-/*#define antDetect01EBG(antDetect,i,j)           antDetect->detAnt_01_fields[ ((i) * 5) + j ]
-#define antDetect02EBG(antDetect,i,j)           antDetect->detAnt_02_fields[ ((i) * 5) + j ]
-#define antDetect03EBG(antDetect,i,j)           antDetect->detAnt_03_fields[ ((i) * 5) + j ]
-#define antDetect04EBG(antDetect,i,j)           antDetect->detAnt_04_fields[ ((i) * 5) + j ]*/
 #define antDetect_1DG(antDetect)                antDetect->antDetect_1D
 #define detAnt01zG(antDetect)                   antDetect->detAnt_01_zpos
 #define detAnt02zG(antDetect)                   antDetect->detAnt_02_zpos
@@ -158,10 +126,6 @@
 #define detAnt04zG(antDetect)                   antDetect->detAnt_04_zpos
 #define detAnt01yG(antDetect)                   antDetect->detAnt_01_ypos
 
-/*#define detAnt_01_Fields(i,j)                   antDetect01EBG(antDetect,i,j)
-#define detAnt_02_Fields(i,j)                   antDetect02EBG(antDetect,i,j)
-#define detAnt_03_Fields(i,j)                   antDetect03EBG(antDetect,i,j)           
-#define detAnt_04_Fields(i,j)                   antDetect04EBG(antDetect,i,j)*/
 #define antDetect_1D                            antDetect_1DG(antDetect)
 #define detAnt_01_zpos                          detAnt01zG(antDetect)
 #define detAnt_02_zpos                          detAnt02zG(antDetect)
@@ -202,10 +166,5 @@
 #define poynt_z1                                powerPoyZ1S(powerValStr)   
 #define poynt_z1_ref                            powerPoyZRS(powerValStr) 
 #define poynt_z2                                powerPoyZ2S(powerValStr) */ 
-
-/*Diagnostics Structure*/
-/*#define TotalEstr(diagnostic, i)                diagnostic->E[i]
-
-#define E(i)                                    TotalEstr(diagnostic, i)*/
 
 #endif

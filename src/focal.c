@@ -22,15 +22,15 @@ void advance_fields(    gridConfiguration *gridCfg,
     }else if( sel_boundary == 3 ){
 
         //Advance wave-plasma current
-        advance_J_PML(      gridCfg, EB_WAVE, J_B0, n_e );
+        advance_J_UPML(      gridCfg, EB_WAVE, J_B0, n_e );
 
         //Advance wave magnetic field
-        advance_B_PML(      gridCfg, EB_WAVE);
-        advance_Bref_PML(   gridCfg, EB_WAVE_ref );
+        advance_B_UPML(      gridCfg, EB_WAVE);
+        advance_Bref_UPML(   gridCfg, EB_WAVE_ref );
 
         //Advance wave electric field
-        advance_E_PML(      gridCfg, EB_WAVE, J_B0 );
-        advance_Eref_PML(   gridCfg, EB_WAVE_ref );
+        advance_E_UPML(      gridCfg, EB_WAVE, J_B0 );
+        advance_Eref_UPML(   gridCfg, EB_WAVE_ref );
 
     }
 }
@@ -409,7 +409,7 @@ int set2zero_3D( size_t N_x, size_t N_y, size_t N_z, double arr_3D[N_x][N_y][N_z
 } //}}}
 
 /*UPML functions*/
-int advance_J_PML(  gridConfiguration *gridCfg, 
+int advance_J_UPML(  gridConfiguration *gridCfg, 
                     double EB_WAVE[NX][NY][NZ], 
                     double J_B0[NX][NY][NZ],
                     double n_e[NX/2][NY/2][NZ/2] ) { 
@@ -466,7 +466,7 @@ int advance_J_PML(  gridConfiguration *gridCfg,
 }//}}}
 
 
-int advance_B_PML(  gridConfiguration *gridCfg, 
+int advance_B_UPML(  gridConfiguration *gridCfg, 
                     double EB_WAVE[NX][NY][NZ] ) {
 //{{{
     // B_new = B_old - nabla x E
@@ -502,7 +502,7 @@ int advance_B_PML(  gridConfiguration *gridCfg,
 }//}}}
 
 
-int advance_Bref_PML(   gridConfiguration *gridCfg, 
+int advance_Bref_UPML(   gridConfiguration *gridCfg, 
                         double EB_WAVE[NX][NY][NZ_REF] ) {
 //{{{
     size_t
@@ -534,7 +534,7 @@ int advance_Bref_PML(   gridConfiguration *gridCfg,
 }//}}}
 
 
-int advance_E_PML(  gridConfiguration *gridCfg, 
+int advance_E_UPML(  gridConfiguration *gridCfg, 
                     double EB_WAVE[NX][NY][NZ], 
                     double J_B0[NX][NY][NZ] ) {
 //{{{
@@ -570,7 +570,7 @@ int advance_E_PML(  gridConfiguration *gridCfg,
 }//}}}
 
 
-int advance_Eref_PML(   gridConfiguration *gridCfg, 
+int advance_Eref_UPML(   gridConfiguration *gridCfg, 
                         double EB_WAVE[NX][NY][NZ_REF] ) { 
 //{{{
     // same as advance_E but for reference fields (directional coupler)

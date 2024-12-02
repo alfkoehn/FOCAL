@@ -11,7 +11,7 @@ void init_UPML_fields( gridConfiguration *gridCfg ){
 
 }
 
-int free_PML_memory( gridConfiguration *gridCfg ){
+int free_UPML_memory( gridConfiguration *gridCfg ){
 
     free3DArray(DH_WAVE, NX, NY);
     free3DArray(DH_WAVE_ref, NX, NY);

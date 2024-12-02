@@ -10,6 +10,11 @@
 #include "hdf5.h"
 #include "grid_io.h"
 
+void init_background_profiles(  gridConfiguration *gridCfg,  
+                                beamAntennaConfiguration *beamCfg,
+                                double n_e[NX/2][NY/2][NZ/2], 
+                                double J_B0[NX][NY][NZ] );
+
 int make_density_profile( gridConfiguration *gridCfg, 
                           double cntrl_para, 
                           double n_e[NX/2][NY/2][NZ/2] );

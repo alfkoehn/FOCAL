@@ -1,6 +1,6 @@
 {	
-    "Main_Project": 		"Boundary_test",
-    "Case_foldername": 		"Boundary_PML_example",
+    "Main_Project": 		"Great_Project",
+    "Case_foldername": 		"Test_case_01",
     "filename_hdf5": 		"fileout.h5",
     "filename_timetraces": 	"timetraces2.dat",
     
@@ -17,7 +17,7 @@
     "ne_0":		0.0,
     
     "Boundary_Method": 	3,
-    "PML_size":		20,
+    "UPML_size":	20,
     
     "Antenna_Pos_x": 	200,
     "Antenna_Pos_y": 	150,
@@ -32,6 +32,6 @@
     
     "Detector_Antenna": 1,
     
-    "data_save_frequency": 1
+    "data_save_frequency": 25
     
 }

@@ -1,5 +1,37 @@
 #include "background_profiles.h"
 
+void init_background_profiles(  gridConfiguration *gridCfg, 
+                                beamAntennaConfiguration *beamCfg,
+                                double n_e[NX/2][NY/2][NZ/2], 
+                                double J_B0[NX][NY][NZ] ){
+
+    printf( "starting defining background plasma density\n" );
+            // ne_profile: 1 = plasma mirror
+            //             2 = linearly increasing profile
+    make_density_profile( gridCfg,  
+            // cntrl_para: ne_profile=1 --> 0: plane mirror; oblique mirror: -.36397; 20 degrees: -.17633
+            //             ne_profile=2 --> k0*Ln: 25
+            k0Ln_at_X1,
+            n_e );
+    printf( " ...setting density in absorber to 0...\n ");
+    //set_densityInAbsorber_v2( &gridCfg, "z1", n_e );
+    //set_densityInAbsorber_v2( &gridCfg, "x1x2y1y2z1", n_e );
+    printf( "...done defining background plasma density\n" );
+
+    printf( "starting defining background magnetic field...\n" );
+    // B0x: even-odd-odd
+    // B0y: odd-even-odd
+    // B0z: odd-odd-even
+            // B0_profile: 1 = constant field
+    make_B0_profile(
+            gridCfg,
+            // cntrl_para: B0_profile=1 --> value of Y
+            Y_at_X1, 
+            J_B0 );
+    printf( "...done defining background magnetic field\n" );
+
+}
+
 int make_density_profile( gridConfiguration *gridCfg, 
                           double cntrl_para, 
                           double n_e[NX/2][NY/2][NZ/2] ) {

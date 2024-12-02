@@ -481,59 +481,11 @@ int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], do
 //#endif
 
 
-//#ifdef DETECTOR_ANTENNA_1D
-int detAnt1D_storeValues( gridConfiguration *gridCfg, 
-                          size_t detAnt_ypos, size_t detAnt_zpos,
-                          int tt, 
-                          double EB_WAVE[NX][NY][NZ], 
-                          double detAnt_fields[NX/2][5] ) { 
-    //{{{
-    size_t
-        ii;
-
-    double
-        foo;
-
-    // Ex: odd-even-even
-    // Ey: even-odd-even
-    // Ez: even-even-odd
-
-#pragma omp parallel default(shared) private(ii,foo)
-#pragma omp for
-    for ( ii=2 ; ii <= NX-2 ; ii+=2 ) {
-        // calculate abs(E)
-        foo = sqrt(  pow(EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos  ],2)
-                    +pow(EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos  ],2)
-                    +pow(EB_WAVE[ii  ][detAnt_ypos  ][detAnt_zpos+1],2) );
-
-        // sum of E over time
-        // Ex*Ex
-        detAnt_fields[ii/2][0]  += pow( EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos  ], 2 );
-        // Ey*Ey
-        detAnt_fields[ii/2][1]  += pow( EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos  ], 2 );
-        // Ez*Ez
-        detAnt_fields[ii/2][2]  += pow( EB_WAVE[ii  ][detAnt_ypos  ][detAnt_zpos+1], 2 );
-        // E*E
-        detAnt_fields[ii/2][3]  += foo*foo;
-
-        // corresponding to an rms(E)-like quantity
-        detAnt_fields[ii/2][4]  += ( foo * sqrt(1./( (double)(tt)/(double)(period) + 1e-6 )) );
-
-        //printf( "tt = %d, ii = %d, sum_t(E*E) = %13.5e\n",
-        //        tt, ii, detAnt_fields[ii/2][3] );
-    }
-
-    return EXIT_SUCCESS;
-
-}//}}}
-//#endif
-
-
 //#if defined(HDF5) && defined(DETECTOR_ANTENNA_1D)
 int detAnt1D_write2hdf5( int N_x, 
                          char filename[], char detAnt_groupName[], 
                          size_t detAnt_ypos, size_t detAnt_zpos,
-                         double detAnt_fields[N_x/2][5] ){
+                         double **detAnt_fields ){
     //#{{{
 
     // hdf related variables

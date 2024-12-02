@@ -21,6 +21,6 @@ Developers: [Alf Köhn-Seemann](https://www.igvp.uni-stuttgart.de/team/Koehn-See
 
 * **Tools**: Contains a series of Python codes to help user in the input profiles, and results visualization. 
 
-* **Future additions**: Uniaxial Perfectly Matching Layer (UPML), helical antenna for modes m=0 and m=1 plasma injection.
+* **Future additions**: Helical antenna for modes m=0 and m=1 plasma injection.
 
 Note that this code is still evolving. 

@@ -2,7 +2,7 @@
 #define FOCAL_STRUCT_H
 
 // define structures
-struct gridConfiguration {      /*Saves the main physical parameters of the system*/
+typedef struct gridConfiguration {      /*Saves the main physical parameters of the system*/
     int
         Nx, Ny, Nz,   
         Nz_ref,
@@ -14,7 +14,7 @@ struct gridConfiguration {      /*Saves the main physical parameters of the syst
         period,
         dx,dt,
         ne_0, B0_value;
-};
+} gridConfiguration;
 
 typedef struct saveData{                /*Variables related to simulation data saving*/
     
@@ -28,13 +28,8 @@ typedef struct boundaryVariables{            /*Store grid value for the boundary
 
     /*ABC boundary*/
     double eco,
-    
-    /*Mur boundary*/
-    /**E_Xdir_OLD, *E_Ydir_OLD, *E_Zdir_OLD,
-    *E_Xdir_OLD_ref, *E_Ydir_OLD_ref, *E_Zdir_OLD_ref,*/
 
     /*UPML boundary*/
-    /**DH_WAVE, *DH_WAVE_ref,*/
     *F1x, *F1y, *F1z,
     *F2x, *F2y, *F2z,
     *Cx, *Cy, *Cz,
@@ -42,7 +37,7 @@ typedef struct boundaryVariables{            /*Store grid value for the boundary
     *Czr;
 } boundaryVariables;
 
-struct beamAntennaConfiguration {   /*Antenna configuration variables*/
+typedef struct beamAntennaConfiguration {   /*Antenna configuration variables*/
     int
         T_wave,
         exc_signal,
@@ -50,12 +45,11 @@ struct beamAntennaConfiguration {   /*Antenna configuration variables*/
         rampUpMethod;
     double
         omega_t,
-        /**antField_xy, *antPhaseTerms,*/
         antAngle_zy, antAngle_zx,
         ant_w0x, ant_w0y,
         z2waist,
         Y_at_X1, k0Ln_at_X1, theta_at_X1;
-};
+} beamAntennaConfiguration;
 
 typedef struct antennaDetector{
     int 
@@ -63,11 +57,6 @@ typedef struct antennaDetector{
         detAnt_01_zpos, detAnt_02_zpos,
         detAnt_03_zpos, detAnt_04_zpos,
         detAnt_01_ypos;
-    /*double
-        *detAnt_01_fields,
-        *detAnt_02_fields,
-        *detAnt_03_fields,
-        *detAnt_04_fields;*/
 } antennaDetector;
 
 /*typedef struct powerCalcValues{
@@ -85,23 +74,5 @@ typedef struct antennaDetector{
         poynt_z1, poynt_z2,
         poynt_z1_ref;    
 } powerCalcValues;*/
-
-/*typedef struct codeDiagnostics{
-
-    double 
-        *E, *R,
-        *A_ref, *A_inc,
-        *PML_values;
-} codeDiagnostics;*/
-
-/*enum FieldID {
-    FIELD_01,
-    FIELD_02,
-    FIELD_03,
-    FIELD_04
-};*/
-
-typedef struct gridConfiguration gridConfiguration;
-typedef struct beamAntennaConfiguration beamAntennaConfiguration;
 
 #endif
