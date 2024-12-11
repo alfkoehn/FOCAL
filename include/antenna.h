@@ -7,22 +7,24 @@
 
 #include "focal-struct.h"
 #include "macros-grid.h"
-//#include "../include/focal.h"
-#include "focal.h"
+#include "auxiliar_module.h"
 
-int make_antenna_profile( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg,
-                          double antField_xy[NX/2][NY/2], double antPhaseTerms[NX/2][NY/2] );
+void init_antennaInjection( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg );
+int make_antenna_profile(   gridConfiguration *gridCfg, 
+                            beamAntennaConfiguration *beamCfg );
+
+void control_antennaInjection(  gridConfiguration *gridCfg, 
+                                beamAntennaConfiguration *beamCfg,
+                                int t_int,
+                                double EB_WAVE[NX][NY][NZ],
+                                double EB_WAVE_ref[NX][NY][NZ_REF] );
 
 int add_source( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, 
-                int t_int, double omega_t, 
-                double antField_xy[NX/2][NY/2], 
-                double antPhaseTerms[NX/2][NY/2],
+                int t_int, 
                 double EB_WAVE[NX][NY][NZ] );
 
 int add_source_ref( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, 
-                    int t_int, double omega_t, 
-                    double antField_xy[NX/2][NY/2], 
-                    double antPhaseTerms[NX/2][NY/2],
+                    int t_int, 
                     double EB_WAVE[NX][NY][NZ_REF] );
 
 double antenna_field_rampup( int RampUpMethod, double Period, int t_int );

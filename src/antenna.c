@@ -1,7 +1,51 @@
 #include "antenna.h"
 
-int make_antenna_profile( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, 
-                          double antField_xy[NX/2][NY/2], double antPhaseTerms[NX/2][NY/2] ) {
+static double **antField_xy = NULL;
+static double **antPhaseTerms = NULL;
+
+void init_antennaInjection( gridConfiguration *gridCfg, 
+                            beamAntennaConfiguration *beamCfg ){
+
+    /*Allocate memory for AntField_xy and antPhaseTerms*/
+    // antenna: envelope of injected field
+    antField_xy = allocate2DArray(NX/2, NY/2);
+    // antenna: phase terms
+    antPhaseTerms = allocate2DArray(NX/2, NY/2);
+
+    /*Initialize antenna beam*/
+    printf( "starting to define antenna field...\n" );
+    make_antenna_profile( gridCfg, beamCfg );
+    printf( "...done defining antenna field\n" );
+
+}
+
+void control_antennaInjection(  gridConfiguration *gridCfg, 
+                                beamAntennaConfiguration *beamCfg,
+                                int t_int,
+                                double EB_WAVE[NX][NY][NZ],
+                                double EB_WAVE_ref[NX][NY][NZ_REF] ){
+
+    omega_t += 2.*M_PI/period;
+
+    // to avoid precision problems when a lot of pi's are summed up        
+    if (omega_t >= 2.*M_PI) {
+        omega_t    += -2.*M_PI;
+        T_wave     += 1;
+        //printf("status: number of oscillation periods: %d (t_int= %d) \n",T_wave,t_int);
+    }
+
+    // add source
+    add_source( gridCfg, beamCfg,
+                t_int,  
+                EB_WAVE );
+    add_source_ref( gridCfg, beamCfg,
+                    t_int,  
+                    EB_WAVE_ref );
+
+}
+
+int make_antenna_profile(   gridConfiguration *gridCfg, 
+                            beamAntennaConfiguration *beamCfg ) {
 //{{{
 // like make_antenna_profile_3 but with previously missing optional for z2waist
 // i.e. allowing now for converging beams with their waist not in the antenna plane
@@ -82,9 +126,7 @@ int make_antenna_profile( gridConfiguration *gridCfg, beamAntennaConfiguration *
 
 
 int add_source( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, 
-                int t_int, double omega_t, 
-                double antField_xy[NX/2][NY/2], 
-                double antPhaseTerms[NX/2][NY/2],
+                int t_int,
                 double EB_WAVE[NX][NY][NZ] ) {
 //{{{
 
@@ -186,9 +228,7 @@ int add_source( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg,
 
 
 int add_source_ref( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, 
-                    int t_int, double omega_t, 
-                    double antField_xy[NX/2][NY/2], 
-                    double antPhaseTerms[NX/2][NY/2],
+                    int t_int,  
                     double EB_WAVE[NX][NY][NZ_REF] ) {
 //{{{
 
