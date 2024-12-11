@@ -50,13 +50,13 @@
 #define col_for_timetraces              col_for_timetracesSt(saveDCfg)
 
 /*Macros for antenna injection*/
-/*#define T_waveBG(beamCfg)               beamCfg->T_wave*/
+#define T_waveBG(beamCfg)               beamCfg->T_wave
 #define exc_signalBG(beamCfg)           beamCfg->exc_signal
 #define ant_xBG(beamCfg)                beamCfg->ant_x
 #define ant_yBG(beamCfg)                beamCfg->ant_y
 #define ant_zBG(beamCfg)                beamCfg->ant_z
 #define rampUpMBG(beamCfg)              beamCfg->rampUpMethod
-//#define omega_tBG(beamCfg)              beamCfg->omega_t
+#define omega_tBG(beamCfg)              beamCfg->omega_t
 #define antAngle_zxBG(beamCfg)          beamCfg->antAngle_zx
 #define antAngle_zyBG(beamCfg)          beamCfg->antAngle_zy
 #define ant_w0xBG(beamCfg)              beamCfg->ant_w0x
@@ -65,15 +65,14 @@
 #define Y_at_X1BG(beamCfg)              beamCfg->Y_at_X1
 #define k0Ln_at_X1BG(beamCfg)           beamCfg->k0Ln_at_X1
 #define theta_at_X1BG(beamCfg)          beamCfg->theta_at_X1
-
-/*      
-#define T_wave                          T_waveBG(beamCfg)*/               
+     
+#define T_wave                          T_waveBG(beamCfg)               
 #define exc_signal                      exc_signalBG(beamCfg)           
 #define ant_x                           ant_xBG(beamCfg)               
 #define ant_y                           ant_yBG(beamCfg)               
 #define ant_z                           ant_zBG(beamCfg)               
 #define rampUpMethod                    rampUpMBG(beamCfg)              
-//#define t_omega                         omega_tBG(beamCfg)              
+#define omega_t                         omega_tBG(beamCfg)              
 #define antAngle_zx                     antAngle_zxBG(beamCfg)          
 #define antAngle_zy                     antAngle_zyBG(beamCfg)          
 #define ant_w0x                         ant_w0xBG(beamCfg)              

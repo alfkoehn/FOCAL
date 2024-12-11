@@ -53,6 +53,10 @@ void grid_init( gridConfiguration *gridCfg,
 
     col_for_timetraces = 8;
 
+    /*initializevalues for antenna injection*/
+    T_wave      = 0;
+    omega_t     = .0;
+
 }//}}}
 
 

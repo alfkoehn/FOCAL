@@ -71,14 +71,12 @@ int main( int argc, char *argv[] ) {
     ALLOC_1D( boundaryV, 1, boundaryVariables);
 
     int
-        t_int, T_wave, 
+        t_int,  
 
 #ifdef _OPENMP
         n_threads,                          // number of threads that will be used (OpenMP)
 #endif
-        pwr_dect,
-
-        opt_ret;                            // return value of getopt (reading input parameter)
+        pwr_dect;
 
     double
 
@@ -90,13 +88,8 @@ int main( int argc, char *argv[] ) {
         power_abs_x1, power_abs_x2,
         power_abs_y1, power_abs_y2,
         power_abs_z1, power_abs_z2,
-        power_abs_ref,
+        power_abs_ref;
 
-        omega_t;
-
-    bool
-        angle_zx_set,                       // is antAngle_zx set during call ?
-        angle_zy_set;                       // is antAngle_zy set during call ?
 
     // set-up grid
     control_init(  gridCfg, beamCfg, saveDCfg, antDetect );
@@ -117,41 +110,10 @@ int main( int argc, char *argv[] ) {
     double (*J_B0)[NY][NZ]              = calloc(NX, sizeof *J_B0);
     // background electron plasma density
     double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);
-    // antenna: envelope of injected field
-    double (*antField_xy)[NY/2]         = calloc(NX/2, sizeof *antField_xy);
-    // antenna: phase terms 
-    double (*antPhaseTerms)[NY/2]       = calloc(NX/2, sizeof *antPhaseTerms);
     // time traces
     double (*timetraces)[8]             = calloc((T_END/(int)period), sizeof *timetraces);
 
-    // reading input parameter
-    // used for checking if input parameter was provided
-    angle_zx_set    = false;
-    angle_zy_set    = false;
-     
-    // loop through input parameter
-    printf( "number of input parameters provided during call: %d\n", argc-1 );
-    while ( (opt_ret = getopt(argc, argv, "a:b:")) != -1 ){
-        switch (opt_ret) {
-            // angle between z=const plane and x=const plane
-            case 'a': antAngle_zx   = atof(optarg);
-                      angle_zx_set  = true;
-                      break;
-            case 'b': antAngle_zy   = atof(optarg);
-                      angle_zy_set  = true;
-                      break;
-        }
-    }
-    if ( argc > 1 ) {
-        printf( "following parameters were set during call: \n" );
-        if (angle_zx_set)   printf( "    antAngle_zx = %f\n", antAngle_zx );
-        if (angle_zy_set)   printf( "    antAngle_zy = %f\n", antAngle_zy );
-    }
-
     pwr_dect    = d_absorb;
-
-    T_wave      = 0;
-    omega_t     = .0;
 
     // the arrays are initialized with calloc() and thus don't require zeroing
     printf( "starting to set all variables to 0...\n" );
@@ -171,36 +133,7 @@ int main( int argc, char *argv[] ) {
     poynt_z2       = .0;
     printf( "...done setting all variables to 0\n" );
 
-   printf( "starting do define antenna field...\n" );
-    make_antenna_profile( gridCfg, beamCfg, 
-                          antField_xy, antPhaseTerms );
-    printf( "...done defining antenna field\n" );
-
-    /*printf( "starting defining background plasma density\n" );
-            // ne_profile: 1 = plasma mirror
-            //             2 = linearly increasing profile
-    make_density_profile( gridCfg,  
-            // cntrl_para: ne_profile=1 --> 0: plane mirror; oblique mirror: -.36397; 20 degrees: -.17633
-            //             ne_profile=2 --> k0*Ln: 25
-            k0Ln_at_X1,
-            n_e );
-    printf( " ...setting density in absorber to 0...\n ");
-    //set_densityInAbsorber_v2( &gridCfg, "z1", n_e );
-    //set_densityInAbsorber_v2( &gridCfg, "x1x2y1y2z1", n_e );
-    printf( "...done defining background plasma density\n" );
-
-    printf( "starting defining background magnetic field...\n" );
-    // B0x: even-odd-odd
-    // B0y: odd-even-odd
-    // B0z: odd-odd-even
-            // B0_profile: 1 = constant field
-    make_B0_profile(
-            gridCfg,
-            // cntrl_para: B0_profile=1 --> value of Y
-            Y_at_X1, 
-            J_B0 );
-    printf( "...done defining background magnetic field\n" );*/
-
+    init_antennaInjection( gridCfg, beamCfg );
     init_background_profiles(  gridCfg, beamCfg, n_e, J_B0 );
 
 #ifdef _OPENMP
@@ -217,25 +150,8 @@ int main( int argc, char *argv[] ) {
 
     for (t_int=0 ; t_int <= T_END ; ++t_int) {
         
-        omega_t += 2.*M_PI/period;
-
-        // to avoid precision problems when a lot of pi's are summed up        
-        if (omega_t >= 2.*M_PI) {
-            omega_t    += -2.*M_PI;
-            T_wave     += 1;
-            //printf("status: number of oscillation periods: %d (t_int= %d) \n",T_wave,t_int);
-        }
-
-        // add source
-        add_source( gridCfg, beamCfg,
-                    t_int, omega_t, 
-                    antField_xy, antPhaseTerms, EB_WAVE );
-        add_source_ref( gridCfg, beamCfg,
-                        t_int, omega_t, 
-                        antField_xy, antPhaseTerms, EB_WAVE_ref );
-
-
-        advance_fields( gridCfg, EB_WAVE, EB_WAVE_ref, J_B0, n_e );
+        control_antennaInjection(  gridCfg, beamCfg, t_int, EB_WAVE, EB_WAVE_ref ); //beam injection into grid
+        advance_fields( gridCfg, EB_WAVE, EB_WAVE_ref, J_B0, n_e );                 //advance EM fields
 
         // optionally, apply numerical viscosity
         //apply_numerical_viscosity( &gridCfg, EB_WAVE );
@@ -243,8 +159,7 @@ int main( int argc, char *argv[] ) {
         // apply absorbers
         advance_boundary(  gridCfg, boundaryV, EB_WAVE, EB_WAVE_ref );
 
-        control_antennaDetect(  gridCfg, antDetect, t_int, EB_WAVE /*,
-                                detAnt_01_fields, detAnt_02_fields, detAnt_03_fields, detAnt_04_fields*/ );
+        control_antennaDetect(  gridCfg, antDetect, t_int, EB_WAVE );
 
         // IQ detector for power detection
         if ( t_int >= 20*period ) {
@@ -296,7 +211,7 @@ int main( int argc, char *argv[] ) {
 
         }
 
-        save_field_toHDF5( gridCfg, saveDCfg, t_int, EB_WAVE );
+        save_field_toHDF5( gridCfg, saveDCfg, t_int, EB_WAVE ); //stores abs(E) into HDF5 file
 
     } // end of time loop
   

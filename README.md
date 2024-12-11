@@ -11,11 +11,7 @@ Developers: [Alf Köhn-Seemann](https://www.igvp.uni-stuttgart.de/team/Koehn-See
 
 <p align="center">
   
-![Couplings](/Simulations/Density.png "Plasma density from FOCAL profile.")
-
-<p align="center">
-  
-![Couplings](/Simulations/E_wave.png "Electric field wave with eliptical polarization.")
+![UPML_sim](/tools/simulation_PML_testLog.png "UPML simulation.")
   
 </p>
 
