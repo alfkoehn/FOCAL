@@ -48,22 +48,22 @@ int apply_numerical_viscosity( gridConfiguration *gridCfg,
 int set2zero_1D( size_t N_x, double arr_1D[N_x] );
 int set2zero_3D( size_t N_x, size_t N_y, size_t N_z, double arr_3D[N_x][N_y][N_z] );
 
-int advance_J_PML( gridConfiguration *gridCfg, 
+int advance_J_UPML( gridConfiguration *gridCfg, 
                double EB_WAVE[NX][NY][NZ], 
                double J_B0[NX][NY][NZ],
                double n_e[NX/2][NY/2][NZ/2] );
 
-int advance_B_PML(  gridConfiguration *gridCfg, 
+int advance_B_UPML(  gridConfiguration *gridCfg, 
                     double EB_WAVE[NX][NY][NZ] );
 
-int advance_Bref_PML(   gridConfiguration *gridCfg, 
+int advance_Bref_UPML(   gridConfiguration *gridCfg, 
                         double EB_WAVE[NX][NY][NZ_REF] );
 
-int advance_E_PML(  gridConfiguration *gridCfg, 
+int advance_E_UPML(  gridConfiguration *gridCfg, 
                     double EB_WAVE[NX][NY][NZ], 
                     double J_B0[NX][NY][NZ] );
 
-int advance_Eref_PML(   gridConfiguration *gridCfg, 
+int advance_Eref_UPML(   gridConfiguration *gridCfg, 
                         double EB_WAVE[NX][NY][NZ_REF] );
 
 #endif  // FOCAL_H
