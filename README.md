@@ -13,7 +13,7 @@ Developers: [Alf Köhn-Seemann](https://www.igvp.uni-stuttgart.de/team/Koehn-See
 &emsp;&emsp;   4. On "inpute_FOCAL.json" write desired parameters.
 &emsp;&emsp;   5. To execute FOCAL, write on terminal: bin/./exe
 
-* **Example Results**: 
+* **Simulation Example**: 
 
 <p align="center">
   
