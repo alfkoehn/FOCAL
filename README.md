@@ -5,7 +5,13 @@ Developers: [Alf Köhn-Seemann](https://www.igvp.uni-stuttgart.de/team/Koehn-See
 	    
 **Desription**: 3D FDTD code for propagation of electromagnetic waves in cold magnetized plasma.
 
-* **Features**: FOCAl receives a JSON as an input file, using the cJSON library provided by Dave Gamble, see https://github.com/DaveGamble/cJSON, allowing a faster and easiest operation. Focal have a series of plasma density profiles that can be selected by the user, also the code can read external profiles developed by the user. Code is fully parallelized with OpenMP. User may choose between different implemented boundaries as ABC, Mur and split-PML. The output consists of a text file for the energy power values, a JSON file with the parameters specified by the user and a HDF5 file containing the electric field, plasma density volume. Code has been benchmarked for vacuum propagation, power calculation, against EMIT-3D and cold plasma theory (to be updated).
+* **Features**: FOCAl receives a JSON as an input file, using the cJSON library provided by Dave Gamble, see https://github.com/DaveGamble/cJSON, allowing a faster and easiest operation. Focal have a series of plasma density profiles that can be selected by the user, furthermore, the code is capable of reading external profiles developed by the user. FOCAL is fully parallelized with OpenMP. User may choose between 3 different implemented boundaries: ABC, MUR and UPML. The output consists of a text file for the energy power values, a JSON copyfile of the input values and a HDF5 file containing the absolute electric field, plasma density volume, antenna fields and positions, and system's characteristics. Code has been benchmarked for vacuum propagation, power calculation, against EMIT-3D and cold plasma theory (to be updated).
+
+* **Execute**: 1. Clone repository.
+&emsp;&emsp;   2. Open terminal in FOCAL folder. Folders "include", "src" and "tools" should be visible, along with "input_FOCAL.json", "LICENSE", "Makefile" and "README.md" files.
+&emsp;&emsp;   3. Write on terminal: make. If compilation is succesfull, bin and build folder should been created without errors.
+&emsp;&emsp;   4. On "inpute_FOCAL.json" write desired parameters.
+&emsp;&emsp;   5. To execute FOCAL, write on terminal: bin/./exe
 
 * **Example Results**: 
 

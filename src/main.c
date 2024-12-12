@@ -97,8 +97,6 @@ int main( int argc, char *argv[] ) {
     double (*J_B0)[NY][NZ]              = calloc(NX, sizeof *J_B0);
     // background electron plasma density
     double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);
-    // time traces
-    //double (*timetraces)[8]             = calloc((T_END/(int)period), sizeof *timetraces);
 
     init_background_profiles(  gridCfg, beamCfg, n_e, J_B0 );   //function in BACKGROUND_PROFILES.C
 
