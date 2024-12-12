@@ -65,7 +65,7 @@ int free_boundary(gridConfiguration *gridCfg){
     } else if (sel_boundary == 3){
 
         free_UPML_memory(gridCfg);
-        printf("Freed PML boundary allocated memory. \n");
+        printf("Freed UPML boundary allocated memory. \n");
 
     }
     

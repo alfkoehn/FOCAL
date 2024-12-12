@@ -86,7 +86,7 @@ int print_antennaDetec( antennaDetector *antDetect ){
         printf( "detector antenna positions: z2 = %d, y1 = %d\n", detAnt_02_zpos, detAnt_01_ypos );
         printf( "detector antenna positions: z3 = %d, y1 = %d\n", detAnt_03_zpos, detAnt_01_ypos );
         printf( "detector antenna positions: z4 = %d, y1 = %d\n", detAnt_04_zpos, detAnt_01_ypos );*/
-        printf("--------Detector Antenna Positions--------\n");
+        printf("------------Detector Antenna Positions------------\n");
         printf( "detector antenna 01: z1 = %d, y1 = %d\n", detAnt_01_zpos, detAnt_01_ypos );
         printf( "detector antenna 02: z2 = %d, y1 = %d\n", detAnt_02_zpos, detAnt_01_ypos );
         printf( "detector antenna 03: z3 = %d, y1 = %d\n", detAnt_03_zpos, detAnt_01_ypos );

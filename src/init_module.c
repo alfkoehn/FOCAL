@@ -30,6 +30,7 @@ void grid_init( gridConfiguration *gridCfg,
     }
 
     //Grid configuration variables computation
+    //Set D_ABSORB for the user choose boundary
     if (sel_boundary == 1){     
         d_absorb = (int)(3*period);
     }else if (sel_boundary == 2){
@@ -51,11 +52,13 @@ void grid_init( gridConfiguration *gridCfg,
     if ((ant_y % 2) != 0)  ++ant_y;
     if ((ant_z % 2) != 0)  ++ant_z;
 
+    //Timetraces number of columns
     col_for_timetraces = 8;
 
-    /*initializevalues for antenna injection*/
-    T_wave      = 0;
-    omega_t     = .0;
+    //Values for ...
+    Y_at_X1     = .41;
+    k0Ln_at_X1  = 6.;
+    theta_at_X1 = 78.;
 
 }//}}}
 
@@ -278,7 +281,7 @@ void print_systemConfiguration(gridConfiguration *gridCfg, beamAntennaConfigurat
     //{{{
 
     // print some info to console
-    printf("------System Configuration Parameters------\n");
+    printf("----------System Configuration Parameters----------\n");
     printf( "Nx = %d, Ny = %d, Nz = %d\n", NX, NY, NZ );
     printf( "period = %d\n", (int)(period) );
     printf( "d_absorb = %d\n", d_absorb );

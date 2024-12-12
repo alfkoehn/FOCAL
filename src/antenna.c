@@ -6,7 +6,11 @@ static double **antPhaseTerms = NULL;
 void init_antennaInjection( gridConfiguration *gridCfg, 
                             beamAntennaConfiguration *beamCfg ){
 
-    /*Allocate memory for AntField_xy and antPhaseTerms*/
+    //initializevalues for antenna injection
+    T_wave      = 0;
+    omega_t     = .0;
+
+    //Allocate memory for AntField_xy and antPhaseTerms
     // antenna: envelope of injected field
     antField_xy = allocate2DArray(NX/2, NY/2);
     // antenna: phase terms

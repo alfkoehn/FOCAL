@@ -134,36 +134,36 @@
 
 
 /*Macros for power struct*/
-/*#define powerDectS(powerValStr)                 powerValStr->pwr_dect
-#define powerAbsX1S(powerValStr)                powerValStr->power_abs_x1
-#define powerAbsX2S(powerValStr)                powerValStr->power_abs_x2
-#define powerAbsY1S(powerValStr)                powerValStr->power_abs_y1
-#define powerAbsY2S(powerValStr)                powerValStr->power_abs_y2
-#define powerAbsZ1S(powerValStr)                powerValStr->power_abs_z1
-#define powerAbsZ2S(powerValStr)                powerValStr->power_abs_z2
-#define powerAbsRefS(powerValStr)               powerValStr->power_abs_ref
-#define powerPoyX1S(powerValStr)                powerValStr->poynt_x1
-#define powerPoyX2S(powerValStr)                powerValStr->poynt_x2
-#define powerPoyY1S(powerValStr)                powerValStr->poynt_y1
-#define powerPoyY2S(powerValStr)                powerValStr->poynt_y2
-#define powerPoyZ1S(powerValStr)                powerValStr->poynt_z1
-#define powerPoyZRS(powerValStr)                powerValStr->poynt_z1_ref
-#define powerPoyZ2S(powerValStr)                powerValStr->poynt_z2
+#define powerDectS(powerVal)                    powerVal->pwr_dect
+#define powerAbsX1S(powerVal)                   powerVal->power_abs_x1
+#define powerAbsX2S(powerVal)                   powerVal->power_abs_x2
+#define powerAbsY1S(powerVal)                   powerVal->power_abs_y1
+#define powerAbsY2S(powerVal)                   powerVal->power_abs_y2
+#define powerAbsZ1S(powerVal)                   powerVal->power_abs_z1
+#define powerAbsZ2S(powerVal)                   powerVal->power_abs_z2
+#define powerAbsRefS(powerVal)                  powerVal->power_abs_ref
+#define powerPoyX1S(powerVal)                   powerVal->poynt_x1
+#define powerPoyX2S(powerVal)                   powerVal->poynt_x2
+#define powerPoyY1S(powerVal)                   powerVal->poynt_y1
+#define powerPoyY2S(powerVal)                   powerVal->poynt_y2
+#define powerPoyZ1S(powerVal)                   powerVal->poynt_z1
+#define powerPoyZRS(powerVal)                   powerVal->poynt_z1_ref
+#define powerPoyZ2S(powerVal)                   powerVal->poynt_z2
 
-#define pwr_dect                                powerDectS(powerValStr)
-#define power_abs_x1                            powerAbsX1S(powerValStr)
-#define power_abs_x2                            powerAbsX2S(powerValStr)                
-#define power_abs_y1                            powerAbsY1S(powerValStr)               
-#define power_abs_y2                            powerAbsY2S(powerValStr)                
-#define power_abs_z1                            powerAbsZ1S(powerValStr)                
-#define power_abs_z2                            powerAbsZ2S(powerValStr)                
-#define power_abs_ref                           powerAbsRefS(powerValStr)               
-#define poynt_x1                                powerPoyX1S(powerValStr)                
-#define poynt_x2                                powerPoyX2S(powerValStr)                
-#define poynt_y1                                powerPoyY1S(powerValStr)
-#define poynt_y2                                powerPoyY2S(powerValStr)                
-#define poynt_z1                                powerPoyZ1S(powerValStr)   
-#define poynt_z1_ref                            powerPoyZRS(powerValStr) 
-#define poynt_z2                                powerPoyZ2S(powerValStr) */ 
+#define pwr_dect                                powerDectS(powerVal)
+#define power_abs_x1                            powerAbsX1S(powerVal)
+#define power_abs_x2                            powerAbsX2S(powerVal)                
+#define power_abs_y1                            powerAbsY1S(powerVal)               
+#define power_abs_y2                            powerAbsY2S(powerVal)                
+#define power_abs_z1                            powerAbsZ1S(powerVal)                
+#define power_abs_z2                            powerAbsZ2S(powerVal)                
+#define power_abs_ref                           powerAbsRefS(powerVal)               
+#define poynt_x1                                powerPoyX1S(powerVal)                
+#define poynt_x2                                powerPoyX2S(powerVal)                
+#define poynt_y1                                powerPoyY1S(powerVal)
+#define poynt_y2                                powerPoyY2S(powerVal)                
+#define poynt_z1                                powerPoyZ1S(powerVal)   
+#define poynt_z1_ref                            powerPoyZRS(powerVal) 
+#define poynt_z2                                powerPoyZ2S(powerVal)
 
 #endif
