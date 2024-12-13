@@ -23,29 +23,29 @@ void grid_init( gridConfiguration *gridCfg,
 
     //Checks that maximum density value is respected
     // if density is larger than this value, FDTD code becomes unstable
-    if( ne_0 > period * 2./5.){
+    if( ne_0 > PERIOD * 2./5.){
         printf("Density value is too large for code stability. \n");
-        printf("Maximum density: %.3f. \n", period * 2./5.);
+        printf("Maximum density: %.3f. \n", PERIOD * 2./5.);
         exit(-1);
     }
 
     //Grid configuration variables computation
     //Set D_ABSORB for the user choose boundary
-    if (sel_boundary == 1){     
-        d_absorb = (int)(3*period);
-    }else if (sel_boundary == 2){
-        d_absorb = 8;
+    if (BOUNDARY == 1){     
+        D_ABSORB = (int)(3*PERIOD);
+    }else if (BOUNDARY == 2){
+        D_ABSORB = 8;
     }
 
-    NZ_REF  = 2*d_absorb + (int)period;
+    NZ_REF  = 2*D_ABSORB + (int)PERIOD;
 
     // dt/dx = 0.5 is commenly used in 2D FDTD codes
     // Note that period refers to the wavelength in the numerical grid and not
     // in the "physical" grid (where one grid cell is equal to one Yee cell).
     // This means that in the physical grid, the wavelength is period/2, thus
     // in the equations we have to use period/2 for the wavelength.
-    DX  = 1./(period/2);
-    DT  = 1./(2.*(period/2));
+    DX  = 1./(PERIOD/2);
+    DT  = 1./(2.*(PERIOD/2));
 
     // positions have to be even numbers, to ensure fields are accessed correctly
     if ((ant_x % 2) != 0)  ++ant_x;
@@ -123,8 +123,8 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
 
     cJSON *item_period = cJSON_GetObjectItemCaseSensitive(json, "period");   //wave period
     if( cJSON_IsNumber(item_period) ){
-        period = item_period->valuedouble;
-        period = period * scale;
+        PERIOD = item_period->valuedouble;
+        PERIOD = PERIOD * scale;
     }
 
     cJSON *item_Nx = cJSON_GetObjectItemCaseSensitive(json, "Grid_size_Nx");   //grid size in x
@@ -148,7 +148,7 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
     cJSON *item_tend = cJSON_GetObjectItemCaseSensitive(json, "t_end");   //plasma density option
     if( cJSON_IsNumber(item_tend) ){
         T_END = item_tend->valueint;
-        T_END = T_END * period;
+        T_END = T_END * PERIOD;
     }
 
     cJSON *item_B0 = cJSON_GetObjectItemCaseSensitive(json, "B0_profile");   //external magnetic field option
@@ -173,13 +173,13 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
 
     cJSON *item_boundary = cJSON_GetObjectItemCaseSensitive(json, "Boundary_Method");   //boundary option
     if( cJSON_IsNumber(item_boundary) ){
-        sel_boundary = item_boundary->valueint;
+        BOUNDARY = item_boundary->valueint;
     }
 
     cJSON *item_dBoundary = cJSON_GetObjectItemCaseSensitive(json, "UPML_size");   //size absorb boundary
     if( cJSON_IsNumber(item_dBoundary) ){
-        d_absorb = item_dBoundary->valueint;
-        d_absorb = d_absorb + 2;
+        D_ABSORB = item_dBoundary->valueint;
+        D_ABSORB = D_ABSORB + 2;
     }  
 
     /*Antenna injector configuration values*/
@@ -283,13 +283,13 @@ void print_systemConfiguration(gridConfiguration *gridCfg, beamAntennaConfigurat
     // print some info to console
     printf("----------System Configuration Parameters----------\n");
     printf( "Nx = %d, Ny = %d, Nz = %d\n", NX, NY, NZ );
-    printf( "period = %d\n", (int)(period) );
-    printf( "d_absorb = %d\n", d_absorb );
+    printf( "period = %d\n", (int)(PERIOD) );
+    printf( "d_absorb = %d\n", D_ABSORB );
     printf( "t_end = %d\n", (int)(T_END) );
     printf( "antAngle_zx = %.2f, antAngle_zy = %.2f\n", antAngle_zx, antAngle_zy );
     printf( "ant_w0x = %.2f, ant_w0y = %.2f\n", ant_w0x, ant_w0y ); 
     printf( "ant_x = %d, ant_y = %d, ant_z = %d\n", ant_x, ant_y, ant_z );
-    printf( "Boundary condition set to '%d'\n", sel_boundary );
+    printf( "Boundary condition set to '%d'\n", BOUNDARY );
     printf( "Courant number = %.2f. \n", DT/DX);
 
 }//}}}

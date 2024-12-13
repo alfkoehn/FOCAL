@@ -23,16 +23,16 @@
 #define NY                      NyG(gridCfg)          
 #define NZ                      NzG(gridCfg)
 #define NZ_REF                  Nz_refG(gridCfg)  
-#define d_absorb                d_absorbG(gridCfg)
+#define D_ABSORB                d_absorbG(gridCfg)
 #define T_END                   t_endG(gridCfg)
-#define period                  periodG(gridCfg)
+#define PERIOD                  periodG(gridCfg)
 #define DX                      dxG(gridCfg)
 #define DT                      dtG(gridCfg)
 #define ne_profile              ne_profileG(gridCfg)
 #define ne_0                    ne_0G(gridCfg)
 #define B0_profile              B0_profileG(gridCfg)
 #define B0_value                B0_valueG(gridCfg)
-#define sel_boundary            boundaryG(gridCfg)
+#define BOUNDARY                boundaryG(gridCfg)
 
 /*Macros for save data*/
 #define projectPathSt(saveDCfg)         saveDCfg->projectPath

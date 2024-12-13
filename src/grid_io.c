@@ -281,7 +281,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamAntennaConfiguration *beamC
                             H5P_DEFAULT);   // dataset access property list (added in HDF5v1.8)
 
     // write the dataset
-    data2write_long[0]  = (long)period;
+    data2write_long[0]  = (long)PERIOD;
     status = H5Dwrite( dataset_id,          // dataset identifier
                        H5T_NATIVE_LONG,   // informs hdf about format of data in memory of computer
                        H5S_ALL,             // identifier of memory dataspace
@@ -293,17 +293,17 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamAntennaConfiguration *beamC
     status = H5Dclose(dataset_id);
     if (status < 0) printf("ERROR: could not close dataset '/config/period'\n");
 
-    // d_absorb
-    dataset_id = H5Dcreate( file_id, "/config/d_absorb", H5T_NATIVE_LONG,
+    // D_ABSORB
+    dataset_id = H5Dcreate( file_id, "/config/D_ABSORB", H5T_NATIVE_LONG,
                             dataspace_id, 
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_long[0]  = (long)d_absorb;
+    data2write_long[0]  = (long)D_ABSORB;
     status = H5Dwrite( dataset_id, H5T_NATIVE_LONG,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        data2write_long); 
-    if (status < 0) printf( "ERROR: could not write dataset '/config/d_absorb' into file '%s'\n", filename);
+    if (status < 0) printf( "ERROR: could not write dataset '/config/D_ABSORB' into file '%s'\n", filename);
     status = H5Dclose(dataset_id);
-    if (status < 0) printf("ERROR: could not close dataset '/config/d_absorb'\n");
+    if (status < 0) printf("ERROR: could not close dataset '/config/D_ABSORB'\n");
 
     // N_x
     dataset_id = H5Dcreate( file_id, "/config/N_x", H5T_NATIVE_LONG,

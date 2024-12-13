@@ -3,7 +3,7 @@
 void create_folder( gridConfiguration *gridCfg, saveData *saveDCfg ){
     //{{{
 
-    printf("-------------------Storing Folder------------------- \n");
+    printf("-------------------Storage Folder------------------- \n");
     simulation_folder( projectPath );
     data_folder( projectPath, foldername );
     copyJSON( projectPath, foldername );
@@ -179,7 +179,7 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
                         saveData *saveDCfg, int t_int,
                         double EB_WAVE[NX][NY][NZ] ){
 
-    if( t_int % (t_save * (int)period) == 0 && t_int != 0){
+    if( t_int % (t_save * (int)PERIOD) == 0 && t_int != 0){
         
         size_t ii, jj, kk;
         /*Char values as directions to the correct folder*/
