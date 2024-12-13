@@ -1,6 +1,6 @@
 {	
-    "Main_Project": 		"Great_Project",
-    "Case_foldername": 		"Test_case_01",
+    "Main_Project": 		"Project_folder",
+    "Case_foldername": 		"Test_case",
     "filename_hdf5": 		"fileout.h5",
     "filename_timetraces": 	"timetraces2.dat",
     
@@ -12,7 +12,7 @@
     "t_end": 		50,
     
     "B0_profile":	0,
-    "B0_magnitude":	0.5,
+    "B0_magnitude":	0.0,
     "ne_profile":	3,
     "ne_0":		0.0,
     

@@ -48,9 +48,9 @@ void grid_init( gridConfiguration *gridCfg,
     DT  = 1./(2.*(PERIOD/2));
 
     // positions have to be even numbers, to ensure fields are accessed correctly
-    if ((ant_x % 2) != 0)  ++ant_x;
-    if ((ant_y % 2) != 0)  ++ant_y;
-    if ((ant_z % 2) != 0)  ++ant_z;
+    if ((ANT_X % 2) != 0)  ++ANT_X;
+    if ((ANT_Y % 2) != 0)  ++ANT_Y;
+    if ((ANT_Z % 2) != 0)  ++ANT_Z;
 
     //Timetraces number of columns
     col_for_timetraces = 8;
@@ -185,17 +185,17 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
     /*Antenna injector configuration values*/
     cJSON *item_ant_x = cJSON_GetObjectItemCaseSensitive(json, "Antenna_Pos_x");   //Antenna x position
     if( cJSON_IsNumber(item_ant_x) ){
-        ant_x = item_ant_x->valuedouble;
+        ANT_X = item_ant_x->valuedouble;
     }
 
     cJSON *item_ant_y = cJSON_GetObjectItemCaseSensitive(json, "Antenna_Pos_y");   //Antenna y position
     if( cJSON_IsNumber(item_ant_y) ){
-        ant_y = item_ant_y->valuedouble;
+        ANT_Y = item_ant_y->valuedouble;
     }
 
     cJSON *item_ant_z = cJSON_GetObjectItemCaseSensitive(json, "Antenna_Pos_z");   //Antenna z position
     if( cJSON_IsNumber(item_ant_z) ){
-        ant_z = item_ant_z->valuedouble;
+        ANT_Z = item_ant_z->valuedouble;
     }
 
     cJSON *item_antAngleZX = cJSON_GetObjectItemCaseSensitive(json, "Antenna_Angle_zx");   //zx plane angle antenna
@@ -237,7 +237,7 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
     /*Antenna Detector Input values*/
     cJSON *item_antDetect = cJSON_GetObjectItemCaseSensitive(json, "Detector_Antenna");   //Activate Antenna
     if( cJSON_IsNumber(item_antDetect) ){
-        antDetect_1D = item_antDetect->valueint;
+        activate_antDetect1D = item_antDetect->valueint;
     }
 
     //clean up
@@ -288,7 +288,7 @@ void print_systemConfiguration(gridConfiguration *gridCfg, beamAntennaConfigurat
     printf( "t_end = %d\n", (int)(T_END) );
     printf( "antAngle_zx = %.2f, antAngle_zy = %.2f\n", antAngle_zx, antAngle_zy );
     printf( "ant_w0x = %.2f, ant_w0y = %.2f\n", ant_w0x, ant_w0y ); 
-    printf( "ant_x = %d, ant_y = %d, ant_z = %d\n", ant_x, ant_y, ant_z );
+    printf( "ant_x = %d, ant_y = %d, ant_z = %d\n", ANT_X, ANT_Y, ANT_Z );
     printf( "Boundary condition set to '%d'\n", BOUNDARY );
     printf( "Courant number = %.2f. \n", DT/DX);
 

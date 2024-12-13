@@ -135,7 +135,7 @@ int make_density_profile( gridConfiguration *gridCfg,
         //   ==> change this
         //       either provide additional parameter in function call
         //       or not load the profile here, but directly in main
-        //readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "n_e", n_e );
+        readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "n_e", n_e );
     }
     return EXIT_SUCCESS;
 }//}}}

@@ -87,7 +87,7 @@ int power_toTimetraces( gridConfiguration *gridCfg,
 
     if ( (t_int % (int)(PERIOD)) == 4 )  {
         //print to console
-        printf( "status: number of oscillation periods: %d (t_int= %d) \n",T_wave,t_int);
+        printf( "status: number of oscillation periods: %d (t_int= %d) \n",T_WAVE,t_int);
         printf( "        Poynting-power: z1 = %13.6e, z2 = %13.6e, x1 = %13.6e, x2 = %13.6e, y1 = %13.6e, y2 = %13.6e, (z1+z2+x1+x2+y1+y2)/z1_ref = %13.6e %%\n",
                 power_abs_z1/power_abs_ref, 
                 power_abs_z2/power_abs_ref,
@@ -99,14 +99,14 @@ int power_toTimetraces( gridConfiguration *gridCfg,
             );
         
         //Save to time traces
-        timetraces[T_wave][0]   = (double)t_int;
-        timetraces[T_wave][1]   = (double)T_wave;
-        timetraces[T_wave][2]   = power_abs_z1/power_abs_ref;
-        timetraces[T_wave][3]   = power_abs_z2/power_abs_ref;
-        timetraces[T_wave][4]   = power_abs_x1/power_abs_ref;
-        timetraces[T_wave][5]   = power_abs_x2/power_abs_ref;
-        timetraces[T_wave][6]   = power_abs_y1/power_abs_ref;
-        timetraces[T_wave][7]   = power_abs_y2/power_abs_ref;
+        timetraces[T_WAVE][0]   = (double)t_int;
+        timetraces[T_WAVE][1]   = (double)T_WAVE;
+        timetraces[T_WAVE][2]   = power_abs_z1/power_abs_ref;
+        timetraces[T_WAVE][3]   = power_abs_z2/power_abs_ref;
+        timetraces[T_WAVE][4]   = power_abs_x1/power_abs_ref;
+        timetraces[T_WAVE][5]   = power_abs_x2/power_abs_ref;
+        timetraces[T_WAVE][6]   = power_abs_y1/power_abs_ref;
+        timetraces[T_WAVE][7]   = power_abs_y2/power_abs_ref;
 
     }
 
@@ -723,7 +723,8 @@ double calc_poynt_7( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
     return fabs(poynt);
 } //}}}
 
-//Print time traces to console and .file
+//Print time traces to console and 
+//send timetraces to grid_io for file saving
 int write_timetraces(   gridConfiguration *gridCfg,
                         saveData *saveDCfg ){
 

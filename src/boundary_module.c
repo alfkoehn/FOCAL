@@ -988,6 +988,7 @@ int abc_Mur_1st_ref( gridConfiguration *gridCfg,
 
 /*UPML functions*/
 double sigma(int pml_size, double nn, int m, double ds){
+    //Computes conductivity in UPML layer
 
     double sig, sig_max, R_0;
     
