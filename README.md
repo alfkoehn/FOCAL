@@ -17,7 +17,7 @@ Developers: [Alf Köhn-Seemann](https://www.igvp.uni-stuttgart.de/team/Koehn-See
 
 <p align="center">
   
-![UPML_sim](/tools/simulation_PML_testLog.gif "UPML simulation.")
+![UPML_sim](/tools/simulation_PML10_testLog.gif "UPML simulation.")
   
 </p>
 
