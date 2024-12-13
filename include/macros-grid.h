@@ -23,16 +23,16 @@
 #define NY                      NyG(gridCfg)          
 #define NZ                      NzG(gridCfg)
 #define NZ_REF                  Nz_refG(gridCfg)  
-#define d_absorb                d_absorbG(gridCfg)
+#define D_ABSORB                d_absorbG(gridCfg)
 #define T_END                   t_endG(gridCfg)
-#define period                  periodG(gridCfg)
+#define PERIOD                  periodG(gridCfg)
 #define DX                      dxG(gridCfg)
 #define DT                      dtG(gridCfg)
 #define ne_profile              ne_profileG(gridCfg)
 #define ne_0                    ne_0G(gridCfg)
 #define B0_profile              B0_profileG(gridCfg)
 #define B0_value                B0_valueG(gridCfg)
-#define sel_boundary            boundaryG(gridCfg)
+#define BOUNDARY                boundaryG(gridCfg)
 
 /*Macros for save data*/
 #define projectPathSt(saveDCfg)         saveDCfg->projectPath
@@ -66,13 +66,13 @@
 #define k0Ln_at_X1BG(beamCfg)           beamCfg->k0Ln_at_X1
 #define theta_at_X1BG(beamCfg)          beamCfg->theta_at_X1
      
-#define T_wave                          T_waveBG(beamCfg)               
+#define T_WAVE                          T_waveBG(beamCfg)               
 #define exc_signal                      exc_signalBG(beamCfg)           
-#define ant_x                           ant_xBG(beamCfg)               
-#define ant_y                           ant_yBG(beamCfg)               
-#define ant_z                           ant_zBG(beamCfg)               
+#define ANT_X                           ant_xBG(beamCfg)               
+#define ANT_Y                           ant_yBG(beamCfg)               
+#define ANT_Z                           ant_zBG(beamCfg)               
 #define rampUpMethod                    rampUpMBG(beamCfg)              
-#define omega_t                         omega_tBG(beamCfg)              
+#define OMEGA_T                         omega_tBG(beamCfg)              
 #define antAngle_zx                     antAngle_zxBG(beamCfg)          
 #define antAngle_zy                     antAngle_zyBG(beamCfg)          
 #define ant_w0x                         ant_w0xBG(beamCfg)              
@@ -125,7 +125,7 @@
 #define detAnt04zG(antDetect)                   antDetect->detAnt_04_zpos
 #define detAnt01yG(antDetect)                   antDetect->detAnt_01_ypos
 
-#define antDetect_1D                            antDetect_1DG(antDetect)
+#define activate_antDetect1D                    antDetect_1DG(antDetect)
 #define detAnt_01_zpos                          detAnt01zG(antDetect)
 #define detAnt_02_zpos                          detAnt02zG(antDetect)
 #define detAnt_03_zpos                          detAnt03zG(antDetect)

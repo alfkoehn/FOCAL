@@ -55,6 +55,6 @@ double calc_poynt_7( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
 int write_timetraces(   gridConfiguration *gridCfg,
                         saveData *saveDCfg );
 //Print full timetraces pointer to console
-int writeConsole_timetraces( int T_end, double Period );
+int writeConsole_timetraces( int T_end, double period );
 
 #endif  // POWER_CALC_H

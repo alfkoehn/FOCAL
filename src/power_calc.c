@@ -7,7 +7,7 @@ int init_powerValues(   gridConfiguration *gridCfg,
                         powerValues *powerVal ){
 
     // the arrays are initialized with calloc() and thus don't require zeroing
-    timetraces = allocate2DArray( (T_END/(int)period), 8 );
+    timetraces = allocate2DArray( (T_END/(int)PERIOD), 8 );
 
     printf( "starting to set all variables to 0...\n" );
     power_abs_x1    = .0;
@@ -26,7 +26,7 @@ int init_powerValues(   gridConfiguration *gridCfg,
     poynt_z2       = .0;
     printf( "...done setting all variables to 0\n" );
 
-    pwr_dect    = d_absorb;
+    pwr_dect    = D_ABSORB;
 
     return EXIT_SUCCESS;
 }
@@ -52,7 +52,7 @@ int calculate_power(    gridConfiguration *gridCfg,
                         double EB_WAVE_ref[NX][NY][NZ_REF] ){
 
     // IQ detector for power detection
-    if ( t_int >= 20*period ) {
+    if ( t_int >= 20*PERIOD ) {
         // z1-plane and z2-plane
         poynt_z1_ref    = calc_poynt_4( gridCfg, powerVal, "ref_z1", EB_WAVE, EB_WAVE_ref );
         poynt_z1        = calc_poynt_4( gridCfg, powerVal, "z1",     EB_WAVE, EB_WAVE_ref );
@@ -85,9 +85,9 @@ int power_toTimetraces( gridConfiguration *gridCfg,
                         powerValues *powerVal,
                         int t_int ){
 
-    if ( (t_int % (int)(period)) == 4 )  {
+    if ( (t_int % (int)(PERIOD)) == 4 )  {
         //print to console
-        printf( "status: number of oscillation periods: %d (t_int= %d) \n",T_wave,t_int);
+        printf( "status: number of oscillation periods: %d (t_int= %d) \n",T_WAVE,t_int);
         printf( "        Poynting-power: z1 = %13.6e, z2 = %13.6e, x1 = %13.6e, x2 = %13.6e, y1 = %13.6e, y2 = %13.6e, (z1+z2+x1+x2+y1+y2)/z1_ref = %13.6e %%\n",
                 power_abs_z1/power_abs_ref, 
                 power_abs_z2/power_abs_ref,
@@ -99,14 +99,14 @@ int power_toTimetraces( gridConfiguration *gridCfg,
             );
         
         //Save to time traces
-        timetraces[T_wave][0]   = (double)t_int;
-        timetraces[T_wave][1]   = (double)T_wave;
-        timetraces[T_wave][2]   = power_abs_z1/power_abs_ref;
-        timetraces[T_wave][3]   = power_abs_z2/power_abs_ref;
-        timetraces[T_wave][4]   = power_abs_x1/power_abs_ref;
-        timetraces[T_wave][5]   = power_abs_x2/power_abs_ref;
-        timetraces[T_wave][6]   = power_abs_y1/power_abs_ref;
-        timetraces[T_wave][7]   = power_abs_y2/power_abs_ref;
+        timetraces[T_WAVE][0]   = (double)t_int;
+        timetraces[T_WAVE][1]   = (double)T_WAVE;
+        timetraces[T_WAVE][2]   = power_abs_z1/power_abs_ref;
+        timetraces[T_WAVE][3]   = power_abs_z2/power_abs_ref;
+        timetraces[T_WAVE][4]   = power_abs_x1/power_abs_ref;
+        timetraces[T_WAVE][5]   = power_abs_x2/power_abs_ref;
+        timetraces[T_WAVE][6]   = power_abs_y1/power_abs_ref;
+        timetraces[T_WAVE][7]   = power_abs_y2/power_abs_ref;
 
     }
 
@@ -723,7 +723,8 @@ double calc_poynt_7( size_t N_x, size_t N_y, size_t N_z, size_t N_z_ref,
     return fabs(poynt);
 } //}}}
 
-//Print time traces to console and .file
+//Print time traces to console and 
+//send timetraces to grid_io for file saving
 int write_timetraces(   gridConfiguration *gridCfg,
                         saveData *saveDCfg ){
 
@@ -734,24 +735,24 @@ int write_timetraces(   gridConfiguration *gridCfg,
     sprintf(fullDir,"%s/%s/", projectPath, foldername);
     sprintf( filename_trace, "%s%s", fullDir, file_trace);
 
-    writeConsole_timetraces( T_END, period );
+    writeConsole_timetraces( T_END, PERIOD );
 
     // write timetrace data into file
-    writeTimetraces2ascii( T_END, period, 
+    writeTimetraces2ascii( T_END, PERIOD, 
                            filename_trace , timetraces );               //function in GRID_IO.C
 
-    free2DArray( timetraces, (T_END/(int)period) );                     //free timetraces array
+    free2DArray( timetraces, (T_END/(int)PERIOD) );                     //free timetraces array
 
     return EXIT_SUCCESS;
 }
 
 //Print full timetraces to console
-int writeConsole_timetraces( int T_end, double Period ){
+int writeConsole_timetraces( int T_end, double period ){
 
     printf( "-------------------------------------------------------------------------------------------------------------\n" );
     printf( "  T   |   poynt_z1   |   poynt_z2   |   poynt_x1   |   poynt_x2   |   poynt_y1   |   poynt_y2   |  P_out     \n" );
     printf( "------+--------------+--------------+--------------+--------------+--------------+--------------+------------\n" );
-    for ( int ii=0 ; ii<(T_end/(int)Period) ; ++ii )
+    for ( int ii=0 ; ii<(T_end/(int)period) ; ++ii )
         printf( " %4d |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e |%13.6e\n",
                 (int)timetraces[ii][1], //timetraces[ii][1],
                 timetraces[ii][2], timetraces[ii][3],

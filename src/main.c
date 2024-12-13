@@ -100,6 +100,12 @@ int main( int argc, char *argv[] ) {
 
     init_background_profiles(  gridCfg, beamCfg, n_e, J_B0 );   //function in BACKGROUND_PROFILES.C
 
+    //Simulation values print to terminal
+    print_systemConfiguration( gridCfg, beamCfg );              //function in INIT_MODULE.C
+    print_antennaDetec( antDetect );                            //function in ANTENNA_DETECTOR.C
+
+    printf("--------------------Simulation--------------------\n");
+
 #ifdef _OPENMP
 #pragma omp parallel private(n_threads)
     {
@@ -109,11 +115,6 @@ int main( int argc, char *argv[] ) {
     }
 #endif
 
-    //Simulation values print to terminal
-    print_systemConfiguration( gridCfg, beamCfg );              //function in INIT_MODULE.C
-    print_antennaDetec( antDetect );                            //function in ANTENNA_DETECTOR.C
-
-    printf("--------------------Simulation--------------------\n");
     //System's time evolution
     for ( t_int=0 ; t_int <= T_END ; ++t_int ) {
         
@@ -137,9 +138,9 @@ int main( int argc, char *argv[] ) {
     // write timetrace data into file
     write_timetraces( gridCfg, saveDCfg );                                  //function in POWER_CALC.C
     save_SimData( gridCfg, beamCfg ,saveDCfg, n_e, J_B0 );                  //function in SAVE_DATA.C      
-
     save_AntDetect( gridCfg, saveDCfg, antDetect );                         //function in ANTENNA_DETECTOR.C
 
+    //free allocated arrays
     free_boundary( gridCfg );
     free_antDetect( gridCfg, antDetect );
     free( EB_WAVE );

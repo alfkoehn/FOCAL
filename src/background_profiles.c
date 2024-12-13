@@ -54,7 +54,7 @@ int make_density_profile( gridConfiguration *gridCfg,
         aux;
 
     // if density is larger than this value, FDTD code becomes instable
-    ne_max  = period * 2./5.;
+    ne_max  = PERIOD * 2./5.;
 
     if ( ne_profile == 1 ) {
         // plasma mirror
@@ -64,7 +64,7 @@ int make_density_profile( gridConfiguration *gridCfg,
                 for (kk=0 ; kk<(NZ/2) ; ++kk) {
                     // z = m*y + b = delta_z/delta_y * y + z_start
                     //             = cntrl_para * y + z_start
-                    if ( (double)kk > (cntrl_para*(double)jj + ((double)NZ-(double)d_absorb-4.)/2.) ) {
+                    if ( (double)kk > (cntrl_para*(double)jj + ((double)NZ-(double)D_ABSORB-4.)/2.) ) {
                         n_e[ii][jj][kk] = ne_max;
                     }
                 }
@@ -75,7 +75,7 @@ int make_density_profile( gridConfiguration *gridCfg,
         // n_e(z) = m*z 
         // with m = 2*pi/(k0Ln*lambda) 
         //      z = z-starting_position
-        ne_start_z  = (d_absorb + period)/2;
+        ne_start_z  = (D_ABSORB + PERIOD)/2;
         //ne_start_z  = (gridCfg->d_absorb + 224.155)/2;    // benchmark scenario from STEP project: .15m/l_0*period
         if (ne_start_z%2 != 0)
             ne_start_z  += 1;
@@ -85,7 +85,7 @@ int make_density_profile( gridConfiguration *gridCfg,
         for (ii=0 ; ii<(NX/2) ; ++ii) {
             for (jj=0 ; jj<(NY/2) ; ++jj) {
                 for (kk=0 ; kk<(NZ/2) ; ++kk) {
-                    aux = ((double)kk - (double)ne_start_z) * (2.*M_PI / (ne_k0Ln*period));
+                    aux = ((double)kk - (double)ne_start_z) * (2.*M_PI / (ne_k0Ln*PERIOD));
                     // negative density values are unphysical
                     if (aux < .0)
                         aux = .0;
@@ -112,8 +112,8 @@ int make_density_profile( gridConfiguration *gridCfg,
             for (jj=0 ; jj<(NY/2) ; ++jj) {
                 for (kk=0 ; kk<(NZ/2) ; ++kk) {
                     n_e[ii][jj][kk]    = exp( -1.* (
-                                                 pow((double)jj-(double)NY/4., 2)/(2*pow(period/2.,2)) 
-                                                +pow((double)kk-(double)NZ/4., 2)/(2*pow(period/2.,2))
+                                                 pow((double)jj-(double)NY/4., 2)/(2*pow(PERIOD/2.,2)) 
+                                                +pow((double)kk-(double)NZ/4., 2)/(2*pow(PERIOD/2.,2))
                                              )) * 5.;
                 }
             }
@@ -124,8 +124,8 @@ int make_density_profile( gridConfiguration *gridCfg,
             for (jj=0 ; jj<(NY/2) ; ++jj) {
                 for (kk=0 ; kk<(NZ/2) ; ++kk) {
                     n_e[ii][jj][kk]    = exp( -1.* (
-                                                 pow((double)ii-(double)NX/4., 2)/(2*pow(period/2.,2)) 
-                                                +pow((double)kk-(double)NZ/4., 2)/(2*pow(period/2.,2))
+                                                 pow((double)ii-(double)NX/4., 2)/(2*pow(PERIOD/2.,2)) 
+                                                +pow((double)kk-(double)NZ/4., 2)/(2*pow(PERIOD/2.,2))
                                              )) * 2;//5.;
                 }
             }
@@ -135,7 +135,7 @@ int make_density_profile( gridConfiguration *gridCfg,
         //   ==> change this
         //       either provide additional parameter in function call
         //       or not load the profile here, but directly in main
-        //readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "n_e", n_e );
+        readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "n_e", n_e );
     }
     return EXIT_SUCCESS;
 }//}}}
