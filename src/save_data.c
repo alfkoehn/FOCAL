@@ -3,6 +3,7 @@
 void create_folder( gridConfiguration *gridCfg, saveData *saveDCfg ){
     //{{{
 
+    printf("-------------------Storage Folder------------------- \n");
     simulation_folder( projectPath );
     data_folder( projectPath, foldername );
     copyJSON( projectPath, foldername );
@@ -94,28 +95,22 @@ void copyJSON(const char *path, const char *folder_name){
     printf("JSON file saved.\n");
 }//}}}
 
-/*Functions to save data*/
-void control_save(  gridConfiguration *gridCfg,
+//Functions to save data
+void save_SimData(  gridConfiguration *gridCfg,
                     beamAntennaConfiguration *beamCfg, 
                     saveData *saveDCfg,
-                    double timetraces[col_for_timetraces][T_END/(int)period],
                     double n_e[NX/2][NY/2][NZ/2],
                     double J_B0[NX][NY][NZ] ){
 
-    /*Char values as directions to the correct folder*/
-    char fullDir[PATH_MAX], filename_hdf5[PATH_MAX], filename_trace[PATH_MAX];
+    //Char values as directions to the correct folder
+    char fullDir[PATH_MAX], filename_hdf5[PATH_MAX];
 
     sprintf(fullDir,"%s/%s/", projectPath, foldername);
     
     //Append the name of the files
     sprintf( filename_hdf5, "%s%s", fullDir, file_hdf5);
-    sprintf( filename_trace, "%s%s", fullDir, file_trace);
 
     /*Save data into path directory*/
-    // write timetrace data into file
-    writeTimetraces2ascii( (T_END/(int)period), col_for_timetraces, T_END, period, 
-                           filename_trace , timetraces );
-
     save_data_toHDF5( gridCfg, beamCfg, filename_hdf5 , n_e, J_B0 );
     
 }
@@ -184,7 +179,7 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
                         saveData *saveDCfg, int t_int,
                         double EB_WAVE[NX][NY][NZ] ){
 
-    if( t_int % (t_save * (int)period) == 0 && t_int != 0){
+    if( t_int % (t_save * (int)PERIOD) == 0 && t_int != 0){
         
         size_t ii, jj, kk;
         /*Char values as directions to the correct folder*/

@@ -59,7 +59,7 @@ typedef struct antennaDetector{
         detAnt_01_ypos;
 } antennaDetector;
 
-/*typedef struct powerCalcValues{
+typedef struct powerValues{
     int 
         pwr_dect;
 
@@ -73,6 +73,6 @@ typedef struct antennaDetector{
         poynt_y1, poynt_y2,
         poynt_z1, poynt_z2,
         poynt_z1_ref;    
-} powerCalcValues;*/
+} powerValues;
 
 #endif

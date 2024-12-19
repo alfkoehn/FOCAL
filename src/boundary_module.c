@@ -9,12 +9,12 @@ static double ***E_Zdir_OLD_ref = NULL;
 
 void init_boundary(gridConfiguration *gridCfg, boundaryVariables *boundaryV){
 
-    if(sel_boundary == 1){
+    if(BOUNDARY == 1){
 
-        eco = 10./(double)(period);
+        eco = 10./(double)(PERIOD);
 
     }
-    else if (sel_boundary == 2){
+    else if (BOUNDARY == 2){
         
         E_Xdir_OLD = allocate3DArray(8, NY, NZ);
         E_Ydir_OLD = allocate3DArray(NX, 8, NZ);
@@ -25,7 +25,7 @@ void init_boundary(gridConfiguration *gridCfg, boundaryVariables *boundaryV){
         E_Zdir_OLD_ref = allocate3DArray(NX, NY, 8);
 
     }
-    else if(sel_boundary == 3){
+    else if(BOUNDARY == 3){
         
         /*Initialize UPML parameters*/
         ALLOC_1D(boundaryV->F1x, NX/2, double);
@@ -52,7 +52,7 @@ void init_boundary(gridConfiguration *gridCfg, boundaryVariables *boundaryV){
 /*Free allocated memmory for boundary*/
 int free_boundary(gridConfiguration *gridCfg){
 
-    if(sel_boundary == 2){
+    if(BOUNDARY == 2){
 
         free3DArray(E_Xdir_OLD, 8, NY);
         free3DArray(E_Ydir_OLD, NX,8);
@@ -62,10 +62,10 @@ int free_boundary(gridConfiguration *gridCfg){
         free3DArray(E_Zdir_OLD_ref, NX, NY);
 
         printf("Freed Mur boundary allocated memory. \n");
-    } else if (sel_boundary == 3){
+    } else if (BOUNDARY == 3){
 
         free_UPML_memory(gridCfg);
-        printf("Freed PML boundary allocated memory. \n");
+        printf("Freed UPML boundary allocated memory. \n");
 
     }
     
@@ -76,12 +76,12 @@ int free_boundary(gridConfiguration *gridCfg){
 void advance_boundary(  gridConfiguration *gridCfg, boundaryVariables *boundaryV, 
                         double EB_WAVE[NX][NY][NZ], double EB_WAVE_ref[NX][NY][NZ_REF]){
 
-    if(sel_boundary == 1){
+    if(BOUNDARY == 1){
 
         apply_absorber( gridCfg, boundaryV, EB_WAVE);
         apply_absorber_ref(gridCfg, boundaryV, EB_WAVE_ref);
 
-    }else if (sel_boundary == 2){
+    }else if (BOUNDARY == 2){
 
         abc_Mur_1st( gridCfg, "x1x2y1y2z1z2", EB_WAVE );
         abc_Mur_1st_ref( gridCfg, EB_WAVE_ref );
@@ -93,7 +93,7 @@ void advance_boundary(  gridConfiguration *gridCfg, boundaryVariables *boundaryV
         abc_Mur_saveOldEref_ydir( gridCfg, EB_WAVE_ref );
         abc_Mur_saveOldEref_zdir( gridCfg, EB_WAVE_ref );
         
-    }else if (sel_boundary == 3){
+    }else if (BOUNDARY == 3){
 
         UPML_B_faces(   gridCfg, boundaryV, EB_WAVE );
         UPML_B_corners( gridCfg, boundaryV, EB_WAVE );
@@ -125,13 +125,13 @@ int apply_absorber( gridConfiguration *gridCfg,
     double
         damp;
 
-    // z1 absorber: z=0...d_absorb
+    // z1 absorber: z=0...D_ABSORB
 //#pragma omp parallel for collapse(2) default(shared) private(k,j,damp) <-- can collapse be used here?
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<NX-2 ; ii+=2) {
         for (jj=2 ; jj<NY-2 ; jj+=2) {
-            for (kk=2 ; kk<d_absorb-2 ; kk+=2) {
-                damp = ((double)kk-(double)d_absorb)/(double)d_absorb;
+            for (kk=2 ; kk<D_ABSORB-2 ; kk+=2) {
+                damp = ((double)kk-(double)D_ABSORB)/(double)D_ABSORB;
                 damp = ABSORBER_DAMPING(eco,damp);
 
                 EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -139,16 +139,16 @@ int apply_absorber( gridConfiguration *gridCfg,
                 EB_WAVE[ii  ][jj  ][kk+1] *= damp;
 //                if ((ii%10 == 0) && (jj%10 == 0) && (kk%10 == 0)) 
 //                    printf( "z1: ii=%3d, jj=%3d, kk=%3d, (kk-d_abs)/d_abs=%f, damp=%f\n", 
-//                            ii, jj, kk, ((double)kk-(double)d_absorb)/(double)d_absorb, damp );
+//                            ii, jj, kk, ((double)kk-(double)D_ABSORB)/(double)D_ABSORB, damp );
             }
         }
     }
-    // z2 absorber: z=d_absorb...NZ
+    // z2 absorber: z=D_ABSORB...NZ
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<NX-2 ; ii+=2) {
         for (jj=2 ; jj<NY-2 ; jj+=2) {
-            for (kk=(NZ - d_absorb) ; kk<NZ-2 ; kk+=2) {      //NZ-d_absorb-2 ???
-                damp = ((double)kk-((double)NZ-(double)d_absorb))/(double)d_absorb;
+            for (kk=(NZ - D_ABSORB) ; kk<NZ-2 ; kk+=2) {      //NZ-D_ABSORB-2 ???
+                damp = ((double)kk-((double)NZ-(double)D_ABSORB))/(double)D_ABSORB;
                 damp = ABSORBER_DAMPING(eco,damp);
 
                 EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -157,12 +157,12 @@ int apply_absorber( gridConfiguration *gridCfg,
             }
         }
     }      
-    // x1 absorber: x=0...d_absorb
+    // x1 absorber: x=0...D_ABSORB
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (jj=2 ; jj<NY-2 ; jj+=2) {
         for (kk=2 ; kk<NZ-2 ; kk+=2) {
-            for (ii=2 ; ii<d_absorb-2 ; ii+=2) {
-                damp = ((double)ii-(double)d_absorb)/(double)d_absorb;
+            for (ii=2 ; ii<D_ABSORB-2 ; ii+=2) {
+                damp = ((double)ii-(double)D_ABSORB)/(double)D_ABSORB;
                 damp = ABSORBER_DAMPING(eco,damp);
 
                 EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -171,12 +171,12 @@ int apply_absorber( gridConfiguration *gridCfg,
             }
         }
     }
-    // x2 absorber: x=d_absorb...NX
+    // x2 absorber: x=D_ABSORB...NX
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (jj=2 ; jj<NY-2 ; jj+=2) {
         for (kk=2 ; kk<NZ-2 ; kk+=2) {  
-            for (ii=(NX-d_absorb) ; ii<NX-2 ; ii+=2) {    //NX-d_absorb-2 ???
-                damp = ((double)ii-((double)NX-(double)d_absorb))/(double)d_absorb;
+            for (ii=(NX-D_ABSORB) ; ii<NX-2 ; ii+=2) {    //NX-D_ABSORB-2 ???
+                damp = ((double)ii-((double)NX-(double)D_ABSORB))/(double)D_ABSORB;
                 damp = ABSORBER_DAMPING(eco,damp);
 
                 EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -185,12 +185,12 @@ int apply_absorber( gridConfiguration *gridCfg,
             }
         }
     }
-    // y1 absorber: y=0...d_absorb
+    // y1 absorber: y=0...D_ABSORB
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<NX-2 ; ii+=2) {
         for (kk=2 ; kk<NZ-2 ; kk+=2) {
-            for (jj=2 ; jj<d_absorb-2 ; jj+=2) {
-                damp = ((double)jj-(double)d_absorb)/(double)d_absorb;
+            for (jj=2 ; jj<D_ABSORB-2 ; jj+=2) {
+                damp = ((double)jj-(double)D_ABSORB)/(double)D_ABSORB;
                 damp = ABSORBER_DAMPING(eco,damp);
 
                 EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -199,12 +199,12 @@ int apply_absorber( gridConfiguration *gridCfg,
             }
         }
     }
-    // y2 absorber: y=d_absorb...NY
+    // y2 absorber: y=D_ABSORB...NY
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<NX-2 ; ii+=2) {
         for (kk=2 ; kk<NZ-2 ; kk+=2) {
-            for (jj=(NY - d_absorb) ; jj<NY-2 ; jj+=2) {  //NY-d_absorb-2 ???
-                damp = ((double)jj-((double)NY-(double)d_absorb))/(double)d_absorb;
+            for (jj=(NY - D_ABSORB) ; jj<NY-2 ; jj+=2) {  //NY-D_ABSORB-2 ???
+                damp = ((double)jj-((double)NY-(double)D_ABSORB))/(double)D_ABSORB;
                 damp = ABSORBER_DAMPING(eco,damp);
 
                 EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -226,13 +226,13 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
     double
         damp;
 
-    // z1 absorber: z=0...d_absorb
+    // z1 absorber: z=0...D_ABSORB
 //#pragma omp parallel for collapse(2) default(shared) private(k,j,damp) <-- can collapse be used here?
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<NX-2 ; ii+=2) {
         for (jj=2 ; jj<NY-2 ; jj+=2) {
-            for (kk=2 ; kk<d_absorb-2 ; kk+=2) {
-                damp = ((double)kk-(double)d_absorb)/(double)d_absorb;
+            for (kk=2 ; kk<D_ABSORB-2 ; kk+=2) {
+                damp = ((double)kk-(double)D_ABSORB)/(double)D_ABSORB;
                 damp = ABSORBER_DAMPING(eco,damp);
 
                 EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -240,16 +240,16 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
                 EB_WAVE[ii  ][jj  ][kk+1] *= damp;
 //                if ((ii%10 == 0) && (jj%10 == 0) && (kk%10 == 0)) 
 //                    printf( "z1: ii=%3d, jj=%3d, kk=%3d, (kk-d_abs)/d_abs=%f, damp=%f\n", 
-//                            ii, jj, kk, ((double)kk-(double)d_absorb)/(double)d_absorb, damp );
+//                            ii, jj, kk, ((double)kk-(double)D_ABSORB)/(double)D_ABSORB, damp );
             }
         }
     }
-    // z2 absorber: z=d_absorb...NZ
+    // z2 absorber: z=D_ABSORB...NZ
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<NX-2 ; ii+=2) {
         for (jj=2 ; jj<NY-2 ; jj+=2) {
-            for (kk=(NZ_REF-d_absorb) ; kk<NZ_REF-2 ; kk+=2) {      //NZ-d_absorb-2 ???
-                damp = ((double)kk-((double)NZ_REF-(double)d_absorb))/(double)d_absorb;
+            for (kk=(NZ_REF-D_ABSORB) ; kk<NZ_REF-2 ; kk+=2) {      //NZ-D_ABSORB-2 ???
+                damp = ((double)kk-((double)NZ_REF-(double)D_ABSORB))/(double)D_ABSORB;
                 damp = ABSORBER_DAMPING(eco,damp);
 
                 EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -258,12 +258,12 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
             }
         }
     }      
-    // x1 absorber: x=0...d_absorb
+    // x1 absorber: x=0...D_ABSORB
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (jj=2 ; jj<NY-2 ; jj+=2) {
         for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {
-            for (ii=2 ; ii<d_absorb-2 ; ii+=2) {
-                damp = ((double)ii-(double)d_absorb)/(double)d_absorb;
+            for (ii=2 ; ii<D_ABSORB-2 ; ii+=2) {
+                damp = ((double)ii-(double)D_ABSORB)/(double)D_ABSORB;
                 damp = ABSORBER_DAMPING(eco,damp);
 
                 EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -272,12 +272,12 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
             }
         }
     }
-    // x2 absorber: x=d_absorb...NX
+    // x2 absorber: x=D_ABSORB...NX
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (jj=2 ; jj<NY-2 ; jj+=2) {
         for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {  
-            for (ii=(NX-d_absorb) ; ii<NX-2 ; ii+=2) {    //NX-d_absorb-2 ???
-                damp = ((double)ii-((double)NX-(double)d_absorb))/(double)d_absorb;
+            for (ii=(NX-D_ABSORB) ; ii<NX-2 ; ii+=2) {    //NX-D_ABSORB-2 ???
+                damp = ((double)ii-((double)NX-(double)D_ABSORB))/(double)D_ABSORB;
                 damp = ABSORBER_DAMPING(eco,damp);
 
                 EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -286,12 +286,12 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
             }
         }
     }
-    // y1 absorber: y=0...d_absorb
+    // y1 absorber: y=0...D_ABSORB
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<NX-2 ; ii+=2) {
         for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {
-            for (jj=2 ; jj<d_absorb-2 ; jj+=2) {
-                damp = ((double)jj-(double)d_absorb)/(double)d_absorb;
+            for (jj=2 ; jj<D_ABSORB-2 ; jj+=2) {
+                damp = ((double)jj-(double)D_ABSORB)/(double)D_ABSORB;
                 damp = ABSORBER_DAMPING(eco,damp);
 
                 EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -300,12 +300,12 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
             }
         }
     }
-    // y2 absorber: y=d_absorb...NY
+    // y2 absorber: y=D_ABSORB...NY
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
     for (ii=2 ; ii<NX-2 ; ii+=2) {
         for (kk=2 ; kk<NZ_REF-2 ; kk+=2) {
-            for (jj=(NY-d_absorb) ; jj<NY-2 ; jj+=2) {  //NY-d_absorb-2 ???
-                damp = ((double)jj-((double)NY-(double)d_absorb))/(double)d_absorb;
+            for (jj=(NY-D_ABSORB) ; jj<NY-2 ; jj+=2) {  //NY-D_ABSORB-2 ???
+                damp = ((double)jj-((double)NY-(double)D_ABSORB))/(double)D_ABSORB;
                 damp = ABSORBER_DAMPING(eco,damp);
 
                 EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -318,7 +318,7 @@ int apply_absorber_ref( gridConfiguration *gridCfg,
 }//}}}
 
 
-int apply_absorber_v2(  size_t N_x, size_t N_y, size_t N_z, int D_absorb, 
+int apply_absorber_v2(  size_t N_x, size_t N_y, size_t N_z, int d_absorb, 
                         boundaryVariables *boundaryV, 
                         char absorber[],
                         double EB_WAVE[N_x][N_y][N_z] ) {
@@ -328,14 +328,14 @@ int apply_absorber_v2(  size_t N_x, size_t N_y, size_t N_z, int D_absorb,
     double
         damp;
 
-    // z1 absorber: z=0...d_absorb
+    // z1 absorber: z=0...D_ABSORB
 //#pragma omp parallel for collapse(2) default(shared) private(k,j,damp) <-- can collapse be used here?
     if ( strstr(absorber,"z1") ) {      
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
         for (ii=2 ; ii<N_x-2 ; ii+=2) {
             for (jj=2 ; jj<N_y-2 ; jj+=2) {
-                for (kk=2 ; kk<D_absorb-2 ; kk+=2) {
-                    damp = ((double)kk-(double)D_absorb)/(double)D_absorb;
+                for (kk=2 ; kk<d_absorb-2 ; kk+=2) {
+                    damp = ((double)kk-(double)d_absorb)/(double)d_absorb;
                     damp = ABSORBER_DAMPING(eco,damp);
 
                     EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -348,13 +348,13 @@ int apply_absorber_v2(  size_t N_x, size_t N_y, size_t N_z, int D_absorb,
             }
         }
     }
-    // z2 absorber: z=d_absorb...NZ
+    // z2 absorber: z=D_ABSORB...NZ
     if ( strstr(absorber,"z2") ) {      
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
         for (ii=2 ; ii<N_x-2 ; ii+=2) {
             for (jj=2 ; jj<N_y-2 ; jj+=2) {
-                for (kk=(N_z-D_absorb) ; kk<N_z-2 ; kk+=2) {      //NZ-d_absorb-2 ???
-                    damp = ((double)kk-((double)N_z-(double)D_absorb))/(double)D_absorb;
+                for (kk=(N_z-d_absorb) ; kk<N_z-2 ; kk+=2) {      //NZ-D_ABSORB-2 ???
+                    damp = ((double)kk-((double)N_z-(double)d_absorb))/(double)d_absorb;
                     damp = ABSORBER_DAMPING(eco,damp);
 
                     EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -364,13 +364,13 @@ int apply_absorber_v2(  size_t N_x, size_t N_y, size_t N_z, int D_absorb,
             }
         }      
     }
-    // x1 absorber: x=0...d_absorb
+    // x1 absorber: x=0...D_ABSORB
     if ( strstr(absorber,"x1") ) {
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
         for (jj=2 ; jj<N_y-2 ; jj+=2) {
             for (kk=2 ; kk<N_z-2 ; kk+=2) {
-                for (ii=2 ; ii<D_absorb-2 ; ii+=2) {
-                    damp = ((double)ii-(double)D_absorb)/(double)D_absorb;
+                for (ii=2 ; ii<d_absorb-2 ; ii+=2) {
+                    damp = ((double)ii-(double)d_absorb)/(double)d_absorb;
                     damp = ABSORBER_DAMPING(eco,damp);
 
                     EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -381,12 +381,12 @@ int apply_absorber_v2(  size_t N_x, size_t N_y, size_t N_z, int D_absorb,
         }
     }
     if ( strstr(absorber,"x2") ) {
-    // x2 absorber: x=d_absorb...NX
+    // x2 absorber: x=D_ABSORB...NX
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
         for (jj=2 ; jj<N_y-2 ; jj+=2) {
             for (kk=2 ; kk<N_z-2 ; kk+=2) {  
-                for (ii=(N_x-D_absorb) ; ii<N_x-2 ; ii+=2) {    //NX-d_absorb-2 ???
-                    damp = ((double)ii-((double)N_x-(double)D_absorb))/(double)D_absorb;
+                for (ii=(N_x-d_absorb) ; ii<N_x-2 ; ii+=2) {    //NX-D_ABSORB-2 ???
+                    damp = ((double)ii-((double)N_x-(double)d_absorb))/(double)d_absorb;
                     damp = ABSORBER_DAMPING(eco,damp);
 
                     EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -396,13 +396,13 @@ int apply_absorber_v2(  size_t N_x, size_t N_y, size_t N_z, int D_absorb,
             }
         }
     }
-    // y1 absorber: y=0...d_absorb
+    // y1 absorber: y=0...D_ABSORB
     if ( strstr(absorber,"y1") ) {
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
         for (ii=2 ; ii<N_x-2 ; ii+=2) {
             for (kk=2 ; kk<N_z-2 ; kk+=2) {
-                for (jj=2 ; jj<D_absorb-2 ; jj+=2) {
-                    damp = ((double)jj-(double)D_absorb)/(double)D_absorb;
+                for (jj=2 ; jj<d_absorb-2 ; jj+=2) {
+                    damp = ((double)jj-(double)d_absorb)/(double)d_absorb;
                     damp = ABSORBER_DAMPING(eco,damp);
 
                     EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -412,13 +412,13 @@ int apply_absorber_v2(  size_t N_x, size_t N_y, size_t N_z, int D_absorb,
             }
         }
     }
-    // y2 absorber: y=d_absorb...NY
+    // y2 absorber: y=D_ABSORB...NY
     if ( strstr(absorber,"y2") ) {
 #pragma omp parallel for default(shared) private(ii,jj,kk,damp)
         for (ii=2 ; ii<N_x-2 ; ii+=2) {
             for (kk=2 ; kk<N_z-2 ; kk+=2) {
-                for (jj=(N_y-D_absorb) ; jj<N_y-2 ; jj+=2) {  //NY-d_absorb-2 ???
-                    damp = ((double)jj-((double)N_y-(double)D_absorb))/(double)D_absorb;
+                for (jj=(N_y-d_absorb) ; jj<N_y-2 ; jj+=2) {  //NY-D_ABSORB-2 ???
+                    damp = ((double)jj-((double)N_y-(double)d_absorb))/(double)d_absorb;
                     damp = ABSORBER_DAMPING(eco,damp);
 
                     EB_WAVE[ii+1][jj  ][kk  ] *= damp;
@@ -988,6 +988,7 @@ int abc_Mur_1st_ref( gridConfiguration *gridCfg,
 
 /*UPML functions*/
 double sigma(int pml_size, double nn, int m, double ds){
+    //Computes conductivity in UPML layer
 
     double sig, sig_max, R_0;
     
@@ -1010,7 +1011,7 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
     ky = 1;
     kz = 1;
 
-    count = (d_absorb-2)/2;
+    count = (D_ABSORB-2)/2;
 #pragma omp parallel firstprivate(count) shared(gridCfg, boundaryV)
 {
     #pragma omp sections
@@ -1018,18 +1019,18 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
         #pragma omp section
         {
         for ( ii=2 ; ii < NX-2 ; ii+=2 ) {
-            if(ii < d_absorb ){
+            if(ii < D_ABSORB ){
 
-                sig = sigma( (d_absorb-2)/2, count, 4, DX );
+                sig = sigma( (D_ABSORB-2)/2, count, 4, DX );
                 F1x(ii/2) = (2*kx) - (sig*DT);
                 F2x(ii/2) = (2*kx) + (sig*DT);
                 Cx(ii/2) = F1x(ii/2)/F2x(ii/2);
                 count -= 1;
 
-            }else if( ii > NX - d_absorb - 2 ){
+            }else if( ii > NX - D_ABSORB - 2 ){
 
                 count += 1;
-                sig = sigma( (d_absorb-2)/2, count, 4, DX);
+                sig = sigma( (D_ABSORB-2)/2, count, 4, DX);
                 F1x(ii/2) = (2*kx) - (sig*DT);
                 F2x(ii/2) = (2*kx) + (sig*DT);
                 Cx(ii/2) = F1x(ii/2)/F2x(ii/2);  
@@ -1048,18 +1049,18 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
         #pragma omp section
         {
         for ( jj=2 ; jj < NY-2 ; jj+=2 ) {
-            if(jj < d_absorb ){
+            if(jj < D_ABSORB ){
 
-                sig = sigma( (d_absorb-2)/2, count, 4, DX );
+                sig = sigma( (D_ABSORB-2)/2, count, 4, DX );
                 F1y(jj/2) = (2*ky) - (sig*DT);
                 F2y(jj/2) = (2*ky) + (sig*DT);
                 Cy(jj/2) = F1y(jj/2)/F2y(jj/2);
                 count -= 1;
 
-            }else if( jj > NY - d_absorb - 2){
+            }else if( jj > NY - D_ABSORB - 2){
 
                 count += 1;
-                sig = sigma( (d_absorb-2)/2, count, 4, DX );
+                sig = sigma( (D_ABSORB-2)/2, count, 4, DX );
                 F1y(jj/2) = (2*ky) - (sig*DT);
                 F2y(jj/2) = (2*ky) + (sig*DT);
                 Cy(jj/2) = F1y(jj/2)/F2y(jj/2); 
@@ -1078,18 +1079,18 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
         #pragma omp section
         {
         for ( kk=2 ; kk < NZ-2 ; kk+=2 ) {
-            if(kk < d_absorb){
+            if(kk < D_ABSORB){
 
-                sig = sigma( (d_absorb-2)/2, count, 4, DX );
+                sig = sigma( (D_ABSORB-2)/2, count, 4, DX );
                 F1z(kk/2) = (2*kz) - (sig*DT);
                 F2z(kk/2) = (2*kz) + (sig*DT);
                 Cz(kk/2) = F1z(kk/2)/F2z(kk/2);
                 count -= 1;
 
-            }else if( kk > NZ - d_absorb - 2){ 
+            }else if( kk > NZ - D_ABSORB - 2){ 
 
                 count += 1;
-                sig = sigma( (d_absorb-2)/2 , count, 4, DX);
+                sig = sigma( (D_ABSORB-2)/2 , count, 4, DX);
                 F1z(kk/2) = (2*kz) - (sig*DT);
                 F2z(kk/2) = (2*kz) + (sig*DT);
                 Cz(kk/2) = F1z(kk/2)/F2z(kk/2); 
@@ -1108,18 +1109,18 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
         #pragma omp section
         {
         for ( kkr=2 ; kkr < NZ_REF-2 ; kkr+=2 ) {
-            if(kkr < d_absorb){
+            if(kkr < D_ABSORB){
 
-                sig = sigma( (d_absorb-2)/2, count, 4, DX );
+                sig = sigma( (D_ABSORB-2)/2, count, 4, DX );
                 F1zr(kkr/2) = (2*kz) - (sig*DT);
                 F2zr(kkr/2) = (2*kz) + (sig*DT);
                 Czr(kkr/2) = F1zr(kkr/2)/F2zr(kkr/2);
                 count -= 1;
 
-            }else if( kkr > NZ_REF - d_absorb - 2 ){ 
+            }else if( kkr > NZ_REF - D_ABSORB - 2 ){ 
                         
                 count += 1;
-                sig = sigma( (d_absorb-2)/2, count, 4, DX);
+                sig = sigma( (D_ABSORB-2)/2, count, 4, DX);
                 F1zr(kkr/2) = (2*kz) - (sig*DT);
                 F2zr(kkr/2) = (2*kz) + (sig*DT);
                 Czr(kkr/2) = F1zr(kkr/2)/F2zr(kkr/2); 

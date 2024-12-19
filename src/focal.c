@@ -6,7 +6,7 @@ void advance_fields(    gridConfiguration *gridCfg,
                         double J_B0[NX][NY][NZ],
                         double n_e[NX/2][NY/2][NZ/2]){
     
-    if( sel_boundary != 3 ){
+    if( BOUNDARY != 3 ){
 
         //Advance wave-plasma current
         advance_J(      gridCfg, EB_WAVE, J_B0, n_e );
@@ -19,7 +19,7 @@ void advance_fields(    gridConfiguration *gridCfg,
         advance_E(      gridCfg, EB_WAVE, J_B0 );
         advance_E_ref(  gridCfg, EB_WAVE_ref );
 
-    }else if( sel_boundary == 3 ){
+    }else if( BOUNDARY == 3 ){
 
         //Advance wave-plasma current
         advance_J_UPML(      gridCfg, EB_WAVE, J_B0, n_e );
@@ -241,14 +241,14 @@ int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
 
     ne_absorb   = .0;
     smooth      = .5;//.2;
-    ne_dist     = round( period/1 );
+    ne_dist     = round( PERIOD/1 );
 
-    x0          = (double)d_absorb + ne_dist;
-    x1          = (double)NX - (d_absorb + ne_dist);
-    y0          = (double)d_absorb + ne_dist;
-    y1          = (double)NY - (d_absorb + ne_dist);
-    z0          = (double)d_absorb + ne_dist;
-    z1          = (double)NZ - (d_absorb + ne_dist);
+    x0          = (double)D_ABSORB + ne_dist;
+    x1          = (double)NX - (D_ABSORB + ne_dist);
+    y0          = (double)D_ABSORB + ne_dist;
+    y1          = (double)NY - (D_ABSORB + ne_dist);
+    z0          = (double)D_ABSORB + ne_dist;
+    z1          = (double)NZ - (D_ABSORB + ne_dist);
 
     // scale to density grid which is only half the size of FDTD-wavefields grid
     // since 2 numerical grid points correspond to one "physical" grid point
@@ -435,9 +435,9 @@ int advance_J_UPML(  gridConfiguration *gridCfg,
     // B0z: odd-odd-even
 //#pragma omp parallel for collapse(2) default(shared) private(k,j, Jx_tmp1,Jy_tmp1,Jz_tmp1, Jx_tmp2,Jy_tmp2,Jz_tmp2, Jx_tmp3,Jy_tmp3,Jz_tmp3 ) // collapse ???
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk) 
-    for (ii= d_absorb ; ii<=NX-2-d_absorb ; ii+=2) {
-        for (jj= d_absorb ; jj<=NY-2-d_absorb ; jj+=2) {
-            for (kk= d_absorb ; kk<=NZ-2-d_absorb ; kk+=2) {
+    for (ii= D_ABSORB ; ii<=NX-2-D_ABSORB ; ii+=2) {
+        for (jj= D_ABSORB ; jj<=NY-2-D_ABSORB ; jj+=2) {
+            for (kk= D_ABSORB ; kk<=NZ-2-D_ABSORB ; kk+=2) {
                 // Jx: odd-even-even
                 J_B0[ii+1][jj  ][kk  ]    += + DT*(
                         pow(2*M_PI,2) * n_e[(ii/2)][(jj/2)][(kk/2)] * EB_WAVE[ii+1][jj  ][kk  ]
@@ -466,7 +466,7 @@ int advance_J_UPML(  gridConfiguration *gridCfg,
 }//}}}
 
 
-int advance_B_UPML(  gridConfiguration *gridCfg, 
+int advance_B_UPML( gridConfiguration *gridCfg, 
                     double EB_WAVE[NX][NY][NZ] ) {
 //{{{
     // B_new = B_old - nabla x E
@@ -475,9 +475,9 @@ int advance_B_UPML(  gridConfiguration *gridCfg,
         ii, jj, kk;
 
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk) 
-    for (ii=d_absorb ; ii<=NX-2-d_absorb ; ii+=2) {
-        for (jj=d_absorb ; jj<=NY-2-d_absorb ; jj+=2) {
-            for (kk=d_absorb ; kk<=NZ-2-d_absorb ; kk+=2) {
+    for (ii=D_ABSORB ; ii<=NX-2-D_ABSORB ; ii+=2) {
+        for (jj=D_ABSORB ; jj<=NY-2-D_ABSORB ; jj+=2) {
+            for (kk=D_ABSORB ; kk<=NZ-2-D_ABSORB ; kk+=2) {
 
                 // -dBx/DT = dEz/dy - dEy/dz
                 EB_WAVE[ii  ][jj+1][kk+1]   += -1.*DT/DX*(
@@ -502,16 +502,16 @@ int advance_B_UPML(  gridConfiguration *gridCfg,
 }//}}}
 
 
-int advance_Bref_UPML(   gridConfiguration *gridCfg, 
+int advance_Bref_UPML(  gridConfiguration *gridCfg, 
                         double EB_WAVE[NX][NY][NZ_REF] ) {
 //{{{
     size_t
         ii, jj, kk;
 
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk) 
-    for (ii=d_absorb ; ii<=NX-2-d_absorb ; ii+=2) {
-        for (jj=d_absorb ; jj<=NY-2-d_absorb ; jj+=2) {
-            for (kk=d_absorb ; kk<=NZ_REF-2-d_absorb ; kk+=2) {
+    for (ii=D_ABSORB ; ii<=NX-2-D_ABSORB ; ii+=2) {
+        for (jj=D_ABSORB ; jj<=NY-2-D_ABSORB ; jj+=2) {
+            for (kk=D_ABSORB ; kk<=NZ_REF-2-D_ABSORB ; kk+=2) {
                 // -dBx/DT = dEz/dy - dEy/dz
                 EB_WAVE[ii  ][jj+1][kk+1]   += -1.*DT/DX*(
                         +EB_WAVE[ii  ][jj+2][kk+1] - EB_WAVE[ii  ][jj  ][kk+1]
@@ -544,9 +544,9 @@ int advance_E_UPML(  gridConfiguration *gridCfg,
         ii, jj, kk;
 
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
-    for (ii=d_absorb ; ii<=NX-2-d_absorb ; ii+=2) {
-        for (jj=d_absorb ; jj<=NY-2-d_absorb ; jj+=2) {
-            for (kk=d_absorb ; kk<=NZ-2-d_absorb ; kk+=2) {
+    for (ii=D_ABSORB ; ii<=NX-2-D_ABSORB ; ii+=2) {
+        for (jj=D_ABSORB ; jj<=NY-2-D_ABSORB ; jj+=2) {
+            for (kk=D_ABSORB ; kk<=NZ-2-D_ABSORB ; kk+=2) {
                 // dEx/DT = (dBz/dy - dBy/dz)
                 EB_WAVE[ii+1][jj  ][kk  ] += DT/DX*(
                         +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]
@@ -578,9 +578,9 @@ int advance_Eref_UPML(   gridConfiguration *gridCfg,
         ii, jj, kk;
 
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
-    for (ii=d_absorb ; ii<=NX-2-d_absorb ; ii+=2) {
-        for (jj=d_absorb ; jj<=NY-2-d_absorb ; jj+=2) {
-            for (kk=d_absorb ; kk<=NZ_REF-2-d_absorb ; kk+=2) {
+    for (ii=D_ABSORB ; ii<=NX-2-D_ABSORB ; ii+=2) {
+        for (jj=D_ABSORB ; jj<=NY-2-D_ABSORB ; jj+=2) {
+            for (kk=D_ABSORB ; kk<=NZ_REF-2-D_ABSORB ; kk+=2) {
                 // dEx/dt = (dBz/dy - dBy/dz)
                 EB_WAVE[ii+1][jj  ][kk  ] += DT/DX*(
                         +EB_WAVE[ii+1][jj+1][kk  ] - EB_WAVE[ii+1][jj-1][kk  ]

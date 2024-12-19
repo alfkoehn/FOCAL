@@ -1,3 +1,6 @@
+/*Antenna detector module contains functions to initialize,
+store and save the number of antennas in the system.*/
+
 #include "antenna_detector.h"
 
 static double **detAnt_01_fields = NULL;
@@ -10,13 +13,13 @@ int init_antennaDetect( gridConfiguration *gridCfg,
                         beamAntennaConfiguration *beamCfg,
                         antennaDetector *antDetect ){
 
-    if( antDetect_1D == 1 ){
+    if( activate_antDetect1D == 1 ){
 
-        detAnt_01_ypos  = ant_y;
-        detAnt_01_zpos  = ant_z+2;
-        detAnt_02_zpos  = round(ant_z+2 + 1*5*period); // steps of 5 cm for 28 GHz = 4.67*period
-        detAnt_03_zpos  = round(ant_z+2 + 2*5*period);
-        detAnt_04_zpos  = round(ant_z+2 + 3*5*period);
+        detAnt_01_ypos  = ANT_Y;
+        detAnt_01_zpos  = ANT_Z+2;
+        detAnt_02_zpos  = round( ANT_Z+2 + 1*5*PERIOD ); // steps of 5 cm for 28 GHz = 4.67*period
+        detAnt_03_zpos  = round( ANT_Z+2 + 2*5*PERIOD );
+        detAnt_04_zpos  = round( ANT_Z+2 + 3*5*PERIOD );
         // positions have to be even numbers, to ensure fields are accessed correctly
         if ((detAnt_01_ypos % 2) != 0)  ++detAnt_01_ypos;
         if ((detAnt_01_zpos % 2) != 0)  ++detAnt_01_zpos;
@@ -24,10 +27,10 @@ int init_antennaDetect( gridConfiguration *gridCfg,
         if ((detAnt_03_zpos % 2) != 0)  ++detAnt_03_zpos;
         if ((detAnt_04_zpos % 2) != 0)  ++detAnt_04_zpos;
         // issue a warning when detector antenna position is beyond NZ
-        if (detAnt_04_zpos > (NZ - d_absorb)) {
+        if (detAnt_04_zpos > (NZ - D_ABSORB)) {
             printf( "ERROR: check the detector antenna positions into z direction\n" );
-            printf( "       NZ-d_absorb = %d, detAnt_04_zpos = %d\n", 
-                    NZ - d_absorb, detAnt_04_zpos );
+            printf( "       NZ-D_ABSORB = %d, detAnt_04_zpos = %d\n", 
+                    NZ - D_ABSORB, detAnt_04_zpos );
 
         }
 
@@ -37,16 +40,16 @@ int init_antennaDetect( gridConfiguration *gridCfg,
         // TODO: change into 3D array, such that each detector antenna corresponds
         //       to one 2D array; that way it can be written much more failsafe...
         //       requires some changes in procedures for storing and saving
-        if (detAnt_01_zpos < ( NZ - d_absorb)) {
+        if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
             detAnt_01_fields = allocate2DArray( NX, 5 );            
         }
-        if (detAnt_02_zpos < ( NZ - d_absorb)) {
+        if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
             detAnt_02_fields = allocate2DArray( NX, 5 );
         }
-        if (detAnt_03_zpos < ( NZ - d_absorb)) {
+        if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
             detAnt_03_fields = allocate2DArray( NX, 5 );
         }
-        if (detAnt_04_zpos < ( NZ - d_absorb)) {
+        if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
             detAnt_04_fields = allocate2DArray( NX, 5 );
         }
         
@@ -59,16 +62,16 @@ int init_antennaDetect( gridConfiguration *gridCfg,
 int free_antDetect( gridConfiguration *gridCfg,
                     antennaDetector *antDetect ){
 
-    if (detAnt_01_zpos < ( NZ - d_absorb)) {
+    if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
         free2DArray(detAnt_01_fields, NX);            
     }
-    if (detAnt_02_zpos < ( NZ - d_absorb)) {
+    if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
         free2DArray(detAnt_02_fields, NX);
     }
-    if (detAnt_03_zpos < ( NZ - d_absorb)) {
+    if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
         free2DArray(detAnt_03_fields, NX);
     }
-    if (detAnt_04_zpos < ( NZ - d_absorb)) {
+    if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
         free2DArray(detAnt_04_fields, NX);
     }
 
@@ -80,13 +83,9 @@ int free_antDetect( gridConfiguration *gridCfg,
 /*Print in console the antennad detect information*/
 int print_antennaDetec( antennaDetector *antDetect ){
 
-    if( antDetect_1D == 1 ){
+    if( activate_antDetect1D == 1 ){
 
-        /*printf( "detector antenna positions: z1 = %d, y1 = %d\n", detAnt_01_zpos, detAnt_01_ypos );
-        printf( "detector antenna positions: z2 = %d, y1 = %d\n", detAnt_02_zpos, detAnt_01_ypos );
-        printf( "detector antenna positions: z3 = %d, y1 = %d\n", detAnt_03_zpos, detAnt_01_ypos );
-        printf( "detector antenna positions: z4 = %d, y1 = %d\n", detAnt_04_zpos, detAnt_01_ypos );*/
-        printf("--------Detector Antenna Positions--------\n");
+        printf("------------Detector Antenna Positions------------\n");
         printf( "detector antenna 01: z1 = %d, y1 = %d\n", detAnt_01_zpos, detAnt_01_ypos );
         printf( "detector antenna 02: z2 = %d, y1 = %d\n", detAnt_02_zpos, detAnt_01_ypos );
         printf( "detector antenna 03: z3 = %d, y1 = %d\n", detAnt_03_zpos, detAnt_01_ypos );
@@ -105,27 +104,27 @@ int control_antennaDetect(  gridConfiguration *gridCfg,
                             int t_int,
                             double EB_WAVE[NX][NY][NZ] ){
 
-    if( antDetect_1D == 1 ){ 
+    if( activate_antDetect1D == 1 ){ 
         // store wavefields for detector antennas over the final 10 
         // oscillation periods, it was found previously that only one period
         // does not result in a too nice average
-        if ( t_int >= ( T_END - 10*period ) ) {
-                if (detAnt_01_zpos < ( NZ - d_absorb)) {
+        if ( t_int >= ( T_END - 10*PERIOD ) ) {
+                if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
                     detAnt1D_storeValues( gridCfg, detAnt_01_ypos, detAnt_01_zpos,
                                         t_int,  
                                         EB_WAVE, detAnt_01_fields );
                 }
-                if (detAnt_02_zpos < ( NZ - d_absorb)) {
+                if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
                     detAnt1D_storeValues( gridCfg, detAnt_01_ypos, detAnt_02_zpos,
                                         t_int, 
                                         EB_WAVE, detAnt_02_fields );
                 }
-                if (detAnt_03_zpos < ( NZ - d_absorb)) {
+                if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
                     detAnt1D_storeValues( gridCfg, detAnt_01_ypos, detAnt_03_zpos,
                                         t_int,
                                         EB_WAVE, detAnt_03_fields );
                 }
-                if (detAnt_04_zpos < ( NZ - d_absorb)) {
+                if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
                     detAnt1D_storeValues( gridCfg, detAnt_01_ypos, detAnt_04_zpos,
                                         t_int,
                                         EB_WAVE, detAnt_04_fields );
@@ -137,6 +136,7 @@ int control_antennaDetect(  gridConfiguration *gridCfg,
     return EXIT_SUCCESS;
 }
 
+//Save the field values in the antenna detector arrays
 int detAnt1D_storeValues(   gridConfiguration *gridCfg, 
                             size_t detAnt_ypos, size_t detAnt_zpos,
                             int tt, 
@@ -172,7 +172,7 @@ int detAnt1D_storeValues(   gridConfiguration *gridCfg,
         detAnt_fields[ii/2][3]  += foo*foo;
 
         // corresponding to an rms(E)-like quantity
-        detAnt_fields[ii/2][4]  += ( foo * sqrt(1./( (double)(tt)/(double)(period) + 1e-6 )) );
+        detAnt_fields[ii/2][4]  += ( foo * sqrt(1./( (double)(tt)/(double)(PERIOD) + 1e-6 )) );
 
         //printf( "tt = %d, ii = %d, sum_t(E*E) = %13.5e\n",
         //        tt, ii, detAnt_fields[ii/2][3] );
@@ -182,32 +182,33 @@ int detAnt1D_storeValues(   gridConfiguration *gridCfg,
 
 }//}}}
 
+//Send the antenna detect arrays to the grid_io module for storage in the HDF5 output file.
 void save_AntDetect(    gridConfiguration *gridCfg, saveData *saveDCfg,
                         antennaDetector *antDetect ){
 
-    if( antDetect_1D == 1 ){
+    if( activate_antDetect1D == 1 ){
 
         /*Char values as directions to the correct folder*/
         char filename_hdf5[PATH_MAX];
 
         sprintf(filename_hdf5,"%s/%s/%s", projectPath, foldername, file_hdf5);
 
-        if (detAnt_01_zpos < ( NZ - d_absorb)) {
+        if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
             detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_01" , 
                                 detAnt_01_ypos, detAnt_01_zpos,
                                 detAnt_01_fields );
         }
-        if (detAnt_02_zpos < ( NZ - d_absorb)) {
+        if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
             detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_02" , 
                                 detAnt_01_ypos, detAnt_02_zpos,
                                 detAnt_02_fields );
         }
-        if (detAnt_03_zpos < ( NZ - d_absorb)) {
+        if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
             detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_03" , 
                                 detAnt_01_ypos, detAnt_03_zpos,
                                 detAnt_03_fields );
         }
-        if (detAnt_04_zpos < ( NZ - d_absorb)) {
+        if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
             detAnt1D_write2hdf5( NX, filename_hdf5, "/detAnt_04" , 
                                 detAnt_01_ypos, detAnt_04_zpos,
                                 detAnt_04_fields );

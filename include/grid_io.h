@@ -11,10 +11,9 @@
 #include "focal.h"
 #include "hdf5.h"
 
-int writeTimetraces2ascii( int dim0, int dim1, int T_end, double Period, 
-                           char filename[], double timetraces[dim0][dim1] );
-int writeConsole_timetraces( int dim0, int dim1, int T_end, double Period, 
-                             double timetraces[dim0][dim1] );
+//Write timetraces to file
+int writeTimetraces2ascii( int T_end, double Period, 
+                           char filename[], double **timetraces );
 
 //#ifdef HDF5
 int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[], double array_3D[dim0][dim1][dim2] );
