@@ -343,7 +343,7 @@ int apply_absorber_v2(  size_t N_x, size_t N_y, size_t N_z, int d_absorb,
                     EB_WAVE[ii  ][jj  ][kk+1] *= damp;
 //                if ((ii%10 == 0) && (jj%10 == 0) && (kk%10 == 0)) 
 //                    printf( "z1: ii=%3d, jj=%3d, kk=%3d, (kk-d_abs)/d_abs=%f, damp=%f\n", 
-//                            ii, jj, kk, ((double)kk-(double)D_ABSORB)/(double)D_ABSORB, damp );
+//                            ii, jj, kk, ((double)kk-(double)d_absorb)/(double)d_absorb, damp );
                 }
             }
         }
