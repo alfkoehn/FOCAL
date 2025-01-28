@@ -4,6 +4,7 @@ void init_background_profiles(  gridConfiguration *gridCfg,
                                 beamAntennaConfiguration *beamCfg,
                                 double n_e[NX/2][NY/2][NZ/2], 
                                 double J_B0[NX][NY][NZ] ){
+    //{{{
 
     printf( "starting defining background plasma density\n" );
             // ne_profile: 1 = plasma mirror
@@ -30,7 +31,8 @@ void init_background_profiles(  gridConfiguration *gridCfg,
             J_B0 );
     printf( "...done defining background magnetic field\n" );
 
-}
+}//}}}
+ 
 
 int make_density_profile( gridConfiguration *gridCfg, 
                           double cntrl_para, 
