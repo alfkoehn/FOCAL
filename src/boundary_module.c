@@ -7,7 +7,9 @@ static double ***E_Xdir_OLD_ref = NULL;
 static double ***E_Ydir_OLD_ref = NULL;
 static double ***E_Zdir_OLD_ref = NULL;
 
+
 void init_boundary(gridConfiguration *gridCfg, boundaryVariables *boundaryV){
+//{{{
 
     if(BOUNDARY == 1){
 
@@ -47,10 +49,12 @@ void init_boundary(gridConfiguration *gridCfg, boundaryVariables *boundaryV){
         init_UPML_fields( gridCfg );
 
     }
-}
+}//}}}
+
 
 /*Free allocated memmory for boundary*/
 int free_boundary(gridConfiguration *gridCfg){
+    //{{{
 
     if(BOUNDARY == 2){
 
@@ -70,11 +74,13 @@ int free_boundary(gridConfiguration *gridCfg){
     }
     
     return EXIT_SUCCESS;
-}
+}//}}}
+
 
 /*Apply boundary on time evolution*/
 void advance_boundary(  gridConfiguration *gridCfg, boundaryVariables *boundaryV, 
                         double EB_WAVE[NX][NY][NZ], double EB_WAVE_ref[NX][NY][NZ_REF]){
+    //{{{
 
     if(BOUNDARY == 1){
 
@@ -111,7 +117,7 @@ void advance_boundary(  gridConfiguration *gridCfg, boundaryVariables *boundaryV
         UPML_Eref_corners(  gridCfg, boundaryV, EB_WAVE_ref );
         UPML_Eref_edges(    gridCfg, boundaryV, EB_WAVE_ref );
     }
-}
+}//}}}
 
 
 /*Boundary Functions*/
