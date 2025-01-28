@@ -5,6 +5,7 @@ static double **antPhaseTerms = NULL;
 
 void init_antennaInjection( gridConfiguration *gridCfg, 
                             beamAntennaConfiguration *beamCfg ){
+    //{{{
 
     //initializevalues for antenna injection
     T_WAVE      = 0;
@@ -21,7 +22,8 @@ void init_antennaInjection( gridConfiguration *gridCfg,
     make_antenna_profile( gridCfg, beamCfg );
     printf( "...done defining antenna field\n" );
 
-}
+}//}}}
+
 
 //function called in main to inject beam into grid
 //it summons the source for the main grid and reference grid
@@ -30,6 +32,7 @@ void control_antennaInjection(  gridConfiguration *gridCfg,
                                 int t_int,
                                 double EB_WAVE[NX][NY][NZ],
                                 double EB_WAVE_ref[NX][NY][NZ_REF] ){
+    //{{{
 
     OMEGA_T += 2.*M_PI/PERIOD;
 
@@ -48,7 +51,8 @@ void control_antennaInjection(  gridConfiguration *gridCfg,
                     t_int,  
                     EB_WAVE_ref );
 
-}
+}//}}}
+
 
 int make_antenna_profile(   gridConfiguration *gridCfg, 
                             beamAntennaConfiguration *beamCfg ) {
