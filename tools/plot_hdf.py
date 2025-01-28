@@ -440,10 +440,14 @@ def plot_fullwave( fname_in, fname_plot='',
 
     # |E| = sqrt(Ex^2 + Ey^2 + Ez^2)
     if colScale == 'lin':
-        contLevels  = np.linspace( 0, np.amax(E_abs), N_contLevels )[1:].tolist()
+        # do NOT simply use np.amax(E_abs), otherwise you might miss the actual maximum which can cause an error
+        contLevels  = np.linspace( 0, #np.amin(E_abs[::plotReductionLevel,::plotReductionLevel,::plotReductionLevel]),
+                                   np.amax(E_abs[::plotReductionLevel,::plotReductionLevel,::plotReductionLevel]),
+                                   N_contLevels )[1:].tolist()
     elif colScale == 'log':
         contLevels  = np.logspace( np.log10(1e-2),
-                                   np.log10(np.amax(E_abs)*.9), # added factor 0.9 to avoid traits-error (2024-08-15), to github 2024-10-22
+                                   #np.log10(np.amax(E_abs)*.9), # added factor 0.9 to avoid traits-error (2024-08-15), to github 2024-10-22
+                                   np.log10(np.amax(E_abs[::plotReductionLevel,::plotReductionLevel,::plotReductionLevel])) ,
                                    N_contLevels)[3:].tolist()
 
     print( 'contour levels: ', contLevels )
