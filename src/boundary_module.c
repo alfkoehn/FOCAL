@@ -10,6 +10,9 @@ static double ***E_Zdir_OLD_ref = NULL;
 
 void init_boundary(gridConfiguration *gridCfg, boundaryVariables *boundaryV){
 //{{{
+    // boundary = 1: absorbing boundary condition
+    //            2: Mur boundary condition
+    //            3: UPML
 
     if(BOUNDARY == 1){
 
@@ -992,8 +995,10 @@ int abc_Mur_1st_ref( gridConfiguration *gridCfg,
 
 } //}}}
 
+
 /*UPML functions*/
 double sigma(int pml_size, double nn, int m, double ds){
+    //{{{
     //Computes conductivity in UPML layer
 
     double sig, sig_max, R_0;
@@ -1006,9 +1011,11 @@ double sigma(int pml_size, double nn, int m, double ds){
     sig = pow( (nn) /(pml_size), m) * sig_max;
 
     return sig;  
-}
+}//}}}
+ 
 
 void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boundaryV){
+    //{{{
 
     int ii, jj, kk, kkr, count;
     double sig, kx, ky, kz;
@@ -1145,5 +1152,5 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
     }//End parallel omp sections
 
 }//End omp parallel
-}
+}//}}}
 
