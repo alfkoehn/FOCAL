@@ -215,7 +215,8 @@ def calc_wUH( B0=1., density=1e20):
 
 
 def plot_simple( fname_in, dSet_name='',
-                 contLevels=20, 
+                 N_contLevels=20, 
+                 colScale='lin',
                  plotReductionLevel=4,
                  fname_out='',
                  silent=True, 
@@ -235,12 +236,14 @@ def plot_simple( fname_in, dSet_name='',
 
     print("dataset-name = {0}, min = {1}, max = {2}".format(dSet_name, np.amin(data2plot), np.amax(data2plot)) )
 
-    colScale    = 'lin'
     if colScale == 'lin':
-        contLevels  = np.linspace( 0, np.amax(data2plot), contLevels )[1:].tolist()
-        #contLevels  = np.linspace( np.amin(data2plot), np.amax(data2plot), contLevels )[1:].tolist()
+        contLevels  = np.linspace( np.amin(data2plot[::plotReductionLevel,::plotReductionLevel,::plotReductionLevel]),  # NOT use simply data2plot, otherwise error
+                                   np.amax(data2plot[::plotReductionLevel,::plotReductionLevel,::plotReductionLevel]),  # NOT use simply data2plot, otherwise error
+                                   N_contLevels )[1:].tolist()
     elif colScale == 'log':
-        contLevels  = np.logspace( np.log10(1e-2), np.log10(np.amax(E_abs)), 8)[3:].tolist()
+        contLevels  = np.logspace( np.log10(1e-2), 
+                                   np.log10(np.amax(data2plot[::plotReductionLevel,::plotReductionLevel,::plotReductionLevel])), 
+                                   N_contLevels)[3:].tolist()
 
     if not silent:
         print( funcName )
@@ -259,9 +262,9 @@ def plot_simple( fname_in, dSet_name='',
 
     # create an axes instance to modify some of its properties afterwards
     ax1 = mlab.axes( nb_labels=4,
-                     extent=[1, data2plot.shape[0], 
-                             1, data2plot.shape[1],
-                             1, data2plot.shape[2] ],
+                     extent=[1, data2plot.shape[0]/plotReductionLevel, 
+                             1, data2plot.shape[1]/plotReductionLevel,
+                             1, data2plot.shape[2]/plotReductionLevel ],
                    )
     mlab.outline(ax1)
     ax1.axes.label_format   = '%.0f'
@@ -617,7 +620,9 @@ def main():
 
     if plot_type == 1:
         plot_simple(fname, dSet_name=dSet_name, 
-                    contLevels=contLevels, plotReductionLevel=plotReductionLevel, 
+                    N_contLevels=contLevels, 
+                    colScale=colScale, 
+                    plotReductionLevel=plotReductionLevel, 
                     silent=False)
     elif plot_type == 2:
         plot_fullwave( fname, t_int=t_int, 
