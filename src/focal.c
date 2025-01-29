@@ -233,8 +233,10 @@ int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
                               double n_e[NX/2][NY/2][NZ/2] ) {
 //{{{
 
+    int
+        x, y, z;
+
     double
-        x, y, z,
         x0,x1, y0,y1, z0,z1,
         ne_absorb,              // electron density in absorber
         smooth,                 // 1: relatively steep, .2: more smooth
@@ -271,24 +273,26 @@ int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
 
     // set density in x0 absorber
     if ( strstr(absorber,"x1") ) {
+#pragma omp parallel for default(shared) private(x,y,z,scale_fact)
         for ( x=0; x<(NX/2) ; ++x ) {
-            scale_fact  = +.5*(    tanh(smooth*(x-x0)) + 1);        // x0 boundary
-            //printf( "x1: x=%.1f, scale_fact=%f\n", x, scale_fact) ;
+            scale_fact  = +.5*(    tanh(smooth*((double)x-x0)) + 1);        // x0 boundary
+            //printf( "x1: x=%d, scale_fact=%f\n", x, scale_fact) ;
             for ( y=0. ; y<(NY/2) ; ++y )   {
                 for (z=0 ; z<(NZ/2) ; ++z) {
-                    n_e[(int)x][(int)y][(int)z]  *= scale_fact;
+                    n_e[x][y][z]  *= scale_fact;
                 }
             }
         }
     }
     // set density in x1 absorber
     if ( strstr(absorber,"x2") ) {
+#pragma omp parallel for default(shared) private(x,y,z,scale_fact)
         for ( x=0; x<(NX/2) ; ++x ) {
-            scale_fact  = +.5*(-1.*tanh(smooth*(x-x1)) + 1);       // x1 boundary
-            //printf( "x2: x=%.1f, scale_fact=%f\n", x, scale_fact) ;
+            scale_fact  = +.5*(-1.*tanh(smooth*((double)x-x1)) + 1);       // x1 boundary
+            //printf( "x2: x=%d, scale_fact=%f\n", x, scale_fact) ;
             for ( y=0. ; y<(NY/2) ; ++y )   {
                 for (z=0 ; z<(NZ/2) ; ++z) {
-                    n_e[(int)x][(int)y][(int)z]  *= scale_fact;
+                    n_e[x][y][z]  *= scale_fact;
                 }
             }
         }
@@ -296,24 +300,26 @@ int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
 
     // set density in y0 absorber
     if ( strstr(absorber,"y1") ) {
+#pragma omp parallel for default(shared) private(x,y,z,scale_fact)
         for ( y=0; y<(NY/2) ; ++y ) {
-            scale_fact  = +.5*(    tanh(smooth*(y-y0)) + 1);        // y0 boundary
-            //printf( "y1: y=%.1f, scale_fact=%f\n", y, scale_fact) ;
+            scale_fact  = +.5*(    tanh(smooth*((double)y-y0)) + 1);        // y0 boundary
+            //printf( "y1: y=%d, scale_fact=%f\n", y, scale_fact) ;
             for ( x=0; x<(NX/2) ; ++x ) {
                 for (z=0 ; z<(NZ/2) ; ++z) {
-                    n_e[(int)x][(int)y][(int)z]  *= scale_fact;
+                    n_e[x][y][z]  *= scale_fact;
                 }
             }
         }
     }
     // set density in y1 absorber
     if ( strstr(absorber,"y2") ) {
+#pragma omp parallel for default(shared) private(x,y,z,scale_fact)
         for ( y=0; y<(NY/2) ; ++y ) {
-            scale_fact  = +.5*(-1.*tanh(smooth*(y-y1)) + 1);       // y1 boundary
-            //printf( "y2: y=%.1f, scale_fact=%f\n", y, scale_fact) ;
+            scale_fact  = +.5*(-1.*tanh(smooth*((double)y-y1)) + 1);       // y1 boundary
+            //printf( "y2: y=%d, scale_fact=%f\n", y, scale_fact) ;
             for ( x=0; x<(NX/2) ; ++x ) {
                 for (z=0 ; z<(NZ/2) ; ++z) {
-                    n_e[(int)x][(int)y][(int)z]  *= scale_fact;
+                    n_e[x][y][z]  *= scale_fact;
                 }
             }
         }
@@ -321,24 +327,26 @@ int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
 
     // set density in z0 absorber
     if ( strstr(absorber,"z1") ) {
+#pragma omp parallel for default(shared) private(x,y,z,scale_fact)
         for ( z=0 ; z<(NZ/2) ; ++z) {
-            scale_fact  = +.5*(    tanh(smooth*(z-z0)) + 1);        // z0 boundary
-            //printf( "z1: z=%.1f, scale_fact=%f\n", z, scale_fact) ;
+            scale_fact  = +.5*(    tanh(smooth*((double)z-z0)) + 1);        // z0 boundary
+            //printf( "z1: z=%d, scale_fact=%f\n", z, scale_fact) ;
             for ( x=0; x<(NX/2) ; ++x ) {
                 for ( y=0; y<(NY/2) ; ++y ) {
-                    n_e[(int)x][(int)y][(int)z]  *= scale_fact;
+                    n_e[x][y][z]  *= scale_fact;
                 }
             }
         }
     }
     // set density in z1 absorber
     if ( strstr(absorber,"z2") ) {
+#pragma omp parallel for default(shared) private(x,y,z,scale_fact)
         for ( z=0 ; z<(NZ/2) ; ++z) {
-            scale_fact  = +.5*(-1.*tanh(smooth*(z-z1)) + 1);       // z1 boundary
-            //printf( "z2: z=%.1f, scale_fact=%f\n", z, scale_fact) ;
+            scale_fact  = +.5*(-1.*tanh(smooth*((double)z-z1)) + 1);       // z1 boundary
+            //printf( "z2: z=%d, scale_fact=%f\n", z, scale_fact) ;
             for ( x=0; x<(NX/2) ; ++x ) {
                 for ( y=0; y<(NY/2) ; ++y ) {
-                    n_e[(int)x][(int)y][(int)z]  *= scale_fact;
+                    n_e[x][y][z]  *= scale_fact;
                 }
             }
         }
