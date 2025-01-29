@@ -5,6 +5,7 @@ void advance_fields(    gridConfiguration *gridCfg,
                         double EB_WAVE_ref[NX][NY][NZ_REF],
                         double J_B0[NX][NY][NZ],
                         double n_e[NX/2][NY/2][NZ/2]){
+    //{{{
     
     if( BOUNDARY != 3 ){
 
@@ -33,7 +34,8 @@ void advance_fields(    gridConfiguration *gridCfg,
         advance_Eref_UPML(   gridCfg, EB_WAVE_ref );
 
     }
-}
+}//}}}
+
 
 int advance_J( gridConfiguration *gridCfg, 
                double EB_WAVE[NX][NY][NZ], 
