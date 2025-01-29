@@ -245,6 +245,8 @@ int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
     smooth      = .5;//.2;
     ne_dist     = round( PERIOD/1 );
 
+    printf( "Starting to set density in absorber to %f with a smooth transition...\n", ne_absorb);
+
     x0          = (double)D_ABSORB + ne_dist;
     x1          = (double)NX - (D_ABSORB + ne_dist);
     y0          = (double)D_ABSORB + ne_dist;
@@ -341,6 +343,8 @@ int set_densityInAbsorber_v2( gridConfiguration *gridCfg,
             }
         }
     }
+
+    printf( "...done setting density in absorber to %f\n", ne_absorb);
 
     return EXIT_SUCCESS;
 } //}}}
