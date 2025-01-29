@@ -6,7 +6,7 @@ void init_background_profiles(  gridConfiguration *gridCfg,
                                 double J_B0[NX][NY][NZ] ){
     //{{{
 
-    printf( "starting defining background plasma density\n" );
+    printf( "Starting defining background plasma density...\n" );
             // ne_profile: 1 = plasma mirror
             //             2 = linearly increasing profile
     make_density_profile( gridCfg,  
@@ -14,9 +14,9 @@ void init_background_profiles(  gridConfiguration *gridCfg,
             //             ne_profile=2 --> k0*Ln: 25
             k0Ln_at_X1,
             n_e );
-    printf( " ...setting density in absorber to 0...\n ");
-    //set_densityInAbsorber_v2( &gridCfg, "z1", n_e );
-    //set_densityInAbsorber_v2( &gridCfg, "x1x2y1y2z1", n_e );
+    // set plasma density in absorber smoothly to zero
+    //set_densityInAbsorber_v2( gridCfg, "z1", n_e );             // defined in focal.c
+    set_densityInAbsorber_v2( gridCfg, "x1x2y1y2z1", n_e );
     printf( "...done defining background plasma density\n" );
 
     printf( "starting defining background magnetic field...\n" );
