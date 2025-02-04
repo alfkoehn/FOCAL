@@ -294,6 +294,7 @@ def plot_fullwave( fname_in, fname_plot='',
                    oplot_dens_projection=False,
                    scale_axes_to_meters=False,
                    oplot_Efieldcut=None,
+                   oplot_B0=False,
                  ):
 #{{{
 
@@ -325,9 +326,15 @@ def plot_fullwave( fname_in, fname_plot='',
     #Ez  = readhdf5( fname_in, 'Ez')
     density = readhdf5( fname_in, 'n_e')
 
-    B0_abs  = np.sqrt( readhdf5( fname_in, 'B0x')**2 
-                      +readhdf5( fname_in, 'B0y')**2 
-                      +readhdf5( fname_in, 'B0z')**2 )
+    if oplot_B0:
+        B0_x    = readhdf5( fname_in, 'B0x' )
+        B0_y    = readhdf5( fname_in, 'B0y' )
+        B0_z    = readhdf5( fname_in, 'B0z' )
+        B0_abs  = np.sqrt( B0_x**2 + B0_y**2 + B0_z**2 )
+    else:
+        B0_abs  = np.sqrt( readhdf5( fname_in, 'B0x')**2 
+                          +readhdf5( fname_in, 'B0y')**2 
+                          +readhdf5( fname_in, 'B0z')**2 )
 
     #E_abs   = np.sqrt( Ex**2 + Ey**2 + Ez**2 )
 
@@ -461,15 +468,23 @@ def plot_fullwave( fname_in, fname_plot='',
 
     if oplot_Efieldcut:
         if include_absorbers:
-            slice_x1    = ant_x
+            slice_x1    = 1
+            slice_y1    = 1
             slice_z1    = ant_z
         else:
             slice_x1    = ant_x - d_absorb
+            slice_y1    = 0#Ny - d_absorb
             slice_z1    = ant_z - d_absorb
         if 'x1' in oplot_Efieldcut:
             slice_Eabs  = mlab.volume_slice( E_abs,
                                              slice_index=slice_x1,
                                              plane_orientation='x_axes',
+                                             figure=fig1
+                                           )
+        if 'y1' in oplot_Efieldcut:
+            slice_Eabs  = mlab.volume_slice( E_abs,
+                                             slice_index=slice_y1,
+                                             plane_orientation='y_axes',
                                              figure=fig1
                                            )
         if 'z1' in oplot_Efieldcut:
@@ -478,6 +493,17 @@ def plot_fullwave( fname_in, fname_plot='',
                                              plane_orientation='z_axes',
                                              figure=fig1
                                            )
+
+    if oplot_B0:
+        #XX, YY, ZZ = np.meshgrid( xVals, yVals, zVals, indexing='ij')
+        #src     = mlab.pipeline.vector_field( XX, YY, ZZ, vf_x, vf_y, vf_z )
+        src     = mlab.pipeline.vector_field( B0_x, B0_y, B0_z,
+                                              figure=fig1
+                                            )
+        mlab.pipeline.vectors( src,
+                               mask_points=50000,   # reduce number of vectors (larger => less vectors)
+                               scale_factor=20,     # scaling factor for size of object to draw (vector)
+                             )
 
 
     if isinstance(density, np.ndarray) and (np.amin(density) != np.amax(density)):
@@ -627,10 +653,12 @@ def main():
     elif plot_type == 2:
         plot_fullwave( fname, t_int=t_int, 
                        include_absorbers=False, 
-                       cutExtended_fact=1.,    # 1.5 might be useful value to crop density profile going to 0 from plot to not mislead user
+                       cutExtended_fact=1.9,    # 1.5 might be useful value to crop density profile going to 0 from plot to not mislead user
                        oplot_dens_projection=False,
                        N_contLevels=contLevels, colScale=colScale, 
                        #oplot_Efieldcut='x1z1',
+                       oplot_Efieldcut='y1',
+                       oplot_B0=True,
                      )
 
     #}}}
