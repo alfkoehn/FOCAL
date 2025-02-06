@@ -101,6 +101,7 @@ void save_SimData(  gridConfiguration *gridCfg,
                     saveData *saveDCfg,
                     double n_e[NX/2][NY/2][NZ/2],
                     double J_B0[NX][NY][NZ] ){
+    //{{{
 
     //Char values as directions to the correct folder
     char fullDir[PATH_MAX], filename_hdf5[PATH_MAX];
@@ -113,13 +114,15 @@ void save_SimData(  gridConfiguration *gridCfg,
     /*Save data into path directory*/
     save_data_toHDF5( gridCfg, beamCfg, filename_hdf5 , n_e, J_B0 );
     
-}
+}//}}}
+
 
 int save_data_toHDF5(   gridConfiguration *gridCfg,
                         beamAntennaConfiguration *beamCfg,
                         char filename_hdf5[],
                         double n_e[NX/2][NY/2][NZ/2],
                         double J_B0[NX][NY][NZ] ){
+    //{{{
     
     int ii, jj , kk;
     char dSet_name[PATH_MAX];
@@ -172,12 +175,13 @@ int save_data_toHDF5(   gridConfiguration *gridCfg,
     printf( "Free data2save allocated memory.\n" );
 
     return EXIT_SUCCESS;
+}//}}}
 
-}
 
 int save_field_toHDF5(  gridConfiguration *gridCfg, 
                         saveData *saveDCfg, int t_int,
                         double EB_WAVE[NX][NY][NZ] ){
+    //{{{
 
     if( t_int % (t_save * (int)PERIOD) == 0 && t_int != 0){
         
@@ -210,5 +214,5 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
     }
 
     return EXIT_SUCCESS;
-}
+}//}}}
 
