@@ -49,6 +49,7 @@ typedef struct beamAntennaConfiguration {   /*Antenna configuration variables*/
         antAngle_zy, antAngle_zx,
         ant_w0x, ant_w0y,
         z2waist,
+        R_pola_xy,                          // ratio of axes in polarization ellipse, see Hansen1985PPCF, eq. (A6)
         Y_at_X1, k0Ln_at_X1, theta_at_X1;
 } beamAntennaConfiguration;
 

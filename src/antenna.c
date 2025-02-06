@@ -194,7 +194,8 @@ int add_source( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg,
         // calculate factor defining ratio of perpendicular E-fields according to Hansen
         //theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
         theta_rad           = theta_at_X1/180. * M_PI;
-        fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, Y_at_X1 );
+        //fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, Y_at_X1 );
+        fact1_Hansen_corr   = R_POLA_XY;
         fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad) * .0;
 
         if (t_int < 1) {
@@ -294,7 +295,8 @@ int add_source_ref( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCf
 
         //theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
         theta_rad           = theta_at_X1/180. * M_PI;
-        fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, Y_at_X1 );
+        //fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, Y_at_X1 );
+        fact1_Hansen_corr   = R_POLA_XY;
         fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad) * .0;
 
         if (t_int < 1) {
@@ -380,12 +382,13 @@ double antenna_calcHansenExEy_O( double theta_rad, double Y ){
     double
         ExEy;
 
-    ExEy    = .5*(Y*pow(sin(theta_rad),2) 
+    // note: this is the wrong formula, it should be Eq. (A6) from Hansen1985PPCF, not (A5)
+    //ExEy    = .5*(Y*pow(sin(theta_rad),2) 
     //ExEy    = .5*(Y*Y*pow(sin(theta_rad),2) // <--- is this correct ? TODO: check! also check sign!!
-                  +sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )
-                 );
+    //              +sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )
+    //             );
 
-    ExEy    = -0.7208;
+    ExEy    = 0.7208;
 
     return ExEy;
 }//}}}

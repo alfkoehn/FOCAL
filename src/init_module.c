@@ -238,6 +238,12 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
         z2waist = item_z2waist->valuedouble;
         z2waist = z2waist * .0;            // .2/l_0*period = -298.87
     }
+    
+    // ratio of axes in polarization ellipse (see Hansen1985PPCF, eq. (A6))
+    cJSON *item__R_pola_xy = cJSON_GetObjectItemCaseSensitive(json, "R_pola_xy");//
+    if( cJSON_IsNumber(item__R_pola_xy) ){
+        R_POLA_XY = item__R_pola_xy->valuedouble;
+    }
 
     /*Antenna Detector Input values*/
     cJSON *item_antDetect = cJSON_GetObjectItemCaseSensitive(json, "Detector_Antenna");   //Activate Antenna

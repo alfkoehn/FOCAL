@@ -64,6 +64,7 @@
 #define ant_w0xBG(beamCfg)              beamCfg->ant_w0x
 #define ant_w0yBG(beamCfg)              beamCfg->ant_w0y
 #define z2waistBG(beamCfg)              beamCfg->z2waist
+#define R_pola_xyBG(beamCfg)            beamCfg->R_pola_xy
 #define Y_at_X1BG(beamCfg)              beamCfg->Y_at_X1
 #define k0Ln_at_X1BG(beamCfg)           beamCfg->k0Ln_at_X1
 #define theta_at_X1BG(beamCfg)          beamCfg->theta_at_X1
@@ -77,9 +78,10 @@
 #define OMEGA_T                         omega_tBG(beamCfg)              
 #define antAngle_zx                     antAngle_zxBG(beamCfg)          
 #define antAngle_zy                     antAngle_zyBG(beamCfg)          
-#define ant_w0x                         ant_w0xBG(beamCfg)              
-#define ant_w0y                         ant_w0yBG(beamCfg)              
-#define z2waist                         z2waistBG(beamCfg)  
+#define ant_w0x                         ant_w0xBG(beamCfg)
+#define ant_w0y                         ant_w0yBG(beamCfg)
+#define z2waist                         z2waistBG(beamCfg)
+#define R_POLA_XY                       R_pola_xyBG(beamCfg)
 #define Y_at_X1                         Y_at_X1BG(beamCfg)              
 #define k0Ln_at_X1                      k0Ln_at_X1BG(beamCfg)           
 #define theta_at_X1                     theta_at_X1BG(beamCfg)                     
