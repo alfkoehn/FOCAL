@@ -385,7 +385,8 @@ double antenna_calcHansenExEy_O( double theta_rad, double Y ){
                   +sqrt( Y*Y*pow(sin(theta_rad),4) + 4*pow(cos(theta_rad),2) )
                  );
 
-    ExEy    = 0.52;
+    ExEy    = -0.7208;
 
     return ExEy;
 }//}}}
+

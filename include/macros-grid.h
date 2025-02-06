@@ -41,6 +41,7 @@
 #define file_traceSt(saveDCfg)          saveDCfg->file_trace
 #define t_saveSt(saveDCfg)              saveDCfg->t_save
 #define col_for_timetracesSt(saveDCfg)  saveDCfg->col_for_timetraces
+#define file_inputSt(saveDCfg)          saveDCfg->file_input
 
 #define projectPath                     projectPathSt(saveDCfg)
 #define foldername                      foldernameSt(saveDCfg)
@@ -48,6 +49,7 @@
 #define file_trace                      file_traceSt(saveDCfg)
 #define t_save                          t_saveSt(saveDCfg)
 #define col_for_timetraces              col_for_timetracesSt(saveDCfg)
+#define file_input                      file_inputSt(saveDCfg)
 
 /*Macros for antenna injection*/
 #define T_waveBG(beamCfg)               beamCfg->T_wave

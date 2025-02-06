@@ -110,6 +110,11 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
         file_trace = strdup(Filename_TimeTrace->valuestring);
     }
 
+    cJSON *Filename_Input = cJSON_GetObjectItemCaseSensitive(json, "filename_input");   //filename of input grid
+    if( cJSON_IsString(Filename_Input) && (Filename_Input->valuestring != NULL) ){
+        file_input = strdup(Filename_Input->valuestring);
+    }
+
     cJSON *t_save_f = cJSON_GetObjectItemCaseSensitive(json, "data_save_frequency");   //time step for data saving
     if( cJSON_IsNumber(t_save_f) ){
         t_save = t_save_f->valueint;

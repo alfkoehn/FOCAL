@@ -1,37 +1,38 @@
 {	
-    "Main_Project": 		"Project_folder",
-    "Case_foldername": 		"Test_case",
+    "Main_Project": 		"First_test",
+    "Case_foldername": 		"benchmark_case_t-43_period28_distAnt10_neAbsNotChanged_w04_pola-0.7208",
     "filename_hdf5": 		"fileout.h5",
-    "filename_timetraces": 	"timetraces2.dat",
+    "filename_timetraces": 	"timetraces.dat",
+    "filename_input":       "input/grid_period28_distAnt10_t-43.h5",
     
-    "scale": 		1,
-    "period": 		16,
-    "Grid_size_Nx": 	400,
-    "Grid_size_Ny": 	300,
-    "Grid_size_Nz": 	200,
-    "t_end": 		50,
+    "scale":            1,
+    "period":           28,
+    "Grid_size_Nx":     1124,
+    "Grid_size_Ny":     1124,
+    "Grid_size_Nz":     1152,
+    "t_end":            100,
     
-    "B0_profile":	0,
-    "B0_magnitude":	0.0,
-    "ne_profile":	3,
-    "ne_0":		0.0,
+    "B0_profile":       2,
+    "B0_magnitude":     0.0,
+    "ne_profile":       5,
+    "ne_0":             0.0,
     
-    "Boundary_Method": 	3,
-    "UPML_size":	20,
+    "Boundary_Method":  3,
+    "UPML_size":        20,
     
-    "Antenna_Pos_x": 	200,
-    "Antenna_Pos_y": 	150,
-    "Antenna_Pos_z": 	26,
+    "Antenna_Pos_x":    562,
+    "Antenna_Pos_y":    562,
+    "Antenna_Pos_z":    26,
     "Antenna_Angle_zx": 0,
     "Antenna_Angle_zy": 0,
-    "Wave_source_type": 5,
-    "RampUp_Method": 	1,
-    "Antena_w0x": 	2.0,
-    "Antena_w0y": 	2.0,
-    "z2waist":		-298.87,
+    "Wave_source_type": 4,
+    "RampUp_Method":    1,
+    "Antena_w0x":       4.0,
+    "Antena_w0y":       4.0,
+    "z2waist":          0.0,
     
-    "Detector_Antenna": 1,
+    "Detector_Antenna": 0,
     
-    "data_save_frequency": 1
+    "data_save_frequency":  100
     
 }

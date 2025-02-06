@@ -19,7 +19,8 @@ typedef struct gridConfiguration {      /*Saves the main physical parameters of 
 typedef struct saveData{                /*Variables related to simulation data saving*/
     
     const char 	*foldername, *projectPath,
-    		    *file_hdf5, *file_trace;
+    		    *file_hdf5, *file_trace,
+                *file_input;
 
     int     t_save, col_for_timetraces;
 } saveData;

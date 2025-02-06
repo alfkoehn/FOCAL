@@ -2,6 +2,7 @@
 
 void init_background_profiles(  gridConfiguration *gridCfg, 
                                 beamAntennaConfiguration *beamCfg,
+                                saveData *saveDCfg,
                                 double n_e[NX/2][NY/2][NZ/2], 
                                 double J_B0[NX][NY][NZ] ){
     //{{{
@@ -9,14 +10,14 @@ void init_background_profiles(  gridConfiguration *gridCfg,
     printf( "Starting defining background plasma density...\n" );
             // ne_profile: 1 = plasma mirror
             //             2 = linearly increasing profile
-    make_density_profile( gridCfg,  
+    make_density_profile( gridCfg, saveDCfg, 
             // cntrl_para: ne_profile=1 --> 0: plane mirror; oblique mirror: -.36397; 20 degrees: -.17633
             //             ne_profile=2 --> k0*Ln: 25
             k0Ln_at_X1,
             n_e );
     // set plasma density in absorber smoothly to zero
     //set_densityInAbsorber_v2( gridCfg, "z1", n_e );             // defined in focal.c
-    set_densityInAbsorber_v2( gridCfg, "x1x2y1y2z1", n_e );
+    //set_densityInAbsorber_v2( gridCfg, "x1x2y1y2z1", n_e );
     printf( "...done defining background plasma density\n" );
 
     printf( "starting defining background magnetic field...\n" );
@@ -25,7 +26,7 @@ void init_background_profiles(  gridConfiguration *gridCfg,
     // B0z: odd-odd-even
             // B0_profile: 1 = constant field
     make_B0_profile(
-            gridCfg,
+            gridCfg, saveDCfg, 
             // cntrl_para: B0_profile=1 --> value of Y
             Y_at_X1, 
             J_B0 );
@@ -35,6 +36,7 @@ void init_background_profiles(  gridConfiguration *gridCfg,
  
 
 int make_density_profile( gridConfiguration *gridCfg, 
+                          saveData *saveDCfg,
                           double cntrl_para, 
                           double n_e[NX/2][NY/2][NZ/2] ) {
 //{{{
@@ -54,9 +56,12 @@ int make_density_profile( gridConfiguration *gridCfg,
         ne_max,
         ne_k0Ln,
         aux;
+    char filename_input_grid[PATH_MAX];
 
     // if density is larger than this value, FDTD code becomes instable
     ne_max  = PERIOD * 2./5.;
+
+    sprintf( filename_input_grid, "%s", file_input);
 
     if ( ne_profile == 1 ) {
         // plasma mirror
@@ -137,20 +142,25 @@ int make_density_profile( gridConfiguration *gridCfg,
         //   ==> change this
         //       either provide additional parameter in function call
         //       or not load the profile here, but directly in main
-        readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "n_e", n_e );
+        //readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "n_e", n_e );
+        readMyHDF( NX/2, NY/2, NZ/2, filename_input_grid, "n_e", n_e );
     }
     return EXIT_SUCCESS;
 }//}}}
 
 
 int make_B0_profile( gridConfiguration *gridCfg, 
+                     saveData *saveDCfg,
                      double cntrl_para, 
                      double J_B0[NX][NY][NZ] ) {
 //{{{
     size_t
         ii, jj, kk; 
+    char filename_input_grid[PATH_MAX];
 //    double
 //        aux;
+
+    sprintf( filename_input_grid, "%s", file_input);
 
     // B0x: even-odd-odd
     // B0y: odd-even-odd
@@ -176,7 +186,8 @@ int make_B0_profile( gridConfiguration *gridCfg,
         double (*B0_tmp)[NY/2][NZ/2]  = calloc(NX/2, sizeof *B0_tmp);
 
         // B0_x
-        readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "B0_x", B0_tmp );
+        //readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "B0_x", B0_tmp );
+        readMyHDF( NX/2, NY/2, NZ/2, filename_input_grid, "B0_x", B0_tmp );
         for (ii=0 ; ii<NX ; ii+=2) {
             for (jj=0 ; jj<NY ; jj+=2) {
                 for (kk=0 ; kk<NZ ; kk+=2) {
@@ -186,7 +197,8 @@ int make_B0_profile( gridConfiguration *gridCfg,
             }
         }
         // B0_y
-        readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "B0_y", B0_tmp );
+        //readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "B0_y", B0_tmp );
+        readMyHDF( NX/2, NY/2, NZ/2, filename_input_grid, "B0_y", B0_tmp );
         for (ii=0 ; ii<NX ; ii+=2) {
             for (jj=0 ; jj<NY ; jj+=2) {
                 for (kk=0 ; kk<NZ ; kk+=2) {
@@ -196,7 +208,8 @@ int make_B0_profile( gridConfiguration *gridCfg,
             }
         }
         // B0_z
-        readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "B0_z", B0_tmp );
+        //readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "B0_z", B0_tmp );
+        readMyHDF( NX/2, NY/2, NZ/2, filename_input_grid, "B0_z", B0_tmp );
         for (ii=0 ; ii<NX ; ii+=2) {
             for (jj=0 ; jj<NY ; jj+=2) {
                 for (kk=0 ; kk<NZ ; kk+=2) {

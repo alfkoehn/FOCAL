@@ -98,7 +98,7 @@ int main( int argc, char *argv[] ) {
     // background electron plasma density
     double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);
 
-    init_background_profiles(  gridCfg, beamCfg, n_e, J_B0 );   //function in BACKGROUND_PROFILES.C
+    init_background_profiles(  gridCfg, beamCfg, saveDCfg, n_e, J_B0 );   //function in BACKGROUND_PROFILES.C
 
     //Simulation values print to terminal
     print_systemConfiguration( gridCfg, beamCfg );              //function in INIT_MODULE.C
