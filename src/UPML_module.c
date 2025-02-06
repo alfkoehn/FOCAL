@@ -3,26 +3,32 @@
 static double ***DH_WAVE = NULL;
 static double ***DH_WAVE_ref = NULL;
 
+
 /*Initialize PML arrays functions*/
 void init_UPML_fields( gridConfiguration *gridCfg ){
+    //{{{
 
     DH_WAVE = allocate3DArray(NX, NY, NZ);
     DH_WAVE_ref = allocate3DArray(NX, NY, NZ_REF);
 
-}
+}//}}}
+
 
 int free_UPML_memory( gridConfiguration *gridCfg ){
+    //{{{
 
     free3DArray(DH_WAVE, NX, NY);
     free3DArray(DH_WAVE_ref, NX, NY);
 
     return EXIT_SUCCESS;
-}
+}//}}}
+
 
 /*Magnetic field UPML*/
 void UPML_B_faces(  gridConfiguration *gridCfg, 
                     boundaryVariables *boundaryV,
                     double EB_WAVE[NX][NY][NZ] ){
+    //{{{
     
     //DH_WAVE:                  EB_WAVE:
     // Dx: odd-even-even        Ex:odd-even-even
@@ -247,11 +253,13 @@ void UPML_B_faces(  gridConfiguration *gridCfg,
         }
     }
 
-}
+}//}}}
+
 
 void UPML_B_corners(gridConfiguration *gridCfg, 
                     boundaryVariables *boundaryV,
                     double EB_WAVE[NX][NY][NZ] ){
+    //{{{
 
     //DH_WAVE:                  EB_WAVE:
     // Dx: odd-even-even        Ex:odd-even-even
@@ -546,11 +554,13 @@ void UPML_B_corners(gridConfiguration *gridCfg,
         }
     }
 
-}
+}//}}}
+
 
 void UPML_B_edges(  gridConfiguration *gridCfg, 
                     boundaryVariables *boundaryV,
                     double EB_WAVE[NX][NY][NZ] ){
+    //{{{
 
     //DH_WAVE:                  EB_WAVE:
     // Dx: odd-even-even        Ex:odd-even-even
@@ -987,11 +997,13 @@ void UPML_B_edges(  gridConfiguration *gridCfg,
         }
     }
 
-}
+}//}}}
+
 
 void UPML_Bref_faces(   gridConfiguration *gridCfg, 
                         boundaryVariables *boundaryV,
                         double EB_WAVE[NX][NY][NZ_REF] ){
+    //{{{
     
     //DH_WAVE:                  EB_WAVE:
     // Dx: odd-even-even        Ex:odd-even-even
@@ -1216,11 +1228,13 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
         }
     }
 
-}
+}//}}}
+
 
 void UPML_Bref_corners( gridConfiguration *gridCfg, 
                         boundaryVariables *boundaryV,
                         double EB_WAVE[NX][NY][NZ_REF] ){
+    //{{{
 
     //DH_WAVE:                  EB_WAVE:
     // Dx: odd-even-even        Ex:odd-even-even
@@ -1515,11 +1529,13 @@ void UPML_Bref_corners( gridConfiguration *gridCfg,
         }
     }
 
-}
+}//}}}
+
 
 void UPML_Bref_edges(   gridConfiguration *gridCfg, 
                         boundaryVariables *boundaryV,
                         double EB_WAVE[NX][NY][NZ_REF] ){
+    //{{{
 
     //DH_WAVE:                  EB_WAVE:
     // Dx: odd-even-even        Ex:odd-even-even
@@ -1956,13 +1972,14 @@ void UPML_Bref_edges(   gridConfiguration *gridCfg,
         }
     }
 
-}
+}//}}}
 
 
 /*Electric field UPML*/
 void UPML_E_faces(  gridConfiguration *gridCfg, 
                     boundaryVariables *boundaryV,
                     double EB_WAVE[NX][NY][NZ] ){
+    //{{{
 
     //DH_WAVE:                  EB_WAVE:
     // Dx: odd-even-even        Ex:odd-even-even
@@ -2187,11 +2204,13 @@ void UPML_E_faces(  gridConfiguration *gridCfg,
         }
     }
 
-}
+}//}}}
+
 
 void UPML_E_corners(gridConfiguration *gridCfg, 
                     boundaryVariables *boundaryV,
                     double EB_WAVE[NX][NY][NZ] ){
+    //{{{
 
     //DH_WAVE:                  EB_WAVE:
     // Dx: odd-even-even        Ex:odd-even-even
@@ -2486,11 +2505,13 @@ void UPML_E_corners(gridConfiguration *gridCfg,
         }
     }
 
-}
+}//}}}
+
 
 void UPML_E_edges(  gridConfiguration *gridCfg, 
                     boundaryVariables *boundaryV,
                     double EB_WAVE[NX][NY][NZ] ){
+    //{{{
 
     // DH_WAVE:                  EB_WAVE:
     // Dx: odd-even-even        Ex:odd-even-even
@@ -2925,11 +2946,13 @@ void UPML_E_edges(  gridConfiguration *gridCfg,
         }
     }
 
-}
+}//}}}
+
 
 void UPML_Eref_faces(   gridConfiguration *gridCfg, 
                         boundaryVariables *boundaryV,
                         double EB_WAVE[NX][NY][NZ_REF] ){
+    //{{{
 
     //DH_WAVE:                  EB_WAVE:
     // Dx: odd-even-even        Ex:odd-even-even
@@ -3154,11 +3177,13 @@ void UPML_Eref_faces(   gridConfiguration *gridCfg,
         }
     }
 
-}
+}//}}}
+
 
 void UPML_Eref_corners( gridConfiguration *gridCfg, 
                         boundaryVariables *boundaryV,
                         double EB_WAVE[NX][NY][NZ_REF]){
+    //{{{
 
     //DH_WAVE:                  EB_WAVE:
     // Dx: odd-even-even        Ex:odd-even-even
@@ -3453,11 +3478,13 @@ void UPML_Eref_corners( gridConfiguration *gridCfg,
         }
     }
 
-}
+}//}}}
+
 
 void UPML_Eref_edges(   gridConfiguration *gridCfg, 
                         boundaryVariables *boundaryV,
                         double EB_WAVE[NX][NY][NZ_REF] ){
+    //{{{
 
     //DH_WAVE:                  EB_WAVE:
     // Dx: odd-even-even        Ex:odd-even-even
@@ -3894,5 +3921,5 @@ void UPML_Eref_edges(   gridConfiguration *gridCfg,
         }
     }
 
-}
+}//}}}
 
