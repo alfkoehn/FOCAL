@@ -142,8 +142,20 @@ int make_density_profile( gridConfiguration *gridCfg,
         //   ==> change this
         //       either provide additional parameter in function call
         //       or not load the profile here, but directly in main
-        //readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "n_e", n_e );
-        readMyHDF( NX/2, NY/2, NZ/2, filename_input_grid, "n_e", n_e );
+        //readMyHDF( NX/2, NY/2, NZ/2, filename_input_grid, "n_e", n_e );
+
+        // ne_tmp allows to modify the original ne-profile load from hdf5-file
+        // mostly used for debugging purposes
+        double (*ne_tmp)[NY/2][NZ/2]  = calloc(NX/2, sizeof *ne_tmp);
+        readMyHDF( NX/2, NY/2, NZ/2, filename_input_grid, "n_e", ne_tmp );
+        for (ii=0 ; ii<NX ; ii+=2) {
+            for (jj=0 ; jj<NY ; jj+=2) {
+                for (kk=0 ; kk<NZ ; kk+=2) {
+                    //n_e[(int)(ii/2)][(int)(jj/2)][(int)(kk/2)] = ne_tmp[ii/2][(NY/2 - jj/2)][kk/2];
+                    n_e[(int)(ii/2)][(int)(jj/2)][(int)(kk/2)] = ne_tmp[ii/2][jj/2][kk/2];
+                }
+            }
+        }
     }
     return EXIT_SUCCESS;
 }//}}}
