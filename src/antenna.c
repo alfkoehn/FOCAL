@@ -44,12 +44,15 @@ void control_antennaInjection(  gridConfiguration *gridCfg,
     }
 
     // add source
-    add_source( gridCfg, beamCfg,
-                t_int,  
-                EB_WAVE );
-    add_source_ref( gridCfg, beamCfg,
-                    t_int,  
-                    EB_WAVE_ref );
+    //add_source( gridCfg, beamCfg,
+    //            t_int,  
+    //            EB_WAVE );
+    //add_source_ref( gridCfg, beamCfg,
+    //                t_int,  
+    //                EB_WAVE_ref );
+    add_source_sourceRef( gridCfg, beamCfg,
+                          t_int,
+                          EB_WAVE, EB_WAVE_ref );
 
 }//}}}
 
@@ -335,6 +338,135 @@ int add_source_ref( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCf
         }
     }
 
+
+    return EXIT_SUCCESS;
+}//}}}
+
+
+int add_source_sourceRef( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, 
+                          int t_int,
+                          double EB_WAVE[NX][NY][NZ], double EB_WAVE_ref[NX][NY][NZ_REF] ) {
+//{{{
+
+    // This function adds the antenna field to the full grid and the reference
+    // grid. It is a copy/combination of add_source and add_source_ref. Note
+    // that it is assumed that the antenna is in a z=const. plane.
+
+    size_t
+        ii, jj;
+    double
+        fact1_Hansen_corr,
+        fact2_Hansen_corr,
+        theta_rad,
+        t_rise, 
+        source;
+
+    // slowly increase field in time 
+    t_rise  = antenna_field_rampup( rampUpMethod, PERIOD, t_int );
+
+    if ( exc_signal == 1 ) {
+#pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
+        for ( ii=2 ; ii<NX ; ii+=2 ) {
+            for ( jj=2 ; jj<NY ; jj+=2 ) {
+                // note: for X-mode injection, switch cos and sin of source_1 and source_2
+                //source      = sin(OMEGA_T - aux - curve + GouyPhase_beam + ant_phase/180.*M_PI ) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                source  = sin(OMEGA_T + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                // Ex
+                EB_WAVE    [ii+1][jj  ][ANT_Z]   += source;
+                EB_WAVE_ref[ii+1][jj  ][ANT_Z]   += source;
+            }
+        }
+    } else if ( exc_signal == 2) {
+#pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
+        for ( ii=2 ; ii<NX ; ii+=2 ) {
+            for ( jj=2 ; jj<NY ; jj+=2 ) {
+                source  = sin(OMEGA_T + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                // Bx
+                EB_WAVE    [ii  ][jj+1][ANT_Z+1]   += source;
+                EB_WAVE_ref[ii  ][jj+1][ANT_Z+1]   += source;
+            }
+        }
+    } else if ( exc_signal == 3) {
+#pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
+        for ( ii=2 ; ii<NX ; ii+=2 ) {
+            for ( jj=2 ; jj<NY ; jj+=2 ) {
+                // note: for X-mode injection, switch cos and sin of source
+                //       or, add/subtract pi/2 in sine for Bx 
+                // Ex
+                source  = sin(OMEGA_T + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                EB_WAVE    [ii+1][jj  ][ANT_Z]   += source;
+                EB_WAVE_ref[ii+1][jj  ][ANT_Z]   += source;
+                // Bx
+                //source  = cos(OMEGA_T + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                source  = sin(OMEGA_T + antPhaseTerms[(ii/2)][(jj/2)] + M_PI/2.) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                EB_WAVE    [ii  ][jj+1][ANT_Z+1] += source*(1.41)*0.;
+                EB_WAVE_ref[ii  ][jj+1][ANT_Z+1] += source*(1.41)*0.;
+            }
+        }
+    } else if ( exc_signal == 4) {
+        // elliptically polarized for optimum O-SX conversion using Hansen's
+        // formula for calculating ratio of wave electric fields 
+
+        // calculate factor defining ratio of perpendicular E-fields according to Hansen
+        //theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
+        theta_rad           = theta_at_X1/180. * M_PI;
+        //fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, Y_at_X1 );
+        fact1_Hansen_corr   = R_POLA_XY;
+        fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad) * .0;
+
+        if (t_int < 1) {
+            printf( "|E_x/E_y| = %f\n", fact1_Hansen_corr );
+            printf( " E_x/E_z  = %f\n", fact2_Hansen_corr );
+        }
+
+#pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
+        for ( ii=2 ; ii<NX ; ii+=2 ) {
+            for ( jj=2 ; jj<NY ; jj+=2 ) {
+                // first component to be excited
+                source  = sin(OMEGA_T + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                //source *= 1./fact1_Hansen_corr;
+                EB_WAVE    [ii+1][jj  ][ANT_Z  ] += source;                     //Ex
+                EB_WAVE_ref[ii+1][jj  ][ANT_Z  ] += source;                     //Ex
+                //EB_WAVE    [ii  ][jj+1][ANT_Z  ] += source;                     //Ey
+                //EB_WAVE_ref[ii  ][jj+1][ANT_Z  ] += source;                     //Ey
+                //EB_WAVE    [ii  ][jj  ][ANT_Z+1] += source;                     //Ez
+                //EB_WAVE_ref[ii  ][jj  ][ANT_Z+1] += source;                     //Ez
+
+                // second component to be excited
+                //source  = sin(OMEGA_T + antPhaseTerms[(ii/2)][(jj/2)] + M_PI/2.) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                source  = cos(OMEGA_T + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                source *= 1./fact1_Hansen_corr;
+                EB_WAVE    [ii  ][jj+1][ANT_Z  ] += source;                     //Ey
+                EB_WAVE_ref[ii  ][jj+1][ANT_Z  ] += source;                     //Ey
+
+                //EB_WAVE    [ii  ][jj+1][ANT_Z+1] += source;                     //Bx
+                //EB_WAVE_ref[ii  ][jj+1][ANT_Z+1] += source;                     //Bx
+                //EB_WAVE    [ii+1][jj  ][ANT_Z+1] += source;                     //By
+                //EB_WAVE_ref[ii+1][jj  ][ANT_Z+1] += source;                     //By
+                //EB_WAVE    [ii+1][jj+1][ANT_Z  ] += source;                     //Bz
+                //EB_WAVE_ref[ii+1][jj+1][ANT_Z  ] += source;                     //Bz
+
+                // Ez
+                //source  = sin(OMEGA_T + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                //EB_WAVE[ii  ][jj  ][beamCfg->ANT_Z+1] += source/fact2_Hansen_corr;
+                // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // WARNING: Ez has been switched off 
+                //          ==> no O-mode injection for angled injection possible this way
+                // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            }
+        }
+    } else if ( exc_signal == 5) {
+        // linearly polarized beam for oblique injection (added: 2023-02-13)
+#pragma omp parallel for collapse(2) default(shared) private(ii, jj, source)
+        for ( ii=2 ; ii<NX ; ii+=2 ) {
+            for ( jj=2 ; jj<NY ; jj+=2 ) {
+                source  = sin(OMEGA_T + antPhaseTerms[(ii/2)][(jj/2)]) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
+                // Ex
+                EB_WAVE    [ii+1][jj  ][ANT_Z  ] += source * (1.*cos(antAngle_zx/180.*M_PI));
+                EB_WAVE_ref[ii+1][jj  ][ANT_Z  ] += source * (1.*cos(antAngle_zx/180.*M_PI));
+            }
+        }
+    }
 
     return EXIT_SUCCESS;
 }//}}}

@@ -27,6 +27,10 @@ int add_source_ref( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCf
                     int t_int, 
                     double EB_WAVE[NX][NY][NZ_REF] );
 
+int add_source_sourceRef( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, 
+                          int t_int, 
+                          double EB_WAVE[NX][NY][NZ], double EB_WAVE_ref[NX][NY][NZ_REF] );
+
 double antenna_field_rampup( int RampUpMethod, double period, int t_int );
 
 double antenna_calcHansenExEy_O( double theta_rad, double Y );
