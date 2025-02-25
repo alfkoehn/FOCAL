@@ -5,6 +5,7 @@ static double **timetraces = NULL;
 //Initialization of the power related values
 int init_powerValues(   gridConfiguration *gridCfg,
                         powerValues *powerVal ){
+    //{{{
 
     // the arrays are initialized with calloc() and thus don't require zeroing
     timetraces = allocate2DArray( (T_END/(int)PERIOD), 8 );
@@ -29,7 +30,8 @@ int init_powerValues(   gridConfiguration *gridCfg,
     pwr_dect    = D_ABSORB;
 
     return EXIT_SUCCESS;
-}
+}//}}}
+
 
 //function called in MAIN to compute power
 void compute_power( gridConfiguration *gridCfg, 
@@ -38,11 +40,13 @@ void compute_power( gridConfiguration *gridCfg,
                     int t_int, 
                     double EB_WAVE[NX][NY][NZ], 
                     double EB_WAVE_ref[NX][NY][NZ_REF] ){
+    //{{{
 
     calculate_power( gridCfg, powerVal, t_int, EB_WAVE, EB_WAVE_ref );
     power_toTimetraces( gridCfg, beamCfg, powerVal, t_int );
 
-}
+}//}}}
+ 
 
 //calls power calculation
 int calculate_power(    gridConfiguration *gridCfg, 
@@ -50,6 +54,7 @@ int calculate_power(    gridConfiguration *gridCfg,
                         int t_int, 
                         double EB_WAVE[NX][NY][NZ], 
                         double EB_WAVE_ref[NX][NY][NZ_REF] ){
+    //{{{
 
     // IQ detector for power detection
     if ( t_int >= 20*PERIOD ) {
@@ -77,26 +82,39 @@ int calculate_power(    gridConfiguration *gridCfg,
     }
 
     return EXIT_SUCCESS;
-}
+}//}}}
+ 
 
 //Store power values in Timetraces
 int power_toTimetraces( gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg, 
                         powerValues *powerVal,
                         int t_int ){
+    //{{{
 
     if ( (t_int % (int)(PERIOD)) == 4 )  {
         //print to console
         printf( "status: number of oscillation periods: %d (t_int= %d) \n",T_WAVE,t_int);
-        printf( "        Poynting-power: z1 = %13.6e, z2 = %13.6e, x1 = %13.6e, x2 = %13.6e, y1 = %13.6e, y2 = %13.6e, (z1+z2+x1+x2+y1+y2)/z1_ref = %13.6e %%\n",
-                power_abs_z1/power_abs_ref, 
-                power_abs_z2/power_abs_ref,
-                power_abs_x1/power_abs_ref, 
-                power_abs_x2/power_abs_ref,
-                power_abs_y1/power_abs_ref, 
-                power_abs_y2/power_abs_ref,
+//        printf( "        Poynting-power: z1 = %13.6e, z2 = %13.6e, x1 = %13.6e, x2 = %13.6e, y1 = %13.6e, y2 = %13.6e, (z1+z2+x1+x2+y1+y2)/z1_ref = %13.6e %%\n",
+//                power_abs_z1/power_abs_ref, 
+//                power_abs_z2/power_abs_ref,
+//                power_abs_x1/power_abs_ref, 
+//                power_abs_x2/power_abs_ref,
+//                power_abs_y1/power_abs_ref, 
+//                power_abs_y2/power_abs_ref,
+//                (power_abs_x1+power_abs_x2 + power_abs_y1+power_abs_y2 + power_abs_z1+power_abs_z2)/power_abs_ref * 100.
+//            );
+        printf( "        Poynting-power: z1_ref = %10.3e, z1 = %10.3e, z2 = %10.3e, x1 = %10.3e, x2 = %10.3e, y1 = %10.3e, y2 = %10.3e, P_out/P_in= %10.3e %%\n",
+                power_abs_ref,
+                power_abs_z1, 
+                power_abs_z2,
+                power_abs_x1, 
+                power_abs_x2,
+                power_abs_y1, 
+                power_abs_y2,
                 (power_abs_x1+power_abs_x2 + power_abs_y1+power_abs_y2 + power_abs_z1+power_abs_z2)/power_abs_ref * 100.
             );
+
         
         //Save to time traces
         timetraces[T_WAVE][0]   = (double)t_int;
@@ -111,7 +129,8 @@ int power_toTimetraces( gridConfiguration *gridCfg,
     }
 
     return EXIT_SUCCESS;
-}
+}//}}}
+
 
 //functions to compute Pointyng vector
 double calc_poynt_4( gridConfiguration *gridCfg, 
