@@ -17,7 +17,7 @@ void init_background_profiles(  gridConfiguration *gridCfg,
             n_e );
     // set plasma density in absorber smoothly to zero
     //set_densityInAbsorber_v2( gridCfg, "z1", n_e );             // defined in focal.c
-    //set_densityInAbsorber_v2( gridCfg, "x1x2y1y2z1", n_e );
+    set_densityInAbsorber_v2( gridCfg, "x1x2y1y2z1", n_e );
     printf( "...done defining background plasma density\n" );
 
     printf( "starting defining background magnetic field...\n" );
@@ -151,7 +151,8 @@ int make_density_profile( gridConfiguration *gridCfg,
         for (ii=0 ; ii<NX ; ii+=2) {
             for (jj=0 ; jj<NY ; jj+=2) {
                 for (kk=0 ; kk<NZ ; kk+=2) {
-                    //n_e[(int)(ii/2)][(int)(jj/2)][(int)(kk/2)] = ne_tmp[ii/2][(NY/2 - jj/2)][kk/2];
+                    //n_e[(int)(ii/2)][(int)(jj/2)][(int)(kk/2)] = ne_tmp[(NX/2 - ii/2)][jj/2][kk/2;    // flip-x
+                    //n_e[(int)(ii/2)][(int)(jj/2)][(int)(kk/2)] = ne_tmp[ii/2][(NY/2 - jj/2)][kk/2];   // flix-y
                     n_e[(int)(ii/2)][(int)(jj/2)][(int)(kk/2)] = ne_tmp[ii/2][jj/2][kk/2];
                 }
             }
