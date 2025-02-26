@@ -288,7 +288,7 @@ char *read_json(){
 
 
 /*Configuration print on console*/
-void print_systemConfiguration(gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg ){
+void print_systemConfiguration(gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, powerValues *powerVal ){
     //{{{
 
     // print some info to console
@@ -300,6 +300,7 @@ void print_systemConfiguration(gridConfiguration *gridCfg, beamAntennaConfigurat
     printf( "antAngle_zx = %.2f, antAngle_zy = %.2f\n", antAngle_zx, antAngle_zy );
     printf( "ant_w0x = %.2f, ant_w0y = %.2f\n", ant_w0x, ant_w0y ); 
     printf( "ant_x = %d, ant_y = %d, ant_z = %d\n", ANT_X, ANT_Y, ANT_Z );
+    printf( "power detector position: %d\n", pwr_dect );
     printf( "Boundary condition set to '%d'\n", BOUNDARY );
     printf( "Courant number = %.2f. \n", DT/DX);
 
