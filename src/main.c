@@ -101,7 +101,7 @@ int main( int argc, char *argv[] ) {
     init_background_profiles(  gridCfg, beamCfg, saveDCfg, n_e, J_B0 );   //function in BACKGROUND_PROFILES.C
 
     //Simulation values print to terminal
-    print_systemConfiguration( gridCfg, beamCfg );              //function in INIT_MODULE.C
+    print_systemConfiguration( gridCfg, beamCfg, powerVal );    //function in INIT_MODULE.C
     print_antennaDetec( antDetect );                            //function in ANTENNA_DETECTOR.C
 
     printf("--------------------Simulation--------------------\n");
