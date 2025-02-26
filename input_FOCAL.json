@@ -1,9 +1,9 @@
 {	
     "Main_Project":         "First_test",
-    "Case_foldername":      "benchmark_case_t43_period28_distAnt5_Nx19Ny88Nz49_ne-stop2p2_neAbsNotChanged_w04_pola0.7208_excNewMod-test2",
+    "Case_foldername":      "benchmark_case_t-43_p0_period28_intp1_distAnt5_Nx19Ny88Nz49_ne-stop2p2_neAbsChanged_w04_pola-0.7208_excNewMod_ExSin_EyCosR_PoyntMod",
     "filename_hdf5":        "fileout.h5",
     "filename_timetraces":  "timetraces.dat",
-    "filename_input":       "input/grid_period28_distAnt5_t43.h5",
+    "filename_input":       "input/grid_period28_distAnt5_t-43.h5",
     
     "scale":            1,
     "period":           28,
@@ -29,7 +29,7 @@
     "RampUp_Method":    1,
     "Antena_w0x":       4.0,
     "Antena_w0y":       4.0,
-    "R_pola_xy":        0.7208,
+    "R_pola_xy":        -0.7208,
     "z2waist":          0.0,
     
     "Detector_Antenna": 0,
