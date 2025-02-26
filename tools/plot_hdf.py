@@ -501,7 +501,8 @@ def plot_fullwave( fname_in, fname_plot='',
                                               figure=fig1
                                             )
         mlab.pipeline.vectors( src,
-                               mask_points=50000,   # reduce number of vectors (larger => less vectors)
+                               #mask_points=50000,   # reduce number of vectors (larger => less vectors)
+                               mask_points=4000*period,   # reduce number of vectors (larger => less vectors)
                                scale_factor=20,     # scaling factor for size of object to draw (vector)
                              )
 
