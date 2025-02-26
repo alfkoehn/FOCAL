@@ -754,7 +754,7 @@ void UPML_B_edges(  gridConfiguration *gridCfg,
 //Edge x < D_ABSORB + 2, z > N - D_ABSORB
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
     for (ii=2 ; ii < D_ABSORB ; ii+=2) {                
-        for (jj = D_ABSORB ; jj < NY - D_ABSORB - 2 ; jj+=2) {
+        for (jj = D_ABSORB ; jj <= NY - D_ABSORB - 2 ; jj+=2) {
             for (kk = NZ - D_ABSORB ; kk < NZ-2 ; kk+=2) {
                 // -dBx/DT = dEz/dy - dEy/dz
                 dxstore = DH_WAVE[ii  ][jj+1][kk+1];
@@ -1090,7 +1090,7 @@ void UPML_Bref_faces(   gridConfiguration *gridCfg,
 
 //Boundary y < D_ABSORB + 2
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk) 
-    for (ii = D_ABSORB ; ii <= NY - D_ABSORB - 2 ; ii+=2) {
+    for (ii = D_ABSORB ; ii <= NX - D_ABSORB - 2 ; ii+=2) {
         for (jj=2 ; jj < D_ABSORB ; jj+=2) {
             for (kk = D_ABSORB ; kk <= NZ_REF - D_ABSORB - 2 ; kk+=2) {
                 // -dBx/DT = dEz/dy - dEy/dz
