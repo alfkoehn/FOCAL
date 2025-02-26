@@ -431,6 +431,8 @@ int add_source_sourceRef( gridConfiguration *gridCfg, beamAntennaConfiguration *
                 //EB_WAVE_ref[ii  ][jj+1][ANT_Z  ] += source;                     //Ey
                 //EB_WAVE    [ii  ][jj  ][ANT_Z+1] += source;                     //Ez
                 //EB_WAVE_ref[ii  ][jj  ][ANT_Z+1] += source;                     //Ez
+                //EB_WAVE    [ii  ][jj+1][ANT_Z+1] += source;                     //Bx
+                //EB_WAVE_ref[ii  ][jj+1][ANT_Z+1] += source;                     //Bx
 
                 // second component to be excited
                 //source  = sin(OMEGA_T + antPhaseTerms[(ii/2)][(jj/2)] + M_PI/2.) * t_rise * antField_xy[(ii/2)][(jj/2)] ;
@@ -438,7 +440,6 @@ int add_source_sourceRef( gridConfiguration *gridCfg, beamAntennaConfiguration *
                 source *= 1./fact1_Hansen_corr;
                 EB_WAVE    [ii  ][jj+1][ANT_Z  ] += source;                     //Ey
                 EB_WAVE_ref[ii  ][jj+1][ANT_Z  ] += source;                     //Ey
-
                 //EB_WAVE    [ii  ][jj+1][ANT_Z+1] += source;                     //Bx
                 //EB_WAVE_ref[ii  ][jj+1][ANT_Z+1] += source;                     //Bx
                 //EB_WAVE    [ii+1][jj  ][ANT_Z+1] += source;                     //By
