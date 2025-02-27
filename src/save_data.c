@@ -129,11 +129,13 @@ int save_data_toHDF5(   gridConfiguration *gridCfg,
     // used when writing data into hdf5-files
     double (*data2save)[NY/2][NZ/2]     = calloc(NX/2, sizeof *data2save);
 
-    writeConfig2HDF( gridCfg, beamCfg, filename_hdf5 );
+    printf( "status of writing config into file '%s': %d\n",
+            filename_hdf5, writeConfig2HDF( gridCfg, beamCfg, filename_hdf5 ) );
 
     // density
     sprintf( dSet_name, "n_e" );
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, n_e) ) ;
+    printf( "status of writeMyHDF_v4 for dataset '%s': %d\n", 
+            dSet_name, writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, n_e) ) ;
 
     // background magnetic field
     // B0x: even-odd-odd
@@ -145,7 +147,9 @@ int save_data_toHDF5(   gridConfiguration *gridCfg,
             }
         }
     }
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0x", data2save) ) ;
+    sprintf( dSet_name, "B0x" );
+    printf( "status of writeMyHDF_v4 for dataset '%s': %d\n", 
+            dSet_name, writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save) ) ;
 
     set2zero_3D( NX/2, NY/2, NZ/2, data2save );
     // B0y: odd-even-odd
@@ -157,7 +161,9 @@ int save_data_toHDF5(   gridConfiguration *gridCfg,
             }
         }
     }
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0y", data2save) ) ;
+    sprintf( dSet_name, "B0y" );
+    printf( "status of writeMyHDF_v4 for dataset '%s': %d\n", 
+            dSet_name, writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save) ) ;
 
     set2zero_3D( NX/2, NY/2, NZ/2, data2save );
     // B0z: odd-odd-even
@@ -169,7 +175,9 @@ int save_data_toHDF5(   gridConfiguration *gridCfg,
             }
         }
     }
-    printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, "B0z", data2save) ) ;
+    sprintf( dSet_name, "B0z" );
+    printf( "status of writeMyHDF_v4 for dataset '%s': %d\n", 
+            dSet_name, writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save) ) ;
 
     free( data2save );
     printf( "Free data2save allocated memory.\n" );
@@ -208,7 +216,8 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
         
         //Append the name of the files
         sprintf( dSet_name, "E_abs__tint%05d", t_int );
-        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
+        printf( "status of writeMyHDF_v4 for dataset '%s': %d\n", 
+                dSet_name, writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
 
         free( data2save );
     }
