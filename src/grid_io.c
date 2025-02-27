@@ -70,11 +70,12 @@ int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[]
 
         // hdf5 version 1.8.0 introduced H5Lexists to check if link (to group or dataset) exists in hdf5-file
 #if H5_VERS_MAJOR>=1 && H5_VERS_MINOR>=8
-        if ( H5_VERS_MINOR >= 10 ) {
-            printf( "WARNING: hdf5 version 1.10 (or larger is used)\n" );
-            printf( "         behavior of H5Lexists was slightly changed in this version\n" );
-            printf( "         for details, see https://support.hdfgroup.org/HDF5/doc/RM/RM_H5L.html#Link-Exists\n" );
-        }
+        // the following warning was removed on 2025-02-27 (no longer necessary)
+        //if ( H5_VERS_MINOR >= 10 ) {
+        //    printf( "WARNING: hdf5 version 1.10 (or larger is used)\n" );
+        //    printf( "         behavior of H5Lexists was slightly changed in this version\n" );
+        //    printf( "         for details, see https://support.hdfgroup.org/HDF5/doc/RM/RM_H5L.html#Link-Exists\n" );
+        //}
         if ( H5Lexists( file_id,                // file or group identifier
                         dataset,                // name of link (to group or dataset) to check
                         H5P_DEFAULT )           // link access property list identifiert
@@ -231,11 +232,12 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamAntennaConfiguration *beamC
 
         // hdf5 version 1.8.0 introduced H5Lexists to check if link (to group or dataset) exists in hdf5-file
 #if H5_VERS_MAJOR>=1 && H5_VERS_MINOR>=8
-        if ( H5_VERS_MINOR >= 10 ) {
-            printf( "WARNING: hdf5 version 1.10 (or larger is used)\n" );
-            printf( "         behavior of H5Lexists was slightly changed in this version\n" );
-            printf( "         for details, see https://support.hdfgroup.org/HDF5/doc/RM/RM_H5L.html#Link-Exists\n" );
-        }
+        // the following warning was removed on 2025-02-27 (no longer necessary)
+        //if ( H5_VERS_MINOR >= 10 ) {
+        //    printf( "WARNING: hdf5 version 1.10 (or larger is used)\n" );
+        //    printf( "         behavior of H5Lexists was slightly changed in this version\n" );
+        //    printf( "         for details, see https://support.hdfgroup.org/HDF5/doc/RM/RM_H5L.html#Link-Exists\n" );
+        //}
         if ( H5Lexists( file_id,                // file or group identifier
                         "/config",              // name of link (to group or dataset) to check
                         H5P_DEFAULT )           // link access property list identifiert
