@@ -303,6 +303,10 @@ def plot_fullwave( fname_in, fname_plot='',
         plot_abs    = 'plane'
     else:
         plot_abs    = 'not'
+    if len(fname_plot) > 0:
+        fig_size    = (1800, 1200)
+    else:
+        fig_size    = (800, 600)
 
     # read configurational data
     period      = readhdf5( fname_in, 'config/period' )[0]
@@ -455,9 +459,13 @@ def plot_fullwave( fname_in, fname_plot='',
 
     print( 'contour levels: ', contLevels )
 
+    if len(fname_plot) > 0:
+        # avoids opening a window (needs to be called before creating the figure)
+        mlab.options.offscreen = True
+
     fig1    = mlab.figure( bgcolor=(1,1,1), 
                            fgcolor=(0,0,0),     # color of axes, orientation axes, labels, ...
-                           size=(800, 600), 
+                           size=fig_size, 
                          )
 
     cont_Eabs   = mlab.contour3d( #X, Y, Z,
@@ -596,10 +604,17 @@ def plot_fullwave( fname_in, fname_plot='',
     # set initial viewing angle
     # azimuth:   angle subtended by position vector on a sphere projected onto x-y plane with the x-axis, 0...360
     # elevation: zenith angle, i.e. angle subtended by position vector and the z-axis, 0...180
-    mlab.view( azimuth=290, elevation=80 )
+    # additional keywords, which might be interesting, are distance and focalpoint
+    # see http://docs.enthought.com/mayavi/mayavi/auto/mlab_camera.html
+    if len(fname_plot) > 0:
+        mlab.view( azimuth=360, elevation=75, distance='auto' )
+    else:
+        # distance='auto' was causing some issues when outputting to a window
+        mlab.view( azimuth=360, elevation=75 )
 
     if len(fname_plot) > 0:
         mlab.savefig( fname_plot )
+        print( 'plot written into file ', fname_plot )
     else:
         mlab.show()
 
@@ -626,6 +641,9 @@ def main():
                          help="Timestep." )
     parser.add_argument( "-s", "--colScale", type=str, default="lin",
                          help="Lin or log color scale for contour plot." )
+    parser.add_argument( "-o", "--output_file", type=str, default="",
+                         help="Filename for plot (no X-window will be opened)." )
+
 
     # read all argments from command line
     args                = parser.parse_args()
@@ -636,6 +654,7 @@ def main():
     plot_type           = args.plot_type
     t_int               = args.time
     colScale            = args.colScale
+    fname_plot          = args.output_file
 
     print( "  Following arguments are set via command line options (if not set explicitely, their default values are used): " )
     print( "    fname = {0}".format(fname) )
@@ -644,6 +663,7 @@ def main():
     print( "    plotReductionLevel = {0}".format(plotReductionLevel) )
     print( "    t_int = {0}".format(t_int) )
     print( "    colScale = {0}".format(colScale) )
+    print( "    fname_plot = {0}".format(fname_plot) )
 
     if plot_type == 1:
         plot_simple(fname, dSet_name=dSet_name, 
@@ -660,6 +680,7 @@ def main():
                        #oplot_Efieldcut='x1z1',
                        oplot_Efieldcut='y1',
                        oplot_B0=True,
+                       fname_plot=fname_plot
                      )
 
     #}}}
