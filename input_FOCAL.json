@@ -16,7 +16,7 @@
     "B0_magnitude":     0.0,
     "ne_profile":       5,
     "ne_0":             0.0,
-    "NU0":              1e-6,
+    "nu_0":             1e-6,
     
     "Boundary_Method":  3,
     "UPML_size":        20,
