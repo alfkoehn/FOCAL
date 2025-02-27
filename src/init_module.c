@@ -303,6 +303,7 @@ void print_systemConfiguration(gridConfiguration *gridCfg, beamAntennaConfigurat
     printf( "power detector position: %d\n", pwr_dect );
     printf( "Boundary condition set to '%d'\n", BOUNDARY );
     printf( "Courant number = %.2f. \n", DT/DX);
+    printf( "nu_0 (normalized electron collision frequency) = %f\n", NU0 );
 
 }//}}}
 

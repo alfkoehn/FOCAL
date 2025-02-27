@@ -18,6 +18,7 @@
 #define B0_profileG(gridCfg)    gridCfg->B0_profile
 #define B0_valueG(gridCfg)      gridCfg->B0_value
 #define boundaryG(gridCfg)      gridCfg->sel_boundary
+#define nu0_G(gridCfg)          gridCfg->nu0
 
 #define NX                      NxG(gridCfg)            
 #define NY                      NyG(gridCfg)          
@@ -33,6 +34,7 @@
 #define B0_profile              B0_profileG(gridCfg)
 #define B0_value                B0_valueG(gridCfg)
 #define BOUNDARY                boundaryG(gridCfg)
+#define NU0                     nu0_G(gridCfg)
 
 /*Macros for save data*/
 #define projectPathSt(saveDCfg)         saveDCfg->projectPath
