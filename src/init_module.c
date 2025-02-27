@@ -176,6 +176,11 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
         ne_0 = item_ne_value->valuedouble;
     }
 
+    cJSON *item_nu0_value = cJSON_GetObjectItemCaseSensitive(json, "nu_0");   //normalized electron collision frequency
+    if( cJSON_IsNumber(item_nu0_value) ){
+        NU0 = item_nu0_value->valuedouble;
+    }
+
     cJSON *item_boundary = cJSON_GetObjectItemCaseSensitive(json, "Boundary_Method");   //boundary option
     if( cJSON_IsNumber(item_boundary) ){
         BOUNDARY = item_boundary->valueint;
@@ -303,7 +308,7 @@ void print_systemConfiguration(gridConfiguration *gridCfg, beamAntennaConfigurat
     printf( "power detector position: %d\n", pwr_dect );
     printf( "Boundary condition set to '%d'\n", BOUNDARY );
     printf( "Courant number = %.2f. \n", DT/DX);
-    printf( "nu_0 (normalized electron collision frequency) = %f\n", NU0 );
+    printf( "nu_0 (normalized electron collision frequency) = %9.3e\n", NU0 );
 
 }//}}}
 
