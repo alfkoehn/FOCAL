@@ -290,6 +290,7 @@ def plot_fullwave( fname_in, fname_plot='',
                    f_0=28e9,
                    t_int=0,
                    N_contLevels=20, colScale='lin',
+                   plotReductionLevel=1, 
                    include_absorbers=False, cutExtended_fact=1.,
                    oplot_dens_projection=False,
                    scale_axes_to_meters=False,
@@ -314,31 +315,35 @@ def plot_fullwave( fname_in, fname_plot='',
 
     l_0         = consts.c/f_0
 
-    pts2cut     = round(d_absorb/2)
+    pts2cut     = round( (d_absorb/2)/plotReductionLevel )
 
     print( 'configurational parameters: ' )
     print( '    period  : {0}'.format(period) )
     print( '    d_absorb: {0}'.format(d_absorb) )
 
-    # scale to Yee-grid
-    d_absorb    = int(round(d_absorb/2))
-    print( '  scaled to physical (Yee-cell) grid:' )
-    print( '    d_absorb: {0}'.format(d_absorb) )
+    # scale to Yee-grid (and to plotReductionLevel)
+    period_scaled   = int(round(period/plotReductionLevel))
+    d_absorb_scaled = int(round(d_absorb/2)/plotReductionLevel)
+    print( '  scaled to physical (Yee-cell) grid (divided by plotReductionLevel = {0}):'.format(plotReductionLevel) )
+    print( '    d_absorb: {0}'.format(d_absorb_scaled) )
+
+    # scale to period
+    cutExtended_fact *= period_scaled / (16./plotReductionLevel)
 
     #Ex  = readhdf5( fname_in, 'Ex')
     #Ey  = readhdf5( fname_in, 'Ey')
     #Ez  = readhdf5( fname_in, 'Ez')
-    density = readhdf5( fname_in, 'n_e')
+    density = readhdf5( fname_in, 'n_e')[::plotReductionLevel,::plotReductionLevel,::plotReductionLevel]
 
     if oplot_B0:
-        B0_x    = readhdf5( fname_in, 'B0x' )
-        B0_y    = readhdf5( fname_in, 'B0y' )
-        B0_z    = readhdf5( fname_in, 'B0z' )
+        B0_x    = readhdf5( fname_in, 'B0x' )[::plotReductionLevel,::plotReductionLevel,::plotReductionLevel]
+        B0_y    = readhdf5( fname_in, 'B0y' )[::plotReductionLevel,::plotReductionLevel,::plotReductionLevel]
+        B0_z    = readhdf5( fname_in, 'B0z' )[::plotReductionLevel,::plotReductionLevel,::plotReductionLevel]
         B0_abs  = np.sqrt( B0_x**2 + B0_y**2 + B0_z**2 )
     else:
-        B0_abs  = np.sqrt( readhdf5( fname_in, 'B0x')**2 
-                          +readhdf5( fname_in, 'B0y')**2 
-                          +readhdf5( fname_in, 'B0z')**2 )
+        B0_abs  = np.sqrt( readhdf5( fname_in, 'B0x')[::plotReductionLevel,::plotReductionLevel,::plotReductionLevel]**2 
+                          +readhdf5( fname_in, 'B0y')[::plotReductionLevel,::plotReductionLevel,::plotReductionLevel]**2 
+                          +readhdf5( fname_in, 'B0z')[::plotReductionLevel,::plotReductionLevel,::plotReductionLevel]**2 )
 
     #E_abs   = np.sqrt( Ex**2 + Ey**2 + Ez**2 )
 
@@ -346,7 +351,7 @@ def plot_fullwave( fname_in, fname_plot='',
         dSet_name   = 'E_abs__tint00161'
     else:
         dSet_name   = 'E_abs__tint{0:05d}'.format(t_int)
-    E_abs   = readhdf5( fname_in, dSet_name )
+    E_abs   = readhdf5( fname_in, dSet_name )[::plotReductionLevel,::plotReductionLevel,::plotReductionLevel]
     print( dSet_name )
     print( E_abs.shape )
 
@@ -360,7 +365,7 @@ def plot_fullwave( fname_in, fname_plot='',
         Nz      = E_abs.shape[2]
     ant_x   = Nx/2 
     ant_y   = Ny/2
-    ant_z   = d_absorb + 2
+    ant_z   = d_absorb_scaled + 2
 
     print( 'min|max(n_e)   = {0}|{1}'.format(np.amin(density), np.amax(density)) )
     print( 'min|max(|B_0|) = {0}|{1}'.format(np.amin(B0_abs), np.amax(B0_abs)) )
@@ -392,7 +397,7 @@ def plot_fullwave( fname_in, fname_plot='',
     if not include_absorbers:
         print( 'absorbers will not be included in plot, will actually be cut from data' )
         print( 'E_abs.shape = {0}, d_absorb = {1}, Nx = {2}, Ny = {3}, Nz = {4}, ant_z = {5}'.format(
-            E_abs.shape, d_absorb, Nx, Ny, Nz, ant_z) )
+            E_abs.shape, d_absorb_scaled, Nx, Ny, Nz, ant_z) )
 #        if isinstance(density, np.ndarray):
 #            density = density[d_absorb:(Nx-d_absorb), 
 #                              d_absorb:(Ny-d_absorb), 
@@ -447,7 +452,7 @@ def plot_fullwave( fname_in, fname_plot='',
                                   cut_z:-cut_z ]
 
         print( 'E_abs.shape = {0}, d_absorb = {1}, Nx = {2}, Ny = {3}, Nz = {4}, ant_z = {5}'.format(
-            E_abs.shape, d_absorb, Nx, Ny, Nz, ant_z) )
+            E_abs.shape, d_absorb_scaled, Nx, Ny, Nz, ant_z) )
 
     # |E| = sqrt(Ex^2 + Ey^2 + Ez^2)
     if colScale == 'lin':
@@ -480,9 +485,9 @@ def plot_fullwave( fname_in, fname_plot='',
             slice_y1    = 1
             slice_z1    = ant_z
         else:
-            slice_x1    = ant_x - d_absorb
-            slice_y1    = 0#Ny - d_absorb
-            slice_z1    = ant_z - d_absorb
+            slice_x1    = ant_x - d_absorb_scaled
+            slice_y1    = 0#Ny - d_absorb_scaled
+            slice_z1    = ant_z - d_absorb_scaled
         if 'x1' in oplot_Efieldcut:
             slice_Eabs  = mlab.volume_slice( E_abs,
                                              slice_index=slice_x1,
@@ -510,7 +515,7 @@ def plot_fullwave( fname_in, fname_plot='',
                                             )
         mlab.pipeline.vectors( src,
                                #mask_points=50000,   # reduce number of vectors (larger => less vectors)
-                               mask_points=4000*period,   # reduce number of vectors (larger => less vectors)
+                               mask_points=4000*period_scaled,   # reduce number of vectors (larger => less vectors)
                                scale_factor=20,     # scaling factor for size of object to draw (vector)
                              )
 
@@ -529,12 +534,12 @@ def plot_fullwave( fname_in, fname_plot='',
         if oplot_dens_projection:
             # plotting onto y=const plane, x-coordinate=density, z-coordinate=z
             #dens_line   = mlab.plot3d( density[0,0,:]*30+1, 
-            #                           density[0,0,:]*0+(Ny-2*d_absorb),
+            #                           density[0,0,:]*0+(Ny-2*d_absorb_scaled),
             # plotting onto x=const plane, y-coordinate=density, z-coordinate=z
             dens_line   = mlab.plot3d( density[0,0,:]*0+1,  
                                        #density[0,0,:]*30+1,
                                        density[int(Nx/2),int(Ny/2),:]*30+1,
-                                       np.linspace(1, Nz-2*d_absorb-3, Nz-2*d_absorb-2+2),
+                                       np.linspace(1, Nz-2*d_absorb_scaled-3, Nz-2*d_absorb_scaled-2+2),
 #                                   color=(0,0,0),
                                        line_width=10,
                                        tube_radius=1,
@@ -576,12 +581,12 @@ def plot_fullwave( fname_in, fname_plot='',
         absorber_plane  = density*.0
 
         # x1, x2 absorber plane
-        absorber_plane[d_absorb,:,:]        = 1
-        absorber_plane[(Nx-d_absorb),:,:]   = 1
-        absorber_plane[:,d_absorb,:]        = 1
-        absorber_plane[:,(Ny-d_absorb),:]   = 1
-        absorber_plane[:,:,d_absorb]        = 1
-        absorber_plane[:,:,(Nz-d_absorb)]   = 1
+        absorber_plane[d_absorb_scaled,:,:]        = 1
+        absorber_plane[(Nx-d_absorb_scaled),:,:]   = 1
+        absorber_plane[:,d_absorb_scaled,:]        = 1
+        absorber_plane[:,(Ny-d_absorb_scaled),:]   = 1
+        absorber_plane[:,:,d_absorb_scaled]        = 1
+        absorber_plane[:,:,(Nz-d_absorb_scaled)]   = 1
         cont_abs_x1   = mlab.contour3d( absorber_plane, contours=[1], 
                                         opacity=.1, colormap='gist_yarg',
                                         figure=fig1
@@ -677,6 +682,7 @@ def main():
                        cutExtended_fact=1.9,    # 1.5 might be useful value to crop density profile going to 0 from plot to not mislead user
                        oplot_dens_projection=False,
                        N_contLevels=contLevels, colScale=colScale, 
+                       plotReductionLevel=plotReductionLevel, 
                        #oplot_Efieldcut='x1z1',
                        oplot_Efieldcut='y1',
                        oplot_B0=True,
