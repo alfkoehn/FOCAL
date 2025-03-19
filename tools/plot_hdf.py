@@ -315,7 +315,10 @@ def plot_fullwave( fname_in, fname_plot='',
 
     l_0         = consts.c/f_0
 
-    pts2cut     = round( (d_absorb/2)/plotReductionLevel )
+    if cutExtended_fact > 1.:
+        pts2cut = round( (d_absorb/2)/plotReductionLevel )
+    else:
+        pts2cut = .0
 
     print( 'configurational parameters: ' )
     print( '    period  : {0}'.format(period) )
@@ -328,7 +331,8 @@ def plot_fullwave( fname_in, fname_plot='',
     print( '    d_absorb: {0}'.format(d_absorb_scaled) )
 
     # scale to period
-    cutExtended_fact *= period_scaled / (16./plotReductionLevel)
+    if cutExtended_fact > 1.:
+        cutExtended_fact *= period_scaled / (16./plotReductionLevel)
 
     #Ex  = readhdf5( fname_in, 'Ex')
     #Ey  = readhdf5( fname_in, 'Ey')
@@ -648,6 +652,8 @@ def main():
                          help="Lin or log color scale for contour plot." )
     parser.add_argument( "-o", "--output_file", type=str, default="",
                          help="Filename for plot (no X-window will be opened)." )
+    parser.add_argument( "-e", "--cutExtended", type=float, default=1.9,
+                         help="Cut grid point from plot (larger factor => larger cut, starting from 1.)." )
 
 
     # read all argments from command line
@@ -660,6 +666,7 @@ def main():
     t_int               = args.time
     colScale            = args.colScale
     fname_plot          = args.output_file
+    cutExtended_fact    = args.cutExtended
 
     print( "  Following arguments are set via command line options (if not set explicitely, their default values are used): " )
     print( "    fname = {0}".format(fname) )
@@ -669,6 +676,7 @@ def main():
     print( "    t_int = {0}".format(t_int) )
     print( "    colScale = {0}".format(colScale) )
     print( "    fname_plot = {0}".format(fname_plot) )
+    print( "    cutExtended_fact = {0}".format(cutExtended_fact) )
 
     if plot_type == 1:
         plot_simple(fname, dSet_name=dSet_name, 
@@ -679,7 +687,8 @@ def main():
     elif plot_type == 2:
         plot_fullwave( fname, t_int=t_int, 
                        include_absorbers=False, 
-                       cutExtended_fact=1.9,    # 1.5 might be useful value to crop density profile going to 0 from plot to not mislead user
+                       #cutExtended_fact=1.9,    # 1.5 might be useful value to crop density profile going to 0 from plot to not mislead user
+                       cutExtended_fact=cutExtended_fact,
                        oplot_dens_projection=False,
                        N_contLevels=contLevels, colScale=colScale, 
                        plotReductionLevel=plotReductionLevel, 
