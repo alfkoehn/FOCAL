@@ -145,6 +145,8 @@ int main( int argc, char *argv[] ) {
     free_antDetect( gridCfg, antDetect );
     free( EB_WAVE );
     printf( "freed EB_WAVE\n" );
+    free( EB_WAVE_ref );
+    printf( "freed EB_WAVE_ref\n" );
     free( J_B0 );
     printf( "freed J_B0\n" );
     free( n_e );
