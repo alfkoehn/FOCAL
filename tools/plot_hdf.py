@@ -489,8 +489,8 @@ def plot_fullwave( fname_in, fname_plot='',
             slice_y1    = 1
             slice_z1    = ant_z
         else:
-            slice_x1    = ant_x - d_absorb_scaled
-            slice_y1    = 0#Ny - d_absorb_scaled
+            slice_x1    = 0#ant_x - d_absorb_scaled
+            slice_y1    = 1#Ny - d_absorb_scaled
             slice_z1    = ant_z - d_absorb_scaled
         if 'x1' in oplot_Efieldcut:
             slice_Eabs  = mlab.volume_slice( E_abs,
@@ -693,7 +693,7 @@ def main():
                        N_contLevels=contLevels, colScale=colScale, 
                        plotReductionLevel=plotReductionLevel, 
                        #oplot_Efieldcut='x1z1',
-                       oplot_Efieldcut='y1',
+                       oplot_Efieldcut='x1',
                        oplot_B0=True,
                        fname_plot=fname_plot
                      )
