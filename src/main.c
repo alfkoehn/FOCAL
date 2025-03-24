@@ -141,8 +141,8 @@ int main( int argc, char *argv[] ) {
     save_AntDetect( gridCfg, saveDCfg, antDetect );                         //function in ANTENNA_DETECTOR.C
 
     //free allocated arrays
-    free_boundary( gridCfg );
-    free_antDetect( gridCfg, antDetect );
+    free_boundary( gridCfg );                   // function in boundary_module.c
+    free_antDetect( gridCfg, antDetect );       // function in antenna_detector.c
     free( EB_WAVE );
     printf( "freed EB_WAVE\n" );
     free( EB_WAVE_ref );

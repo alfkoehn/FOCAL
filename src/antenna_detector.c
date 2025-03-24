@@ -12,6 +12,7 @@ static double **detAnt_04_fields = NULL;
 int init_antennaDetect( gridConfiguration *gridCfg,
                         beamAntennaConfiguration *beamCfg,
                         antennaDetector *antDetect ){
+    //{{{
 
     if( activate_antDetect1D == 1 ){
 
@@ -56,32 +57,40 @@ int init_antennaDetect( gridConfiguration *gridCfg,
     }
 
     return EXIT_SUCCESS;
-}
+}//}}}
+
 
 /*Liberates the allocated memory for the antenna*/
 int free_antDetect( gridConfiguration *gridCfg,
                     antennaDetector *antDetect ){
+    //{{{
 
-    if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
-        free2DArray(detAnt_01_fields, NX);            
-    }
-    if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
-        free2DArray(detAnt_02_fields, NX);
-    }
-    if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
-        free2DArray(detAnt_03_fields, NX);
-    }
-    if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
-        free2DArray(detAnt_04_fields, NX);
+    if( activate_antDetect1D == 1 ){
+        // this clearly needs to be changed!
+        // see todo at init_antennaDetect function
+        if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
+            free2DArray(detAnt_01_fields, NX);            
+        }
+        if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
+            free2DArray(detAnt_02_fields, NX);
+        }
+        if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
+            free2DArray(detAnt_03_fields, NX);
+        }
+        if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
+            free2DArray(detAnt_04_fields, NX);
+        }
     }
 
     printf("Freed Antenna detector allocated memory. \n");
 
     return EXIT_SUCCESS;
-}
+}//}}}
+ 
 
 /*Print in console the antennad detect information*/
 int print_antennaDetec( antennaDetector *antDetect ){
+    //{{{
 
     if( activate_antDetect1D == 1 ){
 
@@ -96,13 +105,15 @@ int print_antennaDetec( antennaDetector *antDetect ){
     }
 
     return EXIT_SUCCESS;
-}
+}//}}}
+
 
 /*During time evolution, control the storing of values in the arrays*/
 int control_antennaDetect(  gridConfiguration *gridCfg,
                             antennaDetector *antDetect,
                             int t_int,
                             double EB_WAVE[NX][NY][NZ] ){
+    //{{{
 
     if( activate_antDetect1D == 1 ){ 
         // store wavefields for detector antennas over the final 10 
@@ -134,7 +145,8 @@ int control_antennaDetect(  gridConfiguration *gridCfg,
     }
 
     return EXIT_SUCCESS;
-}
+}//}}}
+
 
 //Save the field values in the antenna detector arrays
 int detAnt1D_storeValues(   gridConfiguration *gridCfg, 
@@ -185,6 +197,7 @@ int detAnt1D_storeValues(   gridConfiguration *gridCfg,
 //Send the antenna detect arrays to the grid_io module for storage in the HDF5 output file.
 void save_AntDetect(    gridConfiguration *gridCfg, saveData *saveDCfg,
                         antennaDetector *antDetect ){
+    //{{{
 
     if( activate_antDetect1D == 1 ){
 
@@ -216,4 +229,5 @@ void save_AntDetect(    gridConfiguration *gridCfg, saveData *saveDCfg,
 
     }
 
-}
+}//}}}
+ 
